@@ -1,0 +1,35 @@
+{
+  "name": "场景1-1",
+  "type": "video",
+  "source_key": "/Users/leevengu/Desktop/小米手势交互/场景库/场景1-1.key",
+  "video": "/materials/场景1-1.m4v",
+  "pdf": "/materials/场景1-1.pdf",
+  "duration_s": 246.8333333333333,
+  "page_count": 36,
+  "cue_points": [
+    {
+      "id": "scheme_a_evaluation",
+      "scheme": "A",
+      "page": 14,
+      "time_s": 89.13,
+      "title": "方案A评价",
+      "type": "scheme_evaluation"
+    },
+    {
+      "id": "scheme_b_evaluation",
+      "scheme": "B",
+      "page": 25,
+      "time_s": 164.56,
+      "title": "方案B评价",
+      "type": "scheme_evaluation"
+    },
+    {
+      "id": "scheme_c_evaluation",
+      "scheme": "C",
+      "page": 36,
+      "time_s": 239.98,
+      "title": "方案C评价",
+      "type": "scheme_evaluation"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# Participant data and generated captures
+sessions/
+*.h5
+*.hdf5
+*.partial
+workflow_events.csv
+workflow_events.jsonl
+session.json
+
+# Recorded media generated during experiments
+*_camera*.mp4
+*_camera*.webm
+
+# Python and operating-system files
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+
+# Local environments and temporary files
+.venv/
+venv/
+*.log
+*.tmp
+*.bak
+
+# Distribution archives are published separately
+*.zip
+*.rar

@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gesture Lab Subject Display - PC 修复版 v3（审阅）</title>
+  <script>
+    if (location.protocol === "file:") {
+      location.replace("http://127.0.0.1:8765/subject.html");
+    }
+  </script>
+  <style>
+    :root {
+      --bg: #dfe3e7;
+      --ink: #121821;
+      --muted: #687485;
+      --line: #e5e7eb;
+      --accent: #121821;
+      --amber: #d97706;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .stage-shell {
+      width: 100vw;
+      height: 100vh;
+      padding: 24px;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      row-gap: 14px;
+    }
+    body.questionnaire-full-open .stage-shell {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      padding: 14px;
+    }
+    body.questionnaire-full-open .slide-stage,
+    body.questionnaire-full-open .subject-mark-dock {
+      display: none !important;
+    }
+    body.questionnaire-side-open .stage-shell {
+      grid-template-columns: minmax(0, 1fr) minmax(420px, 50vw);
+      column-gap: 14px;
+    }
+    .hidden { display: none !important; }
+    .slide-stage {
+      grid-column: 1;
+      grid-row: 1;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      border-radius: 28px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(27, 34, 43, .14);
+    }
+    .slide-stage.empty::after {
+      content: attr(data-empty);
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: clamp(18px, 2.2vw, 32px);
+      font-weight: 800;
+      background: #fff;
+      z-index: 4;
+    }
+    #slideImage {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #fff;
+      z-index: 1;
+    }
+    .overlay-layer {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .motion-overlay {
+      position: absolute;
+      object-fit: contain;
+      max-width: none;
+      max-height: none;
+      display: block;
+    }
+    .cue-pill {
+      position: absolute;
+      right: 24px;
+      bottom: 28px;
+      z-index: 5;
+      border-radius: 999px;
+      padding: 13px 18px;
+      background: #fff7ed;
+      color: #9a3412;
+      box-shadow: 0 12px 32px rgba(154, 52, 18, .16);
+      font-weight: 850;
+      display: none;
+    }
+    .cue-pill.visible { display: block; }
+    .questionnaire-side-panel {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 8px;
+      padding: 14px;
+      border-radius: 20px;
+      background: #f4f7f9;
+      box-shadow: 0 24px 70px rgba(20, 28, 39, .12);
+      overflow: hidden;
+    }
+    body.questionnaire-full-open .questionnaire-side-panel {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .questionnaire-side-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .questionnaire-side-head h1 {
+      min-width: 0;
+      margin: 0;
+      font-size: clamp(18px, 1.8vw, 28px);
+      line-height: 1.25;
+    }
+    .questionnaire-side-page {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #176b5b;
+      background: #dceee9;
+      font-size: 14px;
+      font-weight: 850;
+    }
+    .questionnaire-side-meta {
+      margin: 0;
+      color: #687485;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .questionnaire-side-pages {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 12px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #e9eef2;
+    }
+    .questionnaire-side-pages.single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .questionnaire-side-pages img {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      object-fit: contain;
+      object-position: center top;
+      display: block;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 8px 26px rgba(18, 24, 33, .08);
+    }
+    .subject-mark-dock {
+      position: relative;
+      grid-column: 1;
+      grid-row: 2;
+      justify-self: center;
+      z-index: 7;
+      display: grid;
+      place-items: center;
+      width: min(900px, calc(100vw - 96px));
+      min-height: 64px;
+      padding: 14px 24px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .88);
+      border: 1px solid rgba(18, 24, 33, .08);
+      box-shadow: 0 18px 48px rgba(15, 23, 42, .12);
+      backdrop-filter: blur(16px);
+    }
+    .subject-mark-dock.active {
+      background: rgba(239, 246, 255, .92);
+      border-color: rgba(59, 130, 246, .18);
+      box-shadow: 0 18px 48px rgba(59, 130, 246, .12);
+    }
+    .subject-mark-dock.ended {
+      background: rgba(244, 247, 250, .94);
+      border-color: rgba(18, 24, 33, .08);
+    }
+    .subject-mark-dock.sequence-mode {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 22px;
+    }
+    .subject-mark-dock.timed-mode {
+      width: min(760px, calc(100vw - 96px));
+    }
+    .subject-mark-status {
+      color: #121821;
+      font-size: clamp(24px, 3vw, 42px);
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+    .subject-repeat-progress {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: center;
+      width: 100%;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .subject-mark-dock.sequence-mode .subject-repeat-progress,
+    .subject-mark-dock.sequence-mode .motion-sequence {
+      margin-top: 0;
+    }
+    .repeat-progress-unit {
+      display: grid;
+      grid-template-columns: 34px minmax(44px, 1fr);
+      align-items: center;
+      gap: 8px;
+    }
+    .repeat-progress-circle {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: #64748b;
+      background: #e9eef3;
+      font-size: 17px;
+      font-weight: 900;
+    }
+    .repeat-progress-unit.current .repeat-progress-circle {
+      color: #fff;
+      background: #176b5b;
+      box-shadow: 0 0 0 6px rgba(23, 107, 91, .12);
+    }
+    .calibration-repeat-progress .repeat-progress-circle {
+      transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease;
+    }
+    .calibration-repeat-progress {
+      gap: 26px;
+      padding: 38px 18px 30px;
+    }
+    .calibration-repeat-progress .repeat-progress-unit {
+      grid-template-columns: 108px minmax(42px, 1fr);
+      gap: 14px;
+    }
+    .calibration-repeat-progress .repeat-progress-circle {
+      justify-self: center;
+      position: relative;
+      z-index: 2;
+    }
+    .calibration-repeat-progress .repeat-progress-unit.current .repeat-progress-circle {
+      transform: scale(3);
+      box-shadow: 0 0 0 4px rgba(23, 107, 91, .14);
+    }
+    .repeat-progress-unit.done .repeat-progress-circle {
+      color: #176b5b;
+      background: #dceee9;
+    }
+    .repeat-progress-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #dfe5eb;
+    }
+    .repeat-progress-track i {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: #176b5b;
+      transition: none;
+    }
+    .motion-sequence {
+      width: 100%;
+      display: grid;
+      grid-template-columns: .78fr 1.12fr 1.12fr .78fr;
+      gap: 28px;
+      margin-top: 12px;
+    }
+    .motion-sequence-step {
+      position: relative;
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+      padding: 10px 12px;
+      border: 1px solid #dfe5eb;
+      border-radius: 8px;
+      color: #6b7685;
+      background: #f5f7f9;
+      font-size: clamp(15px, 1.5vw, 20px);
+      font-weight: 850;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .motion-sequence-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      left: calc(100% + 7px);
+      top: 50%;
+      width: 14px;
+      color: #9aa5b1;
+      transform: translateY(-50%);
+    }
+    .motion-sequence-step.done {
+      color: #176b5b;
+      border-color: #bddbd3;
+      background: #edf7f4;
+    }
+    .motion-sequence-step.current {
+      color: #fff;
+      border-color: #176b5b;
+      background: #176b5b;
+      box-shadow: 0 8px 22px rgba(23, 107, 91, .18);
+    }
+    .motion-sequence-step.secondary {
+      min-height: 46px;
+      align-self: center;
+      color: #7b8794;
+      border-style: dashed;
+      background: #fafbfc;
+      font-size: clamp(13px, 1.25vw, 17px);
+      font-weight: 750;
+    }
+    .motion-sequence-step.secondary.current {
+      color: #176b5b;
+      border-color: #83b8aa;
+      background: #edf7f4;
+      box-shadow: none;
+    }
+    dialog {
+      width: min(1500px, calc(100vw - 32px));
+      height: min(940px, calc(100vh - 32px));
+      border: 0;
+      border-radius: 12px;
+      padding: 0;
+      box-shadow: 0 30px 100px rgba(0,0,0,.30);
+      background: #fff;
+      overflow: hidden;
+    }
+    dialog::backdrop { background: rgba(16, 24, 40, .62); }
+    .questionnaire {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    .questionnaire-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 5px;
+    }
+    .questionnaire-head h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .questionnaire-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    #questionnaireFrame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #questionnaireMirror {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #101722;
+      object-fit: contain;
+    }
+    .questionnaire-preview {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 12px;
+      padding: 8px;
+      overflow: hidden;
+      background: #eef2f5;
+    }
+    .questionnaire-preview.single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .questionnaire-preview img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: contain;
+      object-position: center top;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(18, 24, 33, .08);
+    }
+    .document-reader {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      border-radius: 10px;
+      background: #f8f8f6;
+      box-shadow: 0 18px 60px rgba(20, 28, 39, .10);
+      scroll-behavior: auto;
+    }
+    .document-inner {
+      width: min(1180px, calc(100vw - 56px));
+      margin: 0 auto;
+      padding: 28px 0 40vh;
+      display: grid;
+      gap: 22px;
+    }
+    .document-title {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: 0;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 10px 30px rgba(20, 28, 39, .08);
+      font-size: clamp(18px, 2vw, 28px);
+    }
+    .document-page {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 14px 40px rgba(20, 28, 39, .10);
+    }
+    .reading-indicator {
+      position: fixed;
+      right: 28px;
+      bottom: 26px;
+      z-index: 8;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(21, 25, 34, .90);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .calibration-screen {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #f7f9fb;
+    }
+    .calibration-screen.hidden { display: none; }
+    .calibration-subject-card {
+      width: min(920px, calc(100vw - 96px));
+      min-height: min(560px, calc(100vh - 96px));
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 18px;
+      padding: 48px;
+      border: 1px solid #e2e7ec;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(20, 28, 39, .10);
+      text-align: center;
+    }
+    .calibration-subject-stage {
+      color: #667085;
+      font-size: clamp(16px, 2vw, 24px);
+      font-weight: 800;
+    }
+    .calibration-subject-title {
+      margin: 0;
+      color: #121821;
+      font-size: clamp(36px, 6vw, 78px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+    .calibration-subject-message {
+      margin: 0;
+      color: #667085;
+      font-size: clamp(20px, 2.5vw, 32px);
+      line-height: 1.45;
+    }
+    .calibration-subject-countdown {
+      color: #121821;
+      font-size: clamp(100px, 20vw, 240px);
+      font-weight: 900;
+      line-height: .9;
+      font-variant-numeric: tabular-nums;
+    }
+    .calibration-motion-sequence {
+      width: min(780px, 100%);
+      margin-top: 16px;
+    }
+    .calibration-repeat-progress {
+      width: min(680px, 100%);
+      margin-top: 18px;
+    }
+    .baseline-timer-sequence {
+      width: 100%;
+      display: grid;
+      grid-template-columns: .72fr 1.8fr .72fr;
+      align-items: center;
+      gap: 28px;
+    }
+    .baseline-timer-step {
+      position: relative;
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+      padding: 10px 14px;
+      border: 1px solid #dfe5eb;
+      border-radius: 8px;
+      color: #7b8794;
+      background: #f7f9fb;
+      font-size: clamp(15px, 1.45vw, 19px);
+      font-weight: 800;
+    }
+    .baseline-timer-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      left: calc(100% + 7px);
+      top: 50%;
+      width: 14px;
+      color: #9aa5b1;
+      transform: translateY(-50%);
+    }
+    .baseline-timer-step.done {
+      color: #176b5b;
+      border-color: #bddbd3;
+      background: #edf7f4;
+    }
+    .baseline-timer-step.current {
+      color: #fff;
+      border-color: #176b5b;
+      background: #176b5b;
+    }
+    .baseline-timer-step.timer {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+    }
+    .baseline-timer-track {
+      width: 100%;
+      height: 6px;
+      overflow: hidden;
+      border-radius: 3px;
+      background: rgba(255,255,255,.32);
+    }
+    .baseline-timer-track span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: #fff;
+      transition: width .3s linear;
+    }
+  </style>
+</head>
+<body>
+  <main class="stage-shell">
+    <section class="slide-stage empty" id="slideStage" data-empty="等待主试打开演示材料">
+      <img id="slideImage" alt="被试演示页" />
+      <div class="overlay-layer" id="overlayLayer"></div>
+      <div class="cue-pill" id="cuePill">本页稍后填写问卷</div>
+    </section>
+    <aside class="questionnaire-side-panel hidden" id="questionnaireSidePanel" aria-label="问卷只读预览">
+      <div class="questionnaire-side-head">
+        <h1 id="questionnaireSideTitle">问卷预览</h1>
+        <span class="questionnaire-side-page" id="questionnaireSidePage">1/1</span>
+      </div>
+      <p class="questionnaire-side-meta" id="questionnaireSideMeta">请观看主试填写，无需操作。</p>
+      <div class="questionnaire-side-pages" id="questionnaireSidePages" aria-label="问卷完整预览"></div>
+    </aside>
+    <div class="subject-mark-dock hidden" id="subjectMarkDock" aria-label="手势打标状态">
+      <div class="subject-mark-status" id="subjectGestureStatus">手势待开始</div>
+      <div class="subject-repeat-progress hidden" id="subjectRepeatProgress"></div>
+      <div class="motion-sequence hidden" id="subjectMotionSequence" aria-label="动作步骤">
+        <div class="motion-sequence-step secondary" data-sequence-phase="prepare">（准备）</div>
+        <div class="motion-sequence-step" data-sequence-phase="active">执行动作</div>
+        <div class="motion-sequence-step" data-sequence-phase="lower">放下手</div>
+        <div class="motion-sequence-step secondary" data-sequence-phase="wait">（等待）</div>
+      </div>
+      <div class="baseline-timer-sequence hidden" id="baselineTimerSequence" aria-label="自然站立计时">
+        <div class="baseline-timer-step" id="baselineTimerStart">开始</div>
+        <div class="baseline-timer-step timer" id="baselineTimerActive">
+          <span id="baselineTimerText">计时 00:00 / 00:30</span>
+          <span class="baseline-timer-track"><span id="baselineTimerFill"></span></span>
+        </div>
+        <div class="baseline-timer-step" id="baselineTimerEnd">结束</div>
+      </div>
+    </div>
+    <section class="document-reader hidden" id="documentReader" aria-label="知情同意书阅读">
+      <div class="document-inner" id="documentInner"></div>
+      <div class="reading-indicator" id="readingIndicator">自动阅读中</div>
+    </section>
+    <section class="calibration-screen hidden" id="calibrationScreen" aria-live="assertive">
+      <div class="calibration-subject-card">
+        <div class="calibration-subject-stage" id="calibrationSubjectStage">阶段同步</div>
+        <h1 class="calibration-subject-title" id="calibrationSubjectTitle">准备同步校准</h1>
+        <div class="calibration-subject-countdown hidden" id="calibrationSubjectCountdown"></div>
+        <p class="calibration-subject-message" id="calibrationSubjectMessage">请按主试提示操作</p>
+        <div class="subject-repeat-progress calibration-repeat-progress hidden" id="calibrationRepeatProgress" aria-label="三次拍手进度"></div>
+        <div class="motion-sequence calibration-motion-sequence hidden" id="calibrationMotionSequence" aria-label="拍手步骤">
+          <div class="motion-sequence-step secondary" data-sequence-phase="prepare">（准备）</div>
+          <div class="motion-sequence-step" data-sequence-phase="active">抬起手 · 用力拍手</div>
+          <div class="motion-sequence-step" data-sequence-phase="lower">放下手</div>
+          <div class="motion-sequence-step secondary" data-sequence-phase="wait">（等待）</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="questionnaireDialog">
+    <div class="questionnaire">
+      <div class="questionnaire-head">
+        <h1 id="questionnaireTitle">问卷</h1>
+        <p id="questionnaireMeta">请按主试提示填写。</p>
+      </div>
+      <iframe id="questionnaireFrame" src="about:blank" title="问卷填写"></iframe>
+      <div id="questionnairePreview" class="questionnaire-preview hidden" aria-label="问卷只读预览"></div>
+      <video id="questionnaireMirror" class="hidden" autoplay muted playsinline></video>
+    </div>
+  </dialog>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const stage = $("slideStage");
+    const image = $("slideImage");
+    const layer = $("overlayLayer");
+    const cuePill = $("cuePill");
+    let currentSlide = null;
+    let imageToken = 0;
+    let scrollFrame = 0;
+    let questionnairePreviewTimer = 0;
+    let questionnairePreviewImages = [];
+    let questionnairePreviewIndex = 0;
+
+    const channel = "BroadcastChannel" in window ? new BroadcastChannel("gesture_lab_subject") : null;
+
+    function cacheBust(url) {
+      if (!url) return "";
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}v=20260708-ui-polish-v6`;
+    }
+
+    function renderRepeatProgress(
+      index = 0,
+      total = 0,
+      phase = "",
+      containerId = "subjectRepeatProgress",
+      elapsedMs = 0,
+      durationMs = 0
+    ) {
+      const progress = $(containerId);
+      const count = Math.max(0, Number(total) || 0);
+      progress.classList.toggle("hidden", count <= 1);
+      const phaseFill = {
+        prepare: 18,
+        active: 52,
+        lower: 76,
+        wait: 100,
+        complete: 100,
+      }[phase] || 0;
+      const hasTiming = Number(durationMs) > 0;
+      const timedFill = hasTiming
+        ? Math.min(100, Math.max(0, (Number(elapsedMs) / Number(durationMs)) * 100))
+        : phaseFill;
+      progress.innerHTML = count <= 1 ? "" : Array.from({ length: count }, (_, item) => {
+        const value = item + 1;
+        const className = value < index || phase === "complete"
+          ? "done"
+          : value === index ? "current" : "";
+        const fill = value < index || phase === "complete" ? 100 : value === index ? timedFill : 0;
+        return `
+          <div class="repeat-progress-unit ${className}">
+            <span class="repeat-progress-circle">${value}</span>
+            <span class="repeat-progress-track"><i style="width:${fill}%"></i></span>
+          </div>
+        `;
+      }).join("");
+      const currentFill = progress.querySelector(".repeat-progress-unit.current .repeat-progress-track i");
+      if (currentFill && hasTiming && timedFill < 100) {
+        const remainingMs = Math.max(0, Number(durationMs) - Number(elapsedMs));
+        currentFill.style.transition = "none";
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          currentFill.style.transition = `width ${remainingMs}ms linear`;
+          currentFill.style.width = "100%";
+        }));
+      }
+    }
+
+    function renderMotionSequence(containerId, phase = "", completedLabel = "") {
+      const sequence = $(containerId);
+      if (!sequence) return;
+      const order = ["prepare", "active", "lower", "wait"];
+      const currentIndex = order.indexOf(phase);
+      sequence.classList.toggle("hidden", currentIndex < 0);
+      sequence.querySelectorAll("[data-sequence-phase]").forEach((step) => {
+        const stepIndex = order.indexOf(step.dataset.sequencePhase);
+        step.classList.toggle("done", currentIndex >= 0 && stepIndex < currentIndex);
+        step.classList.toggle("current", stepIndex === currentIndex);
+      });
+      const lowerStep = sequence.querySelector('[data-sequence-phase="lower"]');
+      if (lowerStep && completedLabel) lowerStep.textContent = completedLabel;
+    }
+
+    function setGestureMarkState(state) {
+      const active = state === "active";
+      const hidden = state === "hidden";
+      const ended = state === "ended";
+      $("subjectMarkDock").classList.toggle("hidden", hidden);
+      $("subjectMarkDock").classList.toggle("active", active);
+      $("subjectMarkDock").classList.toggle("ended", ended);
+      const label = currentSlide?.gesture_label || "手势";
+      const repetitionsDone = active && currentSlide?.repeat_total > 1 && currentSlide.repeat_index >= currentSlide.repeat_total;
+      const repeatPhase = currentSlide?.repeat_phase || "";
+      const timedTotal = Number(currentSlide?.timed_total || 0);
+      const timedElapsed = Number(currentSlide?.timed_elapsed || 0);
+      const formatSeconds = (value) => `00:${String(Math.max(0, value)).padStart(2, "0")}`;
+      $("subjectGestureStatus").textContent = timedTotal > 0 && active
+        ? timedElapsed >= timedTotal
+          ? `${timedTotal} 秒完成 · 等待主试结束`
+          : `自然站立 · ${formatSeconds(timedElapsed)} / ${formatSeconds(timedTotal)}`
+        : ["prepare", "active", "lower", "wait"].includes(repeatPhase)
+        ? `第${currentSlide.repeat_index || 1}次`
+        : repetitionsDone
+        ? "三次动作已完成"
+        : active ? `${label}进行中` : ended ? `${label}已完成` : `${label}待开始`;
+      if (!hidden && currentSlide) {
+        renderRepeatProgress(
+          currentSlide.repeat_index,
+          currentSlide.repeat_total,
+          repeatPhase,
+          "subjectRepeatProgress",
+          currentSlide.repeat_elapsed_ms,
+          currentSlide.repeat_duration_ms
+        );
+      }
+      const showSequence = active && currentSlide?.repeat_total > 1 && ["prepare", "active", "lower", "wait"].includes(repeatPhase);
+      const showTimer = active && timedTotal > 0;
+      $("subjectMarkDock").classList.toggle("sequence-mode", showSequence);
+      $("subjectMarkDock").classList.toggle("timed-mode", showTimer);
+      $("subjectGestureStatus").classList.toggle("hidden", showTimer);
+      renderMotionSequence(
+        "subjectMotionSequence",
+        "",
+        ""
+      );
+      const timerSequence = $("baselineTimerSequence");
+      timerSequence.classList.toggle("hidden", !showTimer);
+      if (showTimer) {
+        const timerComplete = timedElapsed >= timedTotal;
+        $("baselineTimerStart").classList.toggle("done", timedElapsed > 0);
+        $("baselineTimerStart").classList.toggle("current", timedElapsed === 0);
+        $("baselineTimerActive").classList.toggle("done", timerComplete);
+        $("baselineTimerActive").classList.toggle("current", !timerComplete && timedElapsed > 0);
+        $("baselineTimerEnd").classList.toggle("current", timerComplete);
+        $("baselineTimerText").textContent = `计时 ${formatSeconds(timedElapsed)} / ${formatSeconds(timedTotal)}`;
+        $("baselineTimerFill").style.width = `${Math.min(100, (timedElapsed / timedTotal) * 100)}%`;
+      }
+    }
+
+    function sendGestureMark(action) {
+      if (action === "start") setGestureMarkState("active");
+      if (action === "end") setGestureMarkState("ended");
+      if (action === "reset") setGestureMarkState("idle");
+      const message = {
+        type: "gesture_mark_action",
+        action,
+        page_index: currentSlide?.page_index || "",
+        deck_id: currentSlide?.deck_id || "",
+        sent_at: new Date().toISOString(),
+      };
+      if (channel) channel.postMessage(message);
+      localStorage.setItem("gesture_lab_subject_action", JSON.stringify(message));
+    }
+
+    function resolveMediaPath(path) {
+      if (!path) return "";
+      if (/^https?:\/\//i.test(path) || path.startsWith("/materials/")) return cacheBust(path);
+      return `/api/material?path=${encodeURIComponent(path)}`;
+    }
+
+    function updateOverlayLayerBounds() {
+      const stageRect = stage.getBoundingClientRect();
+      const imageRect = image.getBoundingClientRect();
+      if (!imageRect.width || !imageRect.height) return;
+      layer.style.left = `${imageRect.left - stageRect.left}px`;
+      layer.style.top = `${imageRect.top - stageRect.top}px`;
+      layer.style.width = `${imageRect.width}px`;
+      layer.style.height = `${imageRect.height}px`;
+    }
+
+    function renderOverlays() {
+      layer.innerHTML = "";
+      updateOverlayLayerBounds();
+      if (currentSlide?.cue) return;
+      const title = String(currentSlide?.title || "");
+      if (title.includes("评价") || title.includes("问卷")) return;
+      (currentSlide?.overlays || []).forEach((item) => {
+        const el = document.createElement(String(item.path || "").match(/\.(mp4|m4v|mov|webm)$/i) ? "video" : "img");
+        el.className = "motion-overlay";
+        el.src = resolveMediaPath(item.path);
+        el.style.left = `${item.x}%`;
+        el.style.top = `${item.y}%`;
+        el.style.width = `${item.w}%`;
+        el.style.height = `${item.h}%`;
+        if (el.tagName === "VIDEO") {
+          el.autoplay = true;
+          el.loop = true;
+          el.muted = true;
+          el.playsInline = true;
+        }
+        layer.appendChild(el);
+      });
+    }
+
+    function renderSlide(message) {
+      stopAutoScroll();
+      $("documentReader").classList.add("hidden");
+      $("calibrationScreen").classList.add("hidden");
+      stage.classList.remove("hidden");
+      currentSlide = message;
+      $("subjectMarkDock").classList.toggle("hidden", !message.has_gesture);
+      if (!message.has_gesture) setGestureMarkState("hidden");
+      else setGestureMarkState("idle");
+      renderRepeatProgress(message.repeat_index, message.repeat_total);
+      imageToken += 1;
+      image.dataset.token = String(imageToken);
+      stage.dataset.empty = "演示页加载中...";
+      stage.classList.add("empty");
+      image.alt = message.title || "被试演示页";
+      image.src = `${message.image}?subject=${Date.now()}`;
+      cuePill.textContent = message.cue ? "本页需要填写问卷，请等待主试提示" : "";
+      cuePill.classList.toggle("visible", Boolean(message.cue));
+    }
+
+    function stopAutoScroll() {
+      if (scrollFrame) cancelAnimationFrame(scrollFrame);
+      scrollFrame = 0;
+    }
+
+    function startAutoScroll(seconds) {
+      const reader = $("documentReader");
+      const maxScroll = Math.max(0, reader.scrollHeight - reader.clientHeight);
+      if (!maxScroll) {
+        $("readingIndicator").textContent = "请阅读知情同意书";
+        return;
+      }
+      const duration = Math.max(8, seconds) * 1000;
+      const start = Date.now();
+      function tick() {
+        const progress = Math.min(1, (Date.now() - start) / duration);
+        reader.scrollTop = maxScroll * progress;
+        $("readingIndicator").textContent = progress < 1 ? "自动阅读中" : "阅读到底部";
+        if (progress < 1) scrollFrame = requestAnimationFrame(tick);
+      }
+      stopAutoScroll();
+      scrollFrame = requestAnimationFrame(tick);
+    }
+
+    function renderDocument(message) {
+      stopAutoScroll();
+      stage.classList.add("hidden");
+      $("calibrationScreen").classList.add("hidden");
+      $("subjectMarkDock").classList.add("hidden");
+      $("documentReader").classList.remove("hidden");
+      $("documentReader").scrollTop = 0;
+      const title = message.title || "知情同意书";
+      const pages = message.pages || [];
+      $("documentInner").innerHTML = `
+        <h1 class="document-title">${title}</h1>
+        ${pages.map(page => `<img class="document-page" src="${page.image}" alt="${page.title || title}">`).join("")}
+      `;
+      $("readingIndicator").textContent = message.auto_scroll === false ? "请按主试提示阅读" : "准备自动阅读";
+      const seconds = Math.max(10, Number(message.auto_scroll_seconds_per_page || 22) * Math.max(1, pages.length));
+      const images = Array.from(document.querySelectorAll(".document-page"));
+      let loaded = 0;
+      const maybeStart = () => {
+        loaded += 1;
+        if (loaded >= images.length && message.auto_scroll !== false) startAutoScroll(seconds);
+      };
+      if (!images.length && message.auto_scroll !== false) startAutoScroll(seconds);
+      images.forEach((img) => {
+        if (img.complete) maybeStart();
+        else {
+          img.addEventListener("load", maybeStart, { once: true });
+          img.addEventListener("error", maybeStart, { once: true });
+        }
+      });
+    }
+
+    function renderCalibration(message) {
+      stopAutoScroll();
+      currentSlide = null;
+      setGestureMarkState("hidden");
+      stage.classList.add("hidden");
+      $("documentReader").classList.add("hidden");
+      $("questionnaireDialog").open && $("questionnaireDialog").close();
+      const screen = $("calibrationScreen");
+      const countdown = $("calibrationSubjectCountdown");
+      const clapSequence = $("calibrationMotionSequence");
+      const clapProgress = $("calibrationRepeatProgress");
+      screen.classList.remove("hidden");
+      $("calibrationSubjectStage").textContent = `${message.stage_label || "当前阶段"} · ${message.position_label || "开始前"}同步`;
+      countdown.classList.add("hidden");
+      countdown.textContent = "";
+      clapSequence.classList.add("hidden");
+      clapProgress.classList.add("hidden");
+      const clapLabels = ["第一次拍手", "第二次拍手", "第三次拍手"];
+      const currentClapLabel = clapLabels[Math.max(0, Math.min(2, Number(message.clap_progress || 1) - 1))];
+      const content = {
+        waiting: [message.position === "end" ? "等待结束同步" : "等待开始记录", message.message || "请保持自然姿势，等待主试操作"],
+        flash_ready: ["请保持不动", "主试正在准备闪光，请面向前方"],
+        flash_recorded: ["闪光标记已完成", "请继续保持姿势，接下来进行拍手同步"],
+        clap_countdown: ["准备拍手", "倒计时结束后，请跟随屏幕完成三次拍手"],
+        clap_prepare: [currentClapLabel, ""],
+        clap_now: [currentClapLabel, ""],
+        clap_lower: [currentClapLabel, ""],
+        clap_wait: [currentClapLabel, ""],
+        complete: ["同步校准完成", message.position === "end" ? "请等待主试结束本段记录" : "请等待主试进入正式任务"],
+      }[message.phase] || ["同步校准", message.message || "请按主试提示操作"];
+      $("calibrationSubjectTitle").textContent = content[0];
+      $("calibrationSubjectMessage").textContent = content[1];
+      $("calibrationSubjectMessage").classList.toggle("hidden", !content[1]);
+      if (message.phase === "clap_countdown") {
+        countdown.textContent = String(message.countdown || "");
+        countdown.classList.remove("hidden");
+      }
+      if (["clap_prepare", "clap_now", "clap_lower", "clap_wait"].includes(message.phase) && message.clap_progress) {
+        const phase = message.phase === "clap_prepare"
+          ? "prepare"
+          : message.phase === "clap_now"
+          ? "active"
+          : message.phase === "clap_lower"
+          ? "lower"
+          : "wait";
+        renderRepeatProgress(
+          message.clap_progress,
+          3,
+          phase,
+          "calibrationRepeatProgress",
+          message.repeat_elapsed_ms,
+          message.repeat_duration_ms
+        );
+      }
+      const ack = { type: "calibration_ack", stage_key: message.stage_key || "", phase: message.phase, sent_at: new Date().toISOString() };
+      if (channel) channel.postMessage(ack);
+      localStorage.setItem("gesture_lab_subject_ack", JSON.stringify(ack));
+    }
+
+    function openQuestionnaire(message) {
+      const previews = Array.isArray(message.preview_images) ? message.preview_images.filter(Boolean) : [];
+      if (questionnairePreviewTimer) clearInterval(questionnairePreviewTimer);
+      questionnairePreviewTimer = 0;
+      questionnairePreviewImages = previews;
+      questionnairePreviewIndex = 0;
+      $("questionnaireDialog").open && $("questionnaireDialog").close();
+      $("questionnaireSideTitle").textContent = message.title || "问卷预览";
+      $("questionnaireSideMeta").textContent = message.meta || "请观看主试填写，无需操作。";
+      const pages = $("questionnaireSidePages");
+      pages.innerHTML = "";
+      pages.classList.toggle("single", previews.length <= 1);
+      previews.forEach((src, index) => {
+        const preview = document.createElement("img");
+        preview.src = src;
+        preview.alt = `${message.title || "问卷"}第 ${index + 1} 页`;
+        pages.appendChild(preview);
+      });
+      $("questionnaireSidePage").textContent = previews.length ? `共 ${previews.length} 页` : "-";
+      $("questionnaireSidePage").classList.toggle("hidden", previews.length <= 1);
+      $("questionnaireSidePanel").classList.remove("hidden");
+      const fullQuestionnaire = message.questionnaire === "task_evaluation" && previews.length > 1;
+      document.body.classList.toggle("questionnaire-full-open", fullQuestionnaire);
+      document.body.classList.toggle("questionnaire-side-open", !fullQuestionnaire);
+    }
+
+    function closeQuestionnaire() {
+      if (questionnairePreviewTimer) clearInterval(questionnairePreviewTimer);
+      questionnairePreviewTimer = 0;
+      questionnairePreviewImages = [];
+      questionnairePreviewIndex = 0;
+      $("questionnaireSidePages").innerHTML = "";
+      $("questionnaireSidePanel").classList.add("hidden");
+      document.body.classList.remove("questionnaire-full-open");
+      document.body.classList.remove("questionnaire-side-open");
+      $("questionnaireFrame").src = "about:blank";
+      $("questionnairePreview").innerHTML = "";
+      $("questionnairePreview").classList.add("hidden");
+      $("questionnaireMirror").srcObject = null;
+      $("questionnaireMirror").classList.add("hidden");
+      $("questionnaireDialog").close();
+    }
+
+    window.showQuestionnaireMirrorStream = (stream, details = {}) => {
+      $("questionnaireTitle").textContent = details.title || "问卷填写";
+      $("questionnaireMeta").textContent = details.meta || "正在同步主试端问卷操作";
+      $("questionnaireFrame").classList.add("hidden");
+      const mirror = $("questionnaireMirror");
+      mirror.srcObject = stream;
+      mirror.classList.remove("hidden");
+      if (!$("questionnaireDialog").open) $("questionnaireDialog").showModal();
+      mirror.play().catch(() => {});
+    };
+
+    function handleMessage(message) {
+      if (!message || !message.type) return;
+      if (message.type === "slide") renderSlide(message);
+      if (message.type === "document") renderDocument(message);
+      if (message.type === "calibration") renderCalibration(message);
+      if (message.type === "questionnaire") openQuestionnaire(message);
+      if (message.type === "questionnaire_close") closeQuestionnaire();
+      if (message.type === "gesture_mark_state") {
+        const calibrationVisible = !$("calibrationScreen").classList.contains("hidden");
+        if (!currentSlide || calibrationVisible) {
+          setGestureMarkState("hidden");
+          return;
+        }
+        if (currentSlide) {
+          if (message.repeat_total) {
+            currentSlide.repeat_index = message.repeat_index;
+            currentSlide.repeat_total = message.repeat_total;
+            currentSlide.repeat_phase = message.repeat_phase || "";
+            currentSlide.repeat_elapsed_ms = Number(message.repeat_elapsed_ms || 0);
+            currentSlide.repeat_duration_ms = Number(message.repeat_duration_ms || 0);
+          }
+          currentSlide.timed_total = Number(message.timed_total || 0);
+          currentSlide.timed_elapsed = Number(message.timed_elapsed || 0);
+        }
+        setGestureMarkState(message.state);
+      }
+    }
+
+    image.addEventListener("load", (event) => {
+      if (event.currentTarget.dataset.token !== String(imageToken)) return;
+      stage.classList.remove("empty");
+      renderOverlays();
+    });
+
+    image.addEventListener("error", (event) => {
+      if (event.currentTarget.dataset.token !== String(imageToken)) return;
+      stage.dataset.empty = "演示页加载失败，请主试端重新加载";
+      stage.classList.add("empty");
+    });
+
+    const refreshOverlayBounds = () => requestAnimationFrame(updateOverlayLayerBounds);
+    window.addEventListener("resize", refreshOverlayBounds);
+    window.visualViewport?.addEventListener("resize", refreshOverlayBounds);
+    document.addEventListener("fullscreenchange", refreshOverlayBounds);
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(refreshOverlayBounds).observe(stage);
+    }
+    window.addEventListener("storage", (event) => {
+      if (event.key === "gesture_lab_subject_last" && event.newValue) {
+        try { handleMessage(JSON.parse(event.newValue)); } catch (err) {}
+      }
+    });
+
+    if (channel) {
+      channel.onmessage = (event) => handleMessage(event.data);
+      channel.postMessage({ type: "display_ready" });
+    }
+    setInterval(() => {
+      const heartbeat = { type: "display_heartbeat", sent_at: new Date().toISOString() };
+      if (channel) channel.postMessage(heartbeat);
+      localStorage.setItem("gesture_lab_subject_heartbeat", JSON.stringify(heartbeat));
+    }, 2000);
+
+    try {
+      const savedSlide = localStorage.getItem("gesture_lab_subject_slide");
+      if (savedSlide) handleMessage(JSON.parse(savedSlide));
+      const savedDocument = localStorage.getItem("gesture_lab_subject_document");
+      if (savedDocument) handleMessage(JSON.parse(savedDocument));
+      const savedLast = localStorage.getItem("gesture_lab_subject_last");
+      if (savedLast) handleMessage(JSON.parse(savedLast));
+      localStorage.removeItem("gesture_lab_subject_questionnaire");
+    } catch (err) {}
+  </script>
+</body>
+</html>

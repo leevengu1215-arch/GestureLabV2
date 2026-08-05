@@ -1,0 +1,23 @@
+{
+  "id": "bridge",
+  "name": "场景手势任务 Bridge",
+  "source_keynote": "/Users/leevengu/Desktop/小米手势交互/场景库/场景手势任务bridge.key",
+  "source_gif_dir": "/Users/leevengu/Desktop/小米手势交互/场景库/手势视频草稿_gif_400x300_右侧加宽版",
+  "logical_size": {
+    "width": 1920.0,
+    "height": 1080.0
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "场景手势任务",
+      "text": "场景手势任务\\n接下来我们进入到了场景手势任务\\n我们会模拟某些使用手势控制的场景\\n请你按照要求做出手势",
+      "image": "/materials/bridge_pages/page-1.png"
+    }
+  ],
+  "overlays": [],
+  "cue_points": [],
+  "generation_warnings": {
+    "missing_media": []
+  }
+}

@@ -1,0 +1,423 @@
+{
+  "id": "scene2_1",
+  "name": "场景2 桌面计算场景（2-1 + 2-2）",
+  "source_keynote": "/Users/leevengu/Desktop/小米手势交互/场景库/场景2.key",
+  "source_gif_dir": "/Users/leevengu/Desktop/小米手势交互/场景库/手势视频草稿_gif_400x300_右侧加宽版",
+  "logical_size": {
+    "width": 1920.0,
+    "height": 1080.0
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "桌面计算场景",
+      "text": "桌面计算场景\\n场景2-1\\n \\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-01.png"
+    },
+    {
+      "index": 2,
+      "title": "场景任务-场景2-1",
+      "text": "场景任务-场景2-1\\n腕表遥控手机拍照\\n情境说明：咖啡店/迪士尼乐园/健身房\\n请想象你在和好友拍全身合影，将手机上的相机打开放到前方，摆好pose遥控腕表进行拍摄\\n\\n远距离遥控\\n请进行手势价值评价-问卷",
+      "image": "/materials/scene2_1_pages/page-02.png"
+    },
+    {
+      "index": 3,
+      "title": "手势方案 A",
+      "text": "手势方案 A\\n2-1-A\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-03.png"
+    },
+    {
+      "index": 4,
+      "title": "任务目标：",
+      "text": "任务目标：\\n遥控拍摄一张照片\\n手势方案A：\\n捏两下\\n请连做3下\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-04.png"
+    },
+    {
+      "index": 5,
+      "title": "任务目标：",
+      "text": "任务目标：\\n改为录像功能\\n手势方案A：\\n搓两下\\n请连做3下\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-05.png"
+    },
+    {
+      "index": 6,
+      "title": "手势方案 A 方案评价",
+      "text": "手势方案 A 方案评价\\n2-1-A\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-06.png"
+    },
+    {
+      "index": 7,
+      "title": "手势方案 B",
+      "text": "手势方案 B\\n2-1-B\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-07.png"
+    },
+    {
+      "index": 8,
+      "title": "任务目标：",
+      "text": "任务目标：\\n遥控拍摄一张照片\\n手势方案B：\\n招两下\\n请连做3下\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-08.png"
+    },
+    {
+      "index": 9,
+      "title": "任务目标：",
+      "text": "任务目标：\\n改为录像功能\\n手势方案B：\\n甩两下\\n请连做3下\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-09.png"
+    },
+    {
+      "index": 10,
+      "title": "手势方案 B 方案评价",
+      "text": "手势方案 B 方案评价\\n2-1-A\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-10.png"
+    },
+    {
+      "index": 11,
+      "title": "手势方案 C",
+      "text": "手势方案 C\\n2-1-B\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-11.png"
+    },
+    {
+      "index": 12,
+      "title": "任务目标：",
+      "text": "任务目标：\\n遥控拍摄一张照片\\n手势方案C：\\n握拳两下\\n请连做3下\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-12.png"
+    },
+    {
+      "index": 13,
+      "title": "任务目标：",
+      "text": "任务目标：\\n改为录像功能\\n手势方案C：\\n翻腕两下\\n请连做3下\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-13.png"
+    },
+    {
+      "index": 14,
+      "title": "手势方案 C 方案评价",
+      "text": "手势方案 C 方案评价\\n2-1-A\\n场景任务-场景2-1\\n腕表遥控手机拍照",
+      "image": "/materials/scene2_1_pages/page-14.png"
+    },
+    {
+      "index": 15,
+      "title": "场景任务-场景2-1",
+      "text": "场景任务-场景2-1\\nABC 方案评价\\n2-1\\n只能测小于五分钟的数据\\n同步时长，要看同步是否完成\\n每个手势3遍\\n手势方案A：\\n\\n捏两下（拍照）\\n搓两下（转为录像）\\n手势方案 B：\\n\\n招两下（拍照）\\n甩两下（转为录像）\\n手势方案 C：\\n\\n握拳两下（拍照） \\n翻腕两下（转为录像）",
+      "image": "/materials/scene2_1_pages/page-15.png"
+    },
+    {
+      "index": 16,
+      "title": "低打扰场景下的跨设备免触控制",
+      "text": "低打扰场景下的跨设备免触控制\\n场景2-2\\n \\n用腕表遥控ai眼镜拍照",
+      "image": "/materials/scene2_1_pages/page-16.png"
+    },
+    {
+      "index": 17,
+      "title": "场景任务-场景2-2",
+      "text": "场景任务-场景2-2\\n用腕表遥控ai眼镜拍照\\n情境说明：美术馆参观 / 佩戴ai眼镜\\n请想象你戴着ai眼镜在浦东美术馆参观，想要记录一些展品。\\n你需要通过腕表手势完成拍照、开始录像、停止录像等任务。\\n边走边看展品、不便掏出手机、免触操作眼镜\\n请进行手势价值评价-问卷",
+      "image": "/materials/scene2_1_pages/page-17.png"
+    },
+    {
+      "index": 18,
+      "title": "场景任务-场景2-2-A",
+      "text": "场景任务-场景2-2-A\\n用腕表遥控ai眼镜拍照\\n手势方案 A\\n2-2-A",
+      "image": "/materials/scene2_1_pages/page-18.png"
+    },
+    {
+      "index": 19,
+      "title": "场景任务-场景2-2-01-A",
+      "text": "场景任务-场景2-2-01-A\\n用腕表遥控ai眼镜拍照\\n任务目标：\\n控制眼镜拍一张照片\\n手势方案A：\\n捏两下\\n请连做3下",
+      "image": "/materials/scene2_1_pages/page-19.png"
+    },
+    {
+      "index": 20,
+      "title": "场景任务-场景2-2-01-A",
+      "text": "场景任务-场景2-2-01-A\\n用腕表遥控ai眼镜拍照\\n任务目标：\\n控制眼镜开始录像\\n手势方案A：\\n捏两下\\n请连做3下",
+      "image": "/materials/scene2_1_pages/page-20.png"
+    },
+    {
+      "index": 21,
+      "title": "场景任务-场景2-2-01-A",
+      "text": "场景任务-场景2-2-01-A\\n用腕表遥控ai眼镜拍照\\n任务目标：\\n停止录像\\n手势方案A：\\n捏两下\\n请连做3下\\n00:00:10",
+      "image": "/materials/scene2_1_pages/page-21.png"
+    },
+    {
+      "index": 22,
+      "title": "场景任务-场景2-2-A",
+      "text": "场景任务-场景2-2-A\\n用腕表遥控ai眼镜拍照\\n手势方案 A 手势评价\\n2-2-A",
+      "image": "/materials/scene2_1_pages/page-22.png"
+    },
+    {
+      "index": 23,
+      "title": "场景任务-场景2-2-B",
+      "text": "场景任务-场景2-2-B\\n用腕表遥控ai眼镜拍照\\n手势方案 B\\n2-2-B",
+      "image": "/materials/scene2_1_pages/page-23.png"
+    },
+    {
+      "index": 24,
+      "title": "场景任务-场景2-2-01-B",
+      "text": "场景任务-场景2-2-01-B\\n用腕表遥控ai眼镜拍照\\n手势方案B：\\n招两下\\n请连做3下\\n任务目标：\\n控制眼镜拍一张照片",
+      "image": "/materials/scene2_1_pages/page-24.png"
+    },
+    {
+      "index": 25,
+      "title": "场景任务-场景2-2-01-B",
+      "text": "场景任务-场景2-2-01-B\\n用腕表遥控ai眼镜拍照\\n手势方案B：\\n招两下\\n请连做3下\\n任务目标：\\n控制眼镜开始录像",
+      "image": "/materials/scene2_1_pages/page-25.png"
+    },
+    {
+      "index": 26,
+      "title": "场景任务-场景2-2-01-B",
+      "text": "场景任务-场景2-2-01-B\\n用腕表遥控ai眼镜拍照\\n任务目标：\\n控制眼镜停止录像\\n手势方案B：\\n招两下\\n请连做3下\\n00:00:10",
+      "image": "/materials/scene2_1_pages/page-26.png"
+    },
+    {
+      "index": 27,
+      "title": "场景任务-场景2-2-B",
+      "text": "场景任务-场景2-2-B\\n用腕表遥控ai眼镜拍照\\n手势方案 B 手势评价\\n2-2-B",
+      "image": "/materials/scene2_1_pages/page-27.png"
+    },
+    {
+      "index": 28,
+      "title": "场景任务-场景2-2-C",
+      "text": "场景任务-场景2-2-C\\n用腕表遥控ai眼镜拍照\\n手势方案 C\\n2-2-C",
+      "image": "/materials/scene2_1_pages/page-28.png"
+    },
+    {
+      "index": 29,
+      "title": "场景任务-场景2-2-01-C",
+      "text": "场景任务-场景2-2-01-C\\n用腕表遥控ai眼镜拍照\\n手势方案C：\\n握拳两下\\n请连做3下\\n任务目标：\\n控制眼镜拍一张照片",
+      "image": "/materials/scene2_1_pages/page-29.png"
+    },
+    {
+      "index": 30,
+      "title": "场景任务-场景2-2-01-C",
+      "text": "场景任务-场景2-2-01-C\\n用腕表遥控ai眼镜拍照\\n手势方案C：\\n握拳两下\\n请连做3下\\n任务目标：\\n控制眼镜开始录像",
+      "image": "/materials/scene2_1_pages/page-30.png"
+    },
+    {
+      "index": 31,
+      "title": "场景任务-场景2-2-01-C",
+      "text": "场景任务-场景2-2-01-C\\n用腕表遥控ai眼镜拍照\\n手势方案C：\\n翻腕两下\\n请连做3下\\n任务目标：\\n控制眼镜停止录像\\n00:00:10",
+      "image": "/materials/scene2_1_pages/page-31.png"
+    },
+    {
+      "index": 32,
+      "title": "场景任务-场景2-2-C",
+      "text": "场景任务-场景2-2-C\\n用腕表遥控ai眼镜拍照\\n手势方案 C 手势评价\\n2-2-C",
+      "image": "/materials/scene2_1_pages/page-32.png"
+    },
+    {
+      "index": 33,
+      "title": "场景任务-场景2-2",
+      "text": "场景任务-场景2-2\\nABC 方案评价\\n2-2\\n只能测小于五分钟的数据\\n同步时长，要看同步是否完成\\n每个手势3遍\\n手势方案A：\\n\\n捏两下（控眼镜拍照）\\n搓两下（控眼镜停止录像）\\n手势方案 B：\\n\\n招两下（控眼镜拍照）\\n甩两下（控眼镜停止录像）\\n手势方案 C：\\n\\n握拳两下（控眼镜拍照） \\n翻腕两下（控眼镜停止录像）",
+      "image": "/materials/scene2_1_pages/page-33.png"
+    }
+  ],
+  "overlays": [
+    {
+      "page": 4,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/gif_ascii/asset_e108f2d2b2eba1ab.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 8,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 9,
+      "path": "/materials/generated/gif_ascii/asset_70da66d58abac21f.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 12,
+      "path": "/materials/generated/gif_ascii/asset_37fa87e50fe0bd58.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/gif_ascii/asset_e75ba925acec9c0e.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 19,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 20,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 21,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 24,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 25,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 26,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.146,
+      "y": 51.204,
+      "w": 27.083,
+      "h": 36.111
+    },
+    {
+      "page": 29,
+      "path": "/materials/generated/gif_ascii/asset_37fa87e50fe0bd58.gif",
+      "x": 56.302,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926
+    },
+    {
+      "page": 30,
+      "path": "/materials/generated/gif_ascii/asset_37fa87e50fe0bd58.gif",
+      "x": 56.302,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926
+    },
+    {
+      "page": 31,
+      "path": "/materials/generated/gif_ascii/asset_e75ba925acec9c0e.gif",
+      "x": 56.302,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926
+    }
+  ],
+  "cue_points": [
+    {
+      "id": "task_value_2",
+      "type": "questionnaire",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "page": 2,
+      "title": "任务组价值评价问卷"
+    },
+    {
+      "id": "task_eval_A_6",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "page": 6,
+      "title": "方案A后任务评价问卷"
+    },
+    {
+      "id": "task_eval_B_10",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "page": 10,
+      "title": "方案B后任务评价问卷"
+    },
+    {
+      "id": "task_eval_C_14",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "page": 14,
+      "title": "方案C后任务评价问卷"
+    },
+    {
+      "id": "overall_15",
+      "type": "questionnaire",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "page": 15,
+      "title": "场景总体评价问卷"
+    },
+    {
+      "id": "task_value_17",
+      "type": "questionnaire",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "page": 17,
+      "title": "任务组价值评价问卷"
+    },
+    {
+      "id": "task_eval_A_22",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "page": 22,
+      "title": "方案A后任务评价问卷"
+    },
+    {
+      "id": "task_eval_B_27",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "page": 27,
+      "title": "方案B后任务评价问卷"
+    },
+    {
+      "id": "task_eval_C_32",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "page": 32,
+      "title": "方案C后任务评价问卷"
+    },
+    {
+      "id": "overall_33",
+      "type": "questionnaire",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "page": 33,
+      "title": "场景总体评价问卷"
+    }
+  ],
+  "generation_warnings": {
+    "missing_media": []
+  }
+}

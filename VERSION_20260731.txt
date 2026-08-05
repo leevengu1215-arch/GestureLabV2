@@ -1,0 +1,15 @@
+Gesture Lab V2 - PC Full Package
+Build date: 2026-07-31
+
+Included fixes and features:
+- HDF5 export using xgr.capture/1.0.
+- PC camera preview and sidebar overflow fixes.
+- Scene 2 sequence: Bridge + 2-1 + 2-2.
+- Updated Scene 2 fist-twice GIF.
+- Test-only sync skip button.
+
+Start:
+Double-click START_GESTURE_LAB.bat.
+
+The first run checks and installs numpy and h5py. Internet access may be
+required for this one-time dependency installation.

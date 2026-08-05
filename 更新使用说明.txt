@@ -1,0 +1,19 @@
+Gesture Lab V2 更新方法
+
+1. 先结束记录并关闭 Gesture Lab 的黑色命令窗口。
+2. 将收到的 GestureLab_Update_版本号.zip 放到本工具包目录中。
+3. 双击“更新程序.bat”。
+4. 更新完成后，控制台会自动重新启动。
+
+也可以把 GestureLab_Update_版本号.zip 直接拖到“更新程序.bat”上。
+
+数据保护：
+- sessions 文件夹中的被试数据不会被更新程序覆盖。
+- 被替换的旧程序文件会自动备份到 backups 文件夹。
+- 已成功安装的更新包会移动到 backups\applied_updates。
+- 更新失败时会自动恢复旧程序文件。
+
+注意：
+- 不要把普通完整安装包改名为 GestureLab_Update_*.zip。
+- 更新包必须由 Gesture Lab 项目生成，并包含 update_manifest.json。
+- 如果提示控制台仍在运行，请先关闭原来的黑色命令窗口，再运行更新。

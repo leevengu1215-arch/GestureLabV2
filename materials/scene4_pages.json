@@ -1,0 +1,863 @@
+{
+  "id": "scene4",
+  "name": "场景4 车场景",
+  "source_pptx": [
+    "/Users/leevengu/Desktop/小米手势交互/场景库/场景4-1 框架+图(改）.pptx",
+    "/Users/leevengu/Desktop/小米手势交互/场景库/场景4-2 框架+图（改）.pptx"
+  ],
+  "logical_size": {
+    "width": 12192000,
+    "height": 6858000
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "低打扰场景下的",
+      "text": "低打扰场景下的\n车辆\n免触控制\n场景\n4-1\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-01.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 2,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n4\n-\n1\n车外场景\n车辆免触控制\n情境说明\n：\n停车场\n/\n路边停车\n/\n取车用车\n请想象你正站在车辆附近，希望在进入车辆前快速完成车辆操作。你需要通过免触手势完成自动泊出、打开或关闭车门、车辆落锁、闪灯鸣笛寻车以及开启或关闭前后备箱等任务。\n人在车外、远程控制车辆、无需进入车内\n请进行手势价值评价-问卷",
+      "image": "/materials/scene4_pages/page-02.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 3,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n4-1\n-A\n场景任务-场景\n4-1-A\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-03.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 4,
+      "title": "车外场景车辆免触控制",
+      "text": "车外场景车辆免触控制\n任务目标\n：\n自动泊出\n手势方案A\n：\n手指向内招两下\n请连做3下\n场景任务-场景\n4\n-\n1-01-A",
+      "image": "/materials/scene4_pages/page-04.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 5,
+      "title": "任务目标",
+      "text": "任务目标\n：\n车外开车门\n手势方案A\n：\n捏两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-02-A",
+      "image": "/materials/scene4_pages/page-05.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 6,
+      "title": "任务目标",
+      "text": "任务目标\n：\n车外关车门\n/\n落锁\n/\n闪灯鸣笛寻车\n手势方案A\n：\n捏两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-03-A",
+      "image": "/materials/scene4_pages/page-06.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 7,
+      "title": "任务目标",
+      "text": "任务目标\n：\n开后备箱\n手势方案A\n：\n敲两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-04-A",
+      "image": "/materials/scene4_pages/page-07.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 8,
+      "title": "任务目标",
+      "text": "任务目标\n：\n关后备箱\n手势方案A\n：\n手指向下招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-05-A",
+      "image": "/materials/scene4_pages/page-08.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 9,
+      "title": "任务目标",
+      "text": "任务目标\n：\n开前备箱\n手势方案A\n：\n敲两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-06-A",
+      "image": "/materials/scene4_pages/page-09.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 10,
+      "title": "任务目标",
+      "text": "任务目标\n：\n关前备箱\n手势方案A\n：\n手指向下招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-07-A",
+      "image": "/materials/scene4_pages/page-10.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 11,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n手势评价\n4-1\n-A\n场景任务-场景\n4-1-A\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-11.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 12,
+      "title": "手势方案 B",
+      "text": "手势方案 B\n4-1\n-\nB\n场景任务-场景\n4-1-B\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-12.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 13,
+      "title": "车外场景车辆免触控制",
+      "text": "车外场景车辆免触控制\n任务目标\n：\n自动泊出\n手势方案\nB\n：\n手腕向内招两下\n请连做3下\n场景任务-场景\n4\n-\n1-01-B",
+      "image": "/materials/scene4_pages/page-13.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 14,
+      "title": "任务目标",
+      "text": "任务目标\n：\n车外开车门\n手势方案\nB\n：\n手腕向内招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-02-B",
+      "image": "/materials/scene4_pages/page-14.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 15,
+      "title": "任务目标",
+      "text": "任务目标\n：\n车外关车门\n/\n落锁\n/\n闪灯鸣笛寻车\n手势方案\nB\n：\n手腕向外挥两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-03-B",
+      "image": "/materials/scene4_pages/page-15.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 16,
+      "title": "任务目标",
+      "text": "任务目标\n：\n开后备箱\n手势方案\nB\n：\n手腕向上挥两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-04-B",
+      "image": "/materials/scene4_pages/page-16.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 17,
+      "title": "任务目标",
+      "text": "任务目标\n：\n关后备箱\n手势方案\nB\n：\n手腕向下招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-05-B",
+      "image": "/materials/scene4_pages/page-17.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 18,
+      "title": "任务目标",
+      "text": "任务目标\n：\n开前备箱\n手势方案\nB\n：\n手腕向上挥两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-06-B",
+      "image": "/materials/scene4_pages/page-18.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 19,
+      "title": "任务目标",
+      "text": "任务目标\n：\n关前备箱\n手势方案\nB\n：\n手腕向下招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-07-B",
+      "image": "/materials/scene4_pages/page-19.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 20,
+      "title": "手势方案 B",
+      "text": "手势方案 B\n手势评价\n4-1\n-\nB\n场景任务-场景\n4-1-B\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-20.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 21,
+      "title": "手势方案 C",
+      "text": "手势方案 C\n4-1\n-\nC\n场景任务-场景\n4-1-C\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-21.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 22,
+      "title": "车外场景车辆免触控制",
+      "text": "车外场景车辆免触控制\n任务目标\n：\n自动泊出\n手势方案\nC\n：\n手臂带手腕向内招两下\n请连做3下\n场景任务-场景\n4\n-\n1-01-C",
+      "image": "/materials/scene4_pages/page-22.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 23,
+      "title": "任务目标",
+      "text": "任务目标\n：\n车外开车门\n手势方案\nC\n：\n手臂带手腕向内招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-02-C",
+      "image": "/materials/scene4_pages/page-23.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 24,
+      "title": "任务目标",
+      "text": "任务目标\n：\n开后备箱\n手势方案\nC\n：\n手臂带手腕向上挥两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-04-C",
+      "image": "/materials/scene4_pages/page-24.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 25,
+      "title": "任务目标",
+      "text": "任务目标\n：\n关后备箱\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-05-C\n手势方案\nC\n：\n手臂带手腕向下招两下",
+      "image": "/materials/scene4_pages/page-25.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 26,
+      "title": "任务目标",
+      "text": "任务目标\n：\n开前备箱\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-06-C\n手势方案\nC\n：\n手臂带手腕向上挥两下",
+      "image": "/materials/scene4_pages/page-26.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 27,
+      "title": "任务目标",
+      "text": "任务目标\n：\n关前备箱\n手势方案\nC\n：\n手臂带手腕向下招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-07-C",
+      "image": "/materials/scene4_pages/page-27.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 28,
+      "title": "手势方案 C",
+      "text": "手势方案 C\n手势评价\n4-1\n-\nC\n场景任务-场景\n4-1-C\n车外场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-28.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 29,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n4-1\nABC 方案评价\n4\n-1\n只能测小于五分钟的数据\n同步时长，要看同步是否完成\n每个手势3遍\n手势方案A\n：\n手指向内招两下\n（自动泊出）\n敲两下\n（\n开后备箱\n）\n手势方案\nB：\n手腕向内招两下\n（\n自动泊出\n）\n手腕向上挥两下\n（\n开后备箱\n）\n手势方案\nC：\n手臂带手腕向内招两下\n（\n自动泊出\n）\n手臂带手腕向上挥两下\n（\n开后备箱\n）",
+      "image": "/materials/scene4_pages/page-29.png",
+      "segment_id": "4-1",
+      "has_gesture": false
+    },
+    {
+      "index": 30,
+      "title": "低打扰场景下的",
+      "text": "低打扰场景下的\n车辆\n免触控制\n场景\n4-2\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-30.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 31,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n4\n-\n2\n车内场景\n车辆免触控制\n情境说明\n：\n车内\n/\n驾驶或乘坐\n/\n日常出行\n请想象你正在车内，希望通过简单手势快速控制车辆功能，而无需频繁操作中控屏。你需要通过免触手势控制影音页面、关闭左右侧车门等任务。\n人在车内、快速控制车辆、减少中控操作\n请进行手势价值评价-问卷",
+      "image": "/materials/scene4_pages/page-31.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 32,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n4-2\n-A\n场景任务-场景\n4-2-A\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-32.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 33,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n乘客控影音页面\n手势方案A\n：\n打响指\n请连做3下\n场景任务-场景\n4-2-01-A",
+      "image": "/materials/scene4_pages/page-33.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 34,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n车内主驾关左侧门\n手势方案A\n：\n手指向内招两下\n（兼容掌心向上向下）\n请连做3下\n场景任务-场景\n4-2-02-A",
+      "image": "/materials/scene4_pages/page-34.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 35,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n车内主驾关右侧门\n场景任务-场景\n4-2-03-A\n手势方案A\n：\n手指向内招两下\n（兼容掌心向上向下）\n请连做3下",
+      "image": "/materials/scene4_pages/page-35.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 36,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n手势评价\n4-2\n-A\n场景任务-场景\n4-2-A\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-36.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 37,
+      "title": "手势方案 B",
+      "text": "手势方案 B\n4-2\n-\nB\n场景任务-场景\n4-2-B\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-37.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 38,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n乘客控影音页面\n手势方案\nB\n：\n按两下遥控器\n请连做3下\n场景任务-场景\n4-2-01-B",
+      "image": "/materials/scene4_pages/page-38.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 39,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n车内主驾关左侧门\n场景任务-场景\n4-2-02-B\n手势方案\nB\n：\n手腕向内招两下\n请连做3下",
+      "image": "/materials/scene4_pages/page-39.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 40,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n车内主驾关右侧门\n场景任务-场景\n4-2-03-B\n手势方案\nB\n：\n手腕向内招两下\n请连做3下",
+      "image": "/materials/scene4_pages/page-40.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 41,
+      "title": "手势方案 B",
+      "text": "手势方案 B\n手势评价\n4-2\n-\nB\n场景任务-场景\n4-2-B\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-41.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 42,
+      "title": "手势方案 C",
+      "text": "手势方案 C\n4-2\n-\nC\n场景任务-场景\n4-2-C\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-42.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 43,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n车内主驾关左侧门\n场景任务-场景\n4-2-02-C\n手势方案\nC\n：\n手臂带手腕向内招两下\n请连做3下",
+      "image": "/materials/scene4_pages/page-43.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 44,
+      "title": "车内场景车辆免触控制",
+      "text": "车内场景车辆免触控制\n任务目标\n：\n车内主驾关右侧门\n场景任务-场景\n4-2-03-C\n手势方案\nC\n：\n手臂带手腕向内招两下\n请连做3下",
+      "image": "/materials/scene4_pages/page-44.png",
+      "segment_id": "4-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 45,
+      "title": "手势方案 C",
+      "text": "手势方案 C\n手势评价\n4-2\n-\nC\n场景任务-场景\n4-2-C\n车内场景\n车辆免触控制",
+      "image": "/materials/scene4_pages/page-45.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    },
+    {
+      "index": 46,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n4-1\nABC 方案评价\n4\n-1\n只能测小于五分钟的数据\n同步时长，要看同步是否完成\n每个手势3遍\n手势方案A\n：\n打响指\n（\n乘客控影音页面\n）\n手指向内招两下\n（\n主驾关左侧门\n）\n手势方案\nB：\n按两下遥控器\n（\n乘客控影音页面\n）\n手腕向内招两下\n（主驾关左侧门）\n手势方案\nC：\n手臂带手腕向内招两下\n（主驾关左侧门）",
+      "image": "/materials/scene4_pages/page-46.png",
+      "segment_id": "4-2",
+      "has_gesture": false
+    }
+  ],
+  "segments": [
+    {
+      "id": "4-1",
+      "name": "子场景 4-1",
+      "scene_id": "S04",
+      "start_page": 1,
+      "end_page": 29
+    },
+    {
+      "id": "4-2",
+      "name": "子场景 4-2",
+      "scene_id": "S04",
+      "start_page": 30,
+      "end_page": 46
+    }
+  ],
+  "overlays": [
+    {
+      "page": 4,
+      "path": "/materials/generated/scene4/image1-1.gif",
+      "x": 56.1896,
+      "y": 51.1845,
+      "w": 26.9971,
+      "h": 35.9961,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/scene4/image3-2.gif",
+      "x": 56.2623,
+      "y": 51.1745,
+      "w": 27.378,
+      "h": 36.504,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 6,
+      "path": "/materials/generated/scene4/image3-2.gif",
+      "x": 56.2623,
+      "y": 51.1745,
+      "w": 27.378,
+      "h": 36.504,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 7,
+      "path": "/materials/generated/scene4/image6-3.gif",
+      "x": 56.1126,
+      "y": 51.0966,
+      "w": 27.5255,
+      "h": 36.7007,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 8,
+      "path": "/materials/generated/scene4/image8-4.gif",
+      "x": 56.1564,
+      "y": 50.6409,
+      "w": 26.9792,
+      "h": 36.7063,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 9,
+      "path": "/materials/generated/scene4/image6-3.gif",
+      "x": 56.1126,
+      "y": 51.0966,
+      "w": 27.5255,
+      "h": 36.7007,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 10,
+      "path": "/materials/generated/scene4/image8-4.gif",
+      "x": 56.1564,
+      "y": 50.6409,
+      "w": 26.9792,
+      "h": 36.7063,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/scene4/image1-1.gif",
+      "x": 56.2185,
+      "y": 51.0966,
+      "w": 27.4671,
+      "h": 36.6227,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 14,
+      "path": "/materials/generated/scene4/image1-1.gif",
+      "x": 56.2185,
+      "y": 51.0966,
+      "w": 27.4671,
+      "h": 36.6227,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 15,
+      "path": "/materials/generated/scene4/image10-5.gif",
+      "x": 56.1565,
+      "y": 50.8062,
+      "w": 27.6155,
+      "h": 36.8206,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 16,
+      "path": "/materials/generated/scene4/image11-6.gif",
+      "x": 55.997,
+      "y": 51.0091,
+      "w": 27.3915,
+      "h": 36.4772,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 17,
+      "path": "/materials/generated/scene4/image12-7.gif",
+      "x": 56.1342,
+      "y": 51.0079,
+      "w": 26.9792,
+      "h": 36.4714,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 18,
+      "path": "/materials/generated/scene4/image11-6.gif",
+      "x": 55.997,
+      "y": 51.0091,
+      "w": 27.3915,
+      "h": 36.4772,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 19,
+      "path": "/materials/generated/scene4/image12-7.gif",
+      "x": 56.1342,
+      "y": 51.0079,
+      "w": 26.9792,
+      "h": 36.4714,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 22,
+      "path": "/materials/generated/scene4/image13-8.gif",
+      "x": 56.2623,
+      "y": 51.1745,
+      "w": 27.1587,
+      "h": 36.2116,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 23,
+      "path": "/materials/generated/scene4/image13-8.gif",
+      "x": 56.2623,
+      "y": 51.1745,
+      "w": 27.1587,
+      "h": 36.2116,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 24,
+      "path": "/materials/generated/scene4/image14-9.gif",
+      "x": 56.1686,
+      "y": 51.069,
+      "w": 27.2914,
+      "h": 36.3885,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 25,
+      "path": "/materials/generated/scene4/image15-10.gif",
+      "x": 56.0698,
+      "y": 51.069,
+      "w": 27.1871,
+      "h": 36.2494,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 26,
+      "path": "/materials/generated/scene4/image14-9.gif",
+      "x": 56.1686,
+      "y": 51.069,
+      "w": 27.2914,
+      "h": 36.3885,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 27,
+      "path": "/materials/generated/scene4/image15-10.gif",
+      "x": 56.0698,
+      "y": 51.069,
+      "w": 27.1871,
+      "h": 36.2494,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 33,
+      "path": "/materials/generated/scene4/image1-11.gif",
+      "x": 56.1664,
+      "y": 51.0868,
+      "w": 27.0703,
+      "h": 36.0937,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 34,
+      "path": "/materials/generated/scene4/image3-12.gif",
+      "x": 55.9433,
+      "y": 51.0764,
+      "w": 27.0781,
+      "h": 36.1042,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 35,
+      "path": "/materials/generated/scene4/image3-12.gif",
+      "x": 55.9433,
+      "y": 51.0764,
+      "w": 27.0781,
+      "h": 36.1042,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 38,
+      "path": "/materials/generated/scene4/image6-13.gif",
+      "x": 55.95,
+      "y": 50.8211,
+      "w": 27.6509,
+      "h": 36.8678,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 39,
+      "path": "/materials/generated/scene4/image7-14.gif",
+      "x": 56.0876,
+      "y": 51.0248,
+      "w": 27.4445,
+      "h": 36.5926,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 40,
+      "path": "/materials/generated/scene4/image7-14.gif",
+      "x": 56.0876,
+      "y": 51.0248,
+      "w": 27.4445,
+      "h": 36.5926,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 43,
+      "path": "/materials/generated/scene4/image8-15.gif",
+      "x": 56.213,
+      "y": 51.0868,
+      "w": 27.3584,
+      "h": 36.4779,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 44,
+      "path": "/materials/generated/scene4/image8-15.gif",
+      "x": 56.213,
+      "y": 51.0868,
+      "w": 27.3584,
+      "h": 36.4779,
+      "kind": "embedded_gif",
+      "segment_id": "4-2",
+      "order": 1
+    }
+  ],
+  "cue_points": [
+    {
+      "id": "4-1:task_value",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "title": "任务组价值评价问卷",
+      "type": "questionnaire",
+      "page": 2,
+      "segment_id": "4-1"
+    },
+    {
+      "id": "4-1:scheme:A",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "title": "方案A后任务评价问卷",
+      "type": "questionnaire",
+      "page": 11,
+      "segment_id": "4-1"
+    },
+    {
+      "id": "4-1:scheme:B",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "title": "方案B后任务评价问卷",
+      "type": "questionnaire",
+      "page": 20,
+      "segment_id": "4-1"
+    },
+    {
+      "id": "4-1:scheme:C",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "title": "方案C后任务评价问卷",
+      "type": "questionnaire",
+      "page": 28,
+      "segment_id": "4-1"
+    },
+    {
+      "id": "4-1:overall",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "title": "场景总体评价问卷",
+      "type": "questionnaire",
+      "page": 29,
+      "segment_id": "4-1"
+    },
+    {
+      "id": "4-2:task_value",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "title": "任务组价值评价问卷",
+      "type": "questionnaire",
+      "page": 31,
+      "segment_id": "4-2"
+    },
+    {
+      "id": "4-2:scheme:A",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "title": "方案A后任务评价问卷",
+      "type": "questionnaire",
+      "page": 36,
+      "segment_id": "4-2"
+    },
+    {
+      "id": "4-2:scheme:B",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "title": "方案B后任务评价问卷",
+      "type": "questionnaire",
+      "page": 41,
+      "segment_id": "4-2"
+    },
+    {
+      "id": "4-2:scheme:C",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "title": "方案C后任务评价问卷",
+      "type": "questionnaire",
+      "page": 45,
+      "segment_id": "4-2"
+    },
+    {
+      "id": "4-2:overall",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "title": "场景总体评价问卷",
+      "type": "questionnaire",
+      "page": 46,
+      "segment_id": "4-2"
+    }
+  ],
+  "generation_warnings": []
+}

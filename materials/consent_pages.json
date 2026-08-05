@@ -1,0 +1,15 @@
+{
+  "id": "consent",
+  "name": "空中手势采集实验知情同意书",
+  "source_keynote": "/Users/leevengu/Desktop/小米手势交互/场景库/空中手势采集实验知情同意书.key",
+  "source_pdf": "/materials/空中手势采集实验知情同意书.pdf",
+  "auto_scroll_seconds_per_page": 22,
+  "pages": [
+    {
+      "index": 1,
+      "title": "知情同意书 第1页",
+      "image": "/materials/consent_pages/page-01.png",
+      "duration_seconds": 22
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "实验结束",
+  "source": "实验结束.pptx",
+  "pages": [
+    {
+      "index": 1,
+      "title": "本次数据采集已完成",
+      "text": "感谢你的配合。请保持当前姿势，等待主试确认数据并协助拆卸设备。",
+      "image": "/materials/end_pages/page-1.png"
+    }
+  ],
+  "cue_points": [],
+  "overlays": []
+}

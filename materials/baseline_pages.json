@@ -1,0 +1,77 @@
+{
+  "id": "baseline",
+  "name": "基线动作采集",
+  "source_keynote": "/Users/leevengu/Desktop/小米手势交互/场景库/基线动作采集.key",
+  "source_gif_dir": "/Users/leevengu/Desktop/小米手势交互/场景库/手势视频草稿_gif_400x300_右侧加宽版",
+  "logical_size": {
+    "width": 1920.0,
+    "height": 1080.0
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "基线动作采集",
+      "text": "基线动作采集\\n基线动作采集\\n现在进行基线采集。",
+      "image": "/materials/baseline_pages/page-1.png"
+    },
+    {
+      "index": 2,
+      "title": "基线动作采集",
+      "text": "基线动作采集\\n自然站立30s\\n请你自然站立，保持放松。\\n持续30s即可",
+      "image": "/materials/baseline_pages/page-2.png"
+    },
+    {
+      "index": 3,
+      "title": "基线动作采集",
+      "text": "基线动作采集\\n握拳两次\\nGa\\n请你五指捏拳两次，再放开。\\n请连做3下",
+      "image": "/materials/baseline_pages/page-3.png"
+    },
+    {
+      "index": 4,
+      "title": "基线动作采集",
+      "text": "基线动作采集\\n抬腕两次\\nGb\\n请你抬起手腕两次，再放下。\\n请连做3下",
+      "image": "/materials/baseline_pages/page-4.png"
+    },
+    {
+      "index": 5,
+      "title": "基线动作采集",
+      "text": "基线动作采集\\n抬肘1次\\nGc\\n请你抬起手肘至水平，再放下。\\n请连做3下",
+      "image": "/materials/baseline_pages/page-5.png"
+    }
+  ],
+  "overlays": [
+    {
+      "page": 3,
+      "path": "/materials/generated/gif_ascii/asset_0ce8ab044adcd5003.gif",
+      "x": 9.792,
+      "y": 32.037,
+      "w": 26.771,
+      "h": 35.926
+    },
+    {
+      "page": 4,
+      "path": "/materials/generated/gif_ascii/asset_403184bff5080c24.gif",
+      "x": 9.792,
+      "y": 32.037,
+      "w": 26.771,
+      "h": 35.926
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/gif_ascii/asset_b964f861a09fdc61.gif",
+      "x": 9.792,
+      "y": 32.037,
+      "w": 26.771,
+      "h": 35.926
+    }
+  ],
+  "cue_points": [],
+  "generation_warnings": {
+    "missing_media": [
+      {
+        "page": 2,
+        "text": "基线动作采集\\n自然站立30s\\n请你自然站立，保持放松。\\n持续30s即可"
+      }
+    ]
+  }
+}

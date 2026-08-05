@@ -1,0 +1,124 @@
+{
+  "id": "pretask",
+  "name": "预备手势",
+  "source_pptx": "/Users/leevengu/Desktop/小米手势交互/场景库/预备手势-新.pptx",
+  "logical_size": {
+    "width": 12192000,
+    "height": 6858000
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "低打扰场景下的免触手势控制",
+      "text": "低打扰场景下的免触手势控制\n预备手势\n预备手势动作练习\n接下来将逐一展示\n6\n个预备手势的动作演示。\n请跟随每页的动图做出相同的动作，熟悉后进入正式任务",
+      "image": "/materials/pretask_pages/page-1.png",
+      "has_gesture": false
+    },
+    {
+      "index": 2,
+      "title": "场景任务-预备手势",
+      "text": "场景任务-预备手势\n预备手势动作练习\n预备手势1：\n抬肘一下\n请连做3下",
+      "image": "/materials/pretask_pages/page-2.png",
+      "has_gesture": true
+    },
+    {
+      "index": 3,
+      "title": "场景任务-预备手势",
+      "text": "场景任务-预备手势\n预备手势动作练习\n预备手势2：\n摩拳（盘两下）\n请连做3下",
+      "image": "/materials/pretask_pages/page-3.png",
+      "has_gesture": true
+    },
+    {
+      "index": 4,
+      "title": "场景任务-预备手势",
+      "text": "场景任务-预备手势\n预备手势动作练习\n预备手势3：\n擦掌（双手搓两下）\n请连做3下",
+      "image": "/materials/pretask_pages/page-4.png",
+      "has_gesture": true
+    },
+    {
+      "index": 5,
+      "title": "场景任务-预备手势",
+      "text": "场景任务-预备手势\n预备手势动作练习\n预备手势4：\n双手拍两下\n请连做3下",
+      "image": "/materials/pretask_pages/page-5.png",
+      "has_gesture": true
+    },
+    {
+      "index": 6,
+      "title": "场景任务-预备手势",
+      "text": "场景任务-预备手势\n预备手势动作练习\n预备手势5：\n甩两下\n请连做3下",
+      "image": "/materials/pretask_pages/page-6.png",
+      "has_gesture": true
+    },
+    {
+      "index": 7,
+      "title": "场景任务-预备手势",
+      "text": "场景任务-预备手势\n预备手势动作练习\n预备手势6：\n举高（高位手势）\n请连做3下",
+      "image": "/materials/pretask_pages/page-7.png",
+      "has_gesture": true
+    }
+  ],
+  "overlays": [
+    {
+      "page": 2,
+      "path": "/materials/generated/gif_ascii/asset_b964f861a09fdc61.gif",
+      "x": 36.4583,
+      "y": 51.161,
+      "w": 27.0833,
+      "h": 36.1111,
+      "kind": "embedded_gif",
+      "order": 1
+    },
+    {
+      "page": 3,
+      "path": "/materials/generated/pretask_new/image2-2.gif",
+      "x": 36.4583,
+      "y": 51.161,
+      "w": 27.0833,
+      "h": 36.1111,
+      "kind": "embedded_gif",
+      "order": 1
+    },
+    {
+      "page": 4,
+      "path": "/materials/generated/pretask_new/image3-3.gif",
+      "x": 36.4583,
+      "y": 51.161,
+      "w": 27.0833,
+      "h": 36.1111,
+      "kind": "embedded_gif",
+      "order": 1
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/pretask_new/image4-4.gif",
+      "x": 36.4583,
+      "y": 51.161,
+      "w": 27.0833,
+      "h": 36.1111,
+      "kind": "embedded_gif",
+      "order": 1
+    },
+    {
+      "page": 6,
+      "path": "/materials/generated/pretask_new/image5-5.gif",
+      "x": 36.4583,
+      "y": 51.161,
+      "w": 27.0833,
+      "h": 36.1111,
+      "kind": "embedded_gif",
+      "order": 1
+    },
+    {
+      "page": 7,
+      "path": "/materials/generated/pretask_new/media1-6.mp4",
+      "x": 36.5104,
+      "y": 50.6078,
+      "w": 27.913,
+      "h": 37.2174,
+      "kind": "embedded_video",
+      "order": 1
+    }
+  ],
+  "cue_points": [],
+  "generation_warnings": []
+}

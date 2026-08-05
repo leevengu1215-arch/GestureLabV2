@@ -1,0 +1,41 @@
+Gesture Lab V2 - Windows 完整运行包
+
+一、首次运行
+1. 解压整个 ZIP，不要只在压缩包预览中启动。
+2. 电脑需安装 Python 3.10 或更高版本。
+3. 双击“启动控制台.bat”。
+4. 首次启动会自动安装 numpy 与 h5py，需要保持联网。
+5. 浏览器自动打开 http://127.0.0.1:8765/
+6. 实验期间请勿关闭命令行窗口。
+
+二、浏览器建议
+- 推荐 Microsoft Edge 或 Google Chrome。
+- 摄像头权限请选择“允许”。
+- 被试扩展屏可由主试控制台打开。
+
+三、数据位置
+每轮实验记录位于：
+
+sessions/<被试编号>/<Session编号>/
+
+每个记录段结束后生成：
+
+<session_tag>_capture_NN.h5
+
+HDF5 使用 xgr.capture/1.0，结构要求见：
+
+docs/Capture HDF5 数据格式规范.md
+
+包内程序在发布 HDF5 前会检查：
+- 根 Schema 和必填 Group
+- 三个固定摄像头通道
+- Watch 原始 CSV 与 Accel 标准视图
+- Events 与 Integrity 平行数组长度
+- 所有原始视频/CSV 的 SHA-256
+- 禁止写入 /Users/... 或 Windows 盘符绝对路径
+
+如果视频或手机日志缺失，文件仍会生成，但 /meta/status 会标记为 incomplete。
+已经发布的 Capture 不会被覆盖；重录应开始新的记录段。
+
+四、更新
+保留 sessions 文件夹。收到更新 ZIP 后，双击“更新程序.bat”并按提示选择更新包。

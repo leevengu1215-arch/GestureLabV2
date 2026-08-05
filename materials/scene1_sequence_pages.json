@@ -1,0 +1,412 @@
+{
+  "id": "scene1_sequence",
+  "name": "场景1 单一设备场景（Bridge + 1-1）",
+  "source_keynote": "/Users/leevengu/Desktop/小米手势交互/场景库/场景手势任务bridge.key + /Users/leevengu/Desktop/小米手势交互/场景库/场景1-1.key",
+  "source_gif_dir": "/Users/leevengu/Desktop/小米手势交互/场景库/手势视频草稿_gif_400x300_右侧加宽版",
+  "pages": [
+    {
+      "index": 1,
+      "title": "场景手势任务",
+      "text": "场景手势任务\\n接下来我们进入到了场景手势任务\\n我们会模拟某些使用手势控制的场景\\n请你按照要求做出手势",
+      "image": "/materials/bridge_pages/page-1.png",
+      "part_id": "bridge",
+      "part_page": 1
+    },
+    {
+      "index": 2,
+      "title": "低打扰场景下的单一设备免触控制",
+      "text": "低打扰场景下的单一设备免触控制\\n场景1-1\\n \\n通勤场景单手占用的\\n\\n智能腕表免触控制",
+      "image": "/materials/scene1_1_pages/page-01.png",
+      "part_id": "scene1_1",
+      "part_page": 1
+    },
+    {
+      "index": 3,
+      "title": "场景任务-场景1-1",
+      "text": "场景任务-场景1-1\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n情境说明：地铁 / 公交 / 步行换乘\\n请想象你正在通勤，另一只手被占用，无法触摸手表。\\n你需要通过免触手势完成查看信息、接挂电话、录音等任务。\\n一只手占用、视线可短暂看表、触摸屏幕\\n请进行手势价值评价-问卷",
+      "image": "/materials/scene1_1_pages/page-02.png",
+      "part_id": "scene1_1",
+      "part_page": 2
+    },
+    {
+      "index": 4,
+      "title": "场景任务-场景1-1-A",
+      "text": "场景任务-场景1-1-A\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n手势方案 A\\n1-1-A",
+      "image": "/materials/scene1_1_pages/page-03.png",
+      "part_id": "scene1_1",
+      "part_page": 3
+    },
+    {
+      "index": 5,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n忽略刚收到的通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案A：\\n搓两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-04.png",
+      "part_id": "scene1_1",
+      "part_page": 4
+    },
+    {
+      "index": 6,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n展开多个通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案A：\\n捏两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-05.png",
+      "part_id": "scene1_1",
+      "part_page": 5
+    },
+    {
+      "index": 7,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n翻看下一个通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案A：\\n捏两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-06.png",
+      "part_id": "scene1_1",
+      "part_page": 6
+    },
+    {
+      "index": 8,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n接听电话\\n刚刚\\n张先生\\n好的，我推进\\n手势方案A：\\n捏两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-07.png",
+      "part_id": "scene1_1",
+      "part_page": 7
+    },
+    {
+      "index": 9,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n挂断电话\\n刚刚\\n张先生\\n好的，我推进\\n手势方案A：\\n搓两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-08.png?v=20260724-1734",
+      "part_id": "scene1_1",
+      "part_page": 8
+    },
+    {
+      "index": 10,
+      "title": "场景任务-场景1-1-A",
+      "text": "场景任务-场景1-1-A\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n手势方案 A 手势评价\\n1-1-A",
+      "image": "/materials/scene1_1_pages/page-09.png",
+      "part_id": "scene1_1",
+      "part_page": 9
+    },
+    {
+      "index": 11,
+      "title": "场景任务-场景1-1",
+      "text": "场景任务-场景1-1\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n手势方案 B\\n1-1-B",
+      "image": "/materials/scene1_1_pages/page-10.png",
+      "part_id": "scene1_1",
+      "part_page": 10
+    },
+    {
+      "index": 12,
+      "title": "场景任务-场景1-1-01",
+      "text": "场景任务-场景1-1-01\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n忽略刚收到的通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案B：\\n甩两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-11.png",
+      "part_id": "scene1_1",
+      "part_page": 11
+    },
+    {
+      "index": 13,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n展开多个通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案B：\\n招两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-12.png",
+      "part_id": "scene1_1",
+      "part_page": 12
+    },
+    {
+      "index": 14,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n翻看下一个通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案B：\\n招两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-13.png",
+      "part_id": "scene1_1",
+      "part_page": 13
+    },
+    {
+      "index": 15,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n接听电话\\n刚刚\\n张先生\\n好的，我推进\\n手势方案B：\\n招两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-14.png",
+      "part_id": "scene1_1",
+      "part_page": 14
+    },
+    {
+      "index": 16,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n挂断电话\\n刚刚\\n张先生\\n好的，我推进\\n手势方案B：\\n甩两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-15.png",
+      "part_id": "scene1_1",
+      "part_page": 15
+    },
+    {
+      "index": 17,
+      "title": "场景任务-场景1-1-A",
+      "text": "场景任务-场景1-1-A\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n手势方案 B 手势评价\\n1-1-A",
+      "image": "/materials/scene1_1_pages/page-16.png",
+      "part_id": "scene1_1",
+      "part_page": 16
+    },
+    {
+      "index": 18,
+      "title": "场景任务-场景1-1",
+      "text": "场景任务-场景1-1\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n手势方案 C\\n1-1-C",
+      "image": "/materials/scene1_1_pages/page-17.png",
+      "part_id": "scene1_1",
+      "part_page": 17
+    },
+    {
+      "index": 19,
+      "title": "场景任务-场景1-1-01",
+      "text": "场景任务-场景1-1-01\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n忽略刚收到的通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案C：\\n翻腕两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-18.png",
+      "part_id": "scene1_1",
+      "part_page": 18
+    },
+    {
+      "index": 20,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n展开多个通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案C：\\n握拳两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-19.png",
+      "part_id": "scene1_1",
+      "part_page": 19
+    },
+    {
+      "index": 21,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n翻看下一个通知\\n刚刚\\n张先生\\n好的，我推进\\n手势方案C：\\n握拳两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-20.png",
+      "part_id": "scene1_1",
+      "part_page": 20
+    },
+    {
+      "index": 22,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n接听电话\\n刚刚\\n张先生\\n好的，我推进\\n手势方案C：\\n握拳两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-21.png",
+      "part_id": "scene1_1",
+      "part_page": 21
+    },
+    {
+      "index": 23,
+      "title": "场景任务-场景1-1-01-A",
+      "text": "场景任务-场景1-1-01-A\\n通勤场景单手占用的智能腕表免触控制\\n任务目标：\\n挂断电话\\n刚刚\\n张先生\\n好的，我推进\\n手势方案C：\\n翻腕两下\\n请连做3下",
+      "image": "/materials/scene1_1_pages/page-22.png",
+      "part_id": "scene1_1",
+      "part_page": 22
+    },
+    {
+      "index": 24,
+      "title": "场景任务-场景1-1-A",
+      "text": "场景任务-场景1-1-A\\n通勤场景单手占用的\\n\\n智能腕表免触控制\\n手势方案 C 手势评价\\n1-1-A\\n只能测小于五分钟的数据\\n同步时长，要看同步是否完成\\n每个手势3遍",
+      "image": "/materials/scene1_1_pages/page-23.png",
+      "part_id": "scene1_1",
+      "part_page": 23
+    },
+    {
+      "index": 25,
+      "title": "场景任务-场景1-1-A",
+      "text": "场景任务-场景1-1-A\\nABC 方案评价\\n1-1\\n只能测小于五分钟的数据\\n同步时长，要看同步是否完成\\n每个手势3遍\\n手势方案A：\\n\\n捏两下（接听）\\n搓两下（挂断）\\n手势方案 B：\\n\\n招两下（接听）\\n甩两下（挂断）\\n手势方案 C：\\n\\n握拳两下（接听） \\n翻腕两下（挂断）",
+      "image": "/materials/scene1_1_pages/page-24.png",
+      "part_id": "scene1_1",
+      "part_page": 24
+    }
+  ],
+  "overlays": [
+    {
+      "page": 5,
+      "path": "/materials/generated/gif_ascii/asset_e108f2d2b2eba1ab.gif",
+      "x": 56.146,
+      "y": 51.111,
+      "w": 27.083,
+      "h": 36.111,
+      "part_id": "scene1_1",
+      "part_page": 4
+    },
+    {
+      "page": 6,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 5
+    },
+    {
+      "page": 7,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 6
+    },
+    {
+      "page": 8,
+      "path": "/materials/generated/gif_ascii/asset_5d1d5fb9fbc0454c.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 7
+    },
+    {
+      "page": 9,
+      "path": "/materials/generated/gif_ascii/asset_e108f2d2b2eba1ab.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 8
+    },
+    {
+      "page": 12,
+      "path": "/materials/generated/gif_ascii/asset_70da66d58abac21f.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 11
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 12
+    },
+    {
+      "page": 14,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 13
+    },
+    {
+      "page": 15,
+      "path": "/materials/generated/gif_ascii/asset_47b5b6e5f33c55cd.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 14
+    },
+    {
+      "page": 16,
+      "path": "/materials/generated/gif_ascii/asset_70da66d58abac21f.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 15
+    },
+    {
+      "page": 19,
+      "path": "/materials/generated/gif_ascii/asset_e75ba925acec9c0e.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 18
+    },
+    {
+      "page": 20,
+      "path": "/materials/generated/gif_ascii/asset_37fa87e50fe0bd58.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 19
+    },
+    {
+      "page": 21,
+      "path": "/materials/generated/gif_ascii/asset_37fa87e50fe0bd58.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 20
+    },
+    {
+      "page": 22,
+      "path": "/materials/generated/gif_ascii/asset_37fa87e50fe0bd58.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 21
+    },
+    {
+      "page": 23,
+      "path": "/materials/generated/gif_ascii/asset_e75ba925acec9c0e.gif",
+      "x": 56.354,
+      "y": 51.296,
+      "w": 26.667,
+      "h": 35.926,
+      "part_id": "scene1_1",
+      "part_page": 22
+    }
+  ],
+  "cue_points": [
+    {
+      "id": "scene1_1_task_value_2",
+      "type": "questionnaire",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "page": 3,
+      "title": "任务组价值评价问卷"
+    },
+    {
+      "id": "scene1_1_task_eval_A_9",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "page": 10,
+      "title": "方案A后任务评价问卷"
+    },
+    {
+      "id": "scene1_1_task_eval_B_16",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "page": 17,
+      "title": "方案B后任务评价问卷"
+    },
+    {
+      "id": "scene1_1_task_eval_C_23",
+      "type": "questionnaire",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "page": 24,
+      "title": "方案C后任务评价问卷"
+    },
+    {
+      "id": "scene1_1_overall_24",
+      "type": "questionnaire",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "page": 25,
+      "title": "场景总体评价问卷"
+    }
+  ],
+  "generation_warnings": {
+    "missing_media": [],
+    "parts": [
+      "bridge",
+      "scene1_1"
+    ]
+  }
+}

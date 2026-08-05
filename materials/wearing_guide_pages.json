@@ -1,0 +1,28 @@
+{
+  "id": "wearing_guide",
+  "name": "小米手表数据采集与导出说明",
+  "source_pdf": "/materials/wearing_guide.pdf",
+  "auto_scroll_seconds_per_page": 18,
+  "pages": [
+    {
+      "index": 1,
+      "title": "佩戴与导出说明 第1页",
+      "image": "/materials/wearing_guide_pages/page-01.png"
+    },
+    {
+      "index": 2,
+      "title": "佩戴与导出说明 第2页",
+      "image": "/materials/wearing_guide_pages/page-02.png"
+    },
+    {
+      "index": 3,
+      "title": "佩戴与导出说明 第3页",
+      "image": "/materials/wearing_guide_pages/page-03.png"
+    },
+    {
+      "index": 4,
+      "title": "佩戴与导出说明 第4页",
+      "image": "/materials/wearing_guide_pages/page-04.png"
+    }
+  ]
+}
