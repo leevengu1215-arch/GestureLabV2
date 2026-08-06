@@ -1,0 +1,14 @@
+Gesture Lab V2 - macOS 完整运行包
+
+1. 解压整个 ZIP。
+2. 电脑需安装 Python 3.10 或更高版本。
+3. 双击“启动审阅版_Mac.command”。
+4. 首次启动会自动安装 numpy 与 h5py，需保持联网。
+5. 浏览器会自动打开本地控制台。
+6. 实验期间请勿关闭终端窗口。
+
+数据保存位置：
+sessions/<被试编号>/<Session编号>/
+
+HDF5 格式规范：
+docs/Capture HDF5 数据格式规范.md
