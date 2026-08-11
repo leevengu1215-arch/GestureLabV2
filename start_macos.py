@@ -18,6 +18,7 @@ def ensure_hdf5_dependencies():
     try:
         import h5py  # noqa: F401
         import numpy  # noqa: F401
+        import imageio_ffmpeg  # noqa: F401
         return True
     except ImportError:
         print("[Gesture Lab] 正在安装 HDF5 组件（h5py、numpy）...")

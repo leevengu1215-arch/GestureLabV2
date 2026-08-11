@@ -21,6 +21,7 @@ def ensure_hdf5_dependencies():
     try:
         import h5py  # noqa: F401
         import numpy  # noqa: F401
+        import imageio_ffmpeg  # noqa: F401
         return True
     except ImportError:
         print("[Gesture Lab] Installing required HDF5 components (h5py, numpy)...")
@@ -35,6 +36,7 @@ def ensure_hdf5_dependencies():
         try:
             import h5py  # noqa: F401
             import numpy  # noqa: F401
+            import imageio_ffmpeg  # noqa: F401
             return True
         except ImportError:
             print("[Gesture Lab] HDF5 components are still unavailable after installation.")

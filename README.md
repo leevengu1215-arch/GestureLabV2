@@ -22,11 +22,17 @@
 ```json
 {
   "hdf5_ready": true,
-  "hdf5_schema": "xgr.capture/1.0"
+  "hdf5_schema": "xgr.capture/2.0"
 }
 ```
 
-格式规范见 `docs/Capture HDF5 数据格式规范.md`。
+格式规范见 `docs/Capture HDF5 数据格式规范.md`。完整 Session 采集完成后运行：
+
+```bash
+make check <session_id> -- --h5
+```
+
+只有 3 或 4 个 Capture 均通过且状态为 `valid`，才可进入标注流程。
 
 ## 实验数据
 

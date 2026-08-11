@@ -3926,8 +3926,8 @@
       calibrationCountdownActive: false,
       done: {},
       cameras: {
-        cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], deviceId: "", label: "camera1" },
-        cam2: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], deviceId: "", label: "camera2" },
+        cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, deviceId: "", label: "camera1" },
+        cam2: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, deviceId: "", label: "camera2" },
       },
       deckId: "baseline",
       deck: null,
@@ -5709,6 +5709,9 @@
         const recorder = state.cameras[slot.id].recorder;
         return recorder && recorder.state !== "inactive";
       });
+      const pendingVideoUploads = cameraSlots
+        .map(slot => state.cameras[slot.id].uploadPromise)
+        .filter(Boolean);
       if (hasActiveRecorder) {
         stopRecording();
       } else {
@@ -5744,9 +5747,12 @@
         } catch (impErr) {
           importError = impErr;
         }
-        // MediaRecorder uploads finish asynchronously after stop. Give both
-        // camera callbacks a short window before assembling the immutable HDF5.
-        await new Promise(resolve => setTimeout(resolve, 1200));
+        // Wait for every enabled camera to finish uploading. A fixed delay was
+        // unreliable on Windows and could assemble HDF5 before large videos arrived.
+        if (pendingVideoUploads.length) {
+          setSyncStatus(`第 ${segment} 段视频正在保存，完成后自动生成 HDF5...`);
+          await Promise.all(pendingVideoUploads);
+        }
         const capture = state.captureSegments.find(item => item.segment === segment);
         const exported = await postJSON("/api/export_hdf5", {
           ...config(),
@@ -5767,7 +5773,7 @@
         setSyncStatus(
           imported
             ? `第 ${segment} 段已结束并导出。\nHDF5：${exported.filename}\nEng 引用数：${engCount}`
-            : `第 ${segment} 段已导出（手机日志缺失，/meta/status 标记 incomplete）。\nHDF5：${exported.filename}\n提示：${importError?.message || "未设置 offlinelog 目录"}`
+            : `第 ${segment} 段已导出（手机日志缺失，HDF5 根状态标记 incomplete）。\nHDF5：${exported.filename}\n提示：${importError?.message || "未设置 offlinelog 目录"}`
         );
       } catch (err) {
         setSyncStatus(`第 ${segment} 段结束已记录，但导入/保存失败：${err.message}`);
@@ -6801,6 +6807,7 @@
         enabled.forEach((slot) => {
           const camera = state.cameras[slot.id];
           camera.chunks = [];
+          camera.uploadPromise = new Promise(resolve => { camera.resolveUpload = resolve; });
           camera.events = [{
             type: "start",
             camera: slot.label,
@@ -6822,7 +6829,11 @@
           camera.recorder.onerror = (event) => {
             $("videoStatus").textContent = `${slot.label} 录制错误：${event.error?.message || "未知错误"}`;
           };
-          camera.recorder.onstop = () => saveRecording(slot.id);
+          camera.recorder.onstop = async () => {
+            await saveRecording(slot.id);
+            camera.resolveUpload?.();
+            camera.resolveUpload = null;
+          };
           camera.recorder.start(1000);
           keepCameraPreviewAlive(slot.id);
           started.push(slot);
@@ -6905,6 +6916,7 @@
         if (camera.recordingStream) camera.recordingStream.getTracks().forEach(track => track.stop());
         camera.recordingStream = null;
         camera.recorder = null;
+        camera.uploadPromise = null;
         keepCameraPreviewAlive(slotId);
         updateVideoControls();
       }

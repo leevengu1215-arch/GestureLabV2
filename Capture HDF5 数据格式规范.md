@@ -3,398 +3,238 @@
 ## 1. 文档状态
 
 - Schema 名称：`xgr.capture`
-- Schema 版本：`1.0`
+- Schema 版本：`2.0`
 - 文件类型：HDF5
-- 适用范围：3 路视频、1 块手表及流程事件组成的单次连续 Capture
+- 适用范围：一个时间标识的 Session 中的单个 Capture。
 
-本文档是数据采集端和数据处理端之间的格式契约。采集端生成的文件必须满足本文档中的必填路径、类型和命名规则。未标记为必填的数据集可以延后生成，但不得改变既有字段的含义。
+本文档是采集端、标注端和建模端之间的格式契约。HDF5 文件保存原始观测值及采集时产生的同步/流程信息；人工标注、派生切片和模型特征不能回写到原始 HDF5。
 
-## 2. Session 目录
+## 2. 术语与身份规则
+
+- **Session**：一次完整采集的唯一实体；后续数据模型中不再存在独立的 participant 概念或字段。
+- **Session ID**：唯一身份，统一使用采集时间字符串，例如 `20260810T001`。不得使用 `P001`、`P002` 等参与者编号。
+- **Capture**：Session 内的一段连续采集。每个 Session 必须包含 **3 或 4 个** Capture。
+- **Capture 编号**：同一 Session 内必须连续为 `01`、`02`、`03`（及可选 `04`）；重录在采集完成前替换对应编号，发布后不得覆盖已发布文件。
+- **Cam-01 时间轴**：本规范中唯一的统一时间轴。所有 `aligned_time` 均映射到它。
+
+目录结构：
 
 ```text
 data/raw/
-└── <session_id>/
+└── 20260810T001/
     ├── session.json
-    ├── workflow_events.jsonl
-    ├── workflow_events.csv
-    ├── <session_tag>_capture_01.h5
-    ├── <session_tag>_capture_02.h5
-    └── <session_tag>_capture_03.h5
+    ├── 20260810T001_capture_01.h5
+    ├── 20260810T001_capture_02.h5
+    ├── 20260810T001_capture_03.h5
+    └── 20260810T001_capture_04.h5   # 可选；仅四段 Capture 时存在
 ```
 
-`session.json` 保存 Session 索引；每个 HDF5 文件保存一个 Capture 的全部原始数据。人工标注、转码视频和分析结果不得写回 raw HDF5。
+## 3. 文件命名与根属性
 
-## 3. 文件命名
-
-格式：
+文件名固定为：
 
 ```text
-<session_tag>_capture_NN.h5
+<session_id>_capture_NN.h5
 ```
 
-示例：
+例如 `20260810T001_capture_01.h5`。`NN` 至少两位；发布后文件名和内容均不得修改。
 
-```text
-20260716T131831Z_capture_01.h5
-20260716T131831Z_capture_02.h5
-```
+每个 HDF5 根节点必须有：
 
-规则：
+| 属性 | 类型 | 值/含义 |
+| --- | --- | --- |
+| `schema_name` | UTF-8 string | `xgr.capture` |
+| `schema_version` | UTF-8 string | `2.0` |
+| `session_id` | UTF-8 string | 时间形式的 Session ID |
+| `capture_index` | uint8 | `1`–`4` |
+| `timebase` | UTF-8 string | `cam-01` |
+| `time_unit` | UTF-8 string | `ms` |
+| `status` | UTF-8 string | `valid`、`incomplete`、`invalid` 或 `superseded` |
 
-- `session_tag` 在 `session.json` 中显式声明；
-- 默认 `session_tag` 等于 `session_id`；
-- `session_tag` 只能包含 ASCII 字母、数字、连字符和 `T`、`Z`；
-- `NN` 对应 `capture_segment`，至少两位，范围扩大后允许三位；
-- Capture 重录必须分配新的编号，不能覆盖旧文件；
-- 文件名一旦发布不得修改。
+`status` 的含义固定如下：
 
-P001 旧数据从 `capture_segment=2` 开始，因此迁移结果应为 `..._capture_02.h5`，不能为了连续命名改成 `capture_01`。
+- `valid`：所有本次采集应有的流已写入，时间对齐和结构校验通过；
+- `incomplete`：采集或导出未完成，或必需流缺失；不得进入标注或训练；
+- `invalid`：已知质量或同步问题使数据不可用；不得进入标注或训练；
+- `superseded`：被同一 Capture 编号的重新采集结果替代；不得进入标注或训练。
 
-## 4. HDF5 根属性
-
-每个文件根节点必须包含：
-
-| 属性 | 类型 | 必填 | 固定值/含义 |
-| --- | --- | --- | --- |
-| `schema_name` | UTF-8 string | 是 | `xgr.capture` |
-| `schema_version` | UTF-8 string | 是 | 当前为 `1.0` |
-
-## 5. 完整层级
+## 4. 完整层级
 
 ```text
 /
-├── meta
-│   └── notes
 ├── video
 │   ├── cam-01
-│   │   ├── encoded
-│   │   ├── pts_s                  # 可选
-│   │   └── keyframe              # 可选
-│   ├── cam-02
-│   └── cam-03
+│   │   ├── rgb
+│   │   ├── time
+│   │   └── aligned_time
+│   │       ├── value
+│   │       ├── start_flash
+│   │       ├── end_flash
+│   │       └── bias
+│   ├── cam-02                                    # 与 cam-01 同构
+│   └── cam-03                                    # 与 cam-01 同构
 ├── watch
 │   ├── accel
-│   │   ├── source_csv
-│   │   ├── table
-│   │   ├── timestamps
-│   │   │   ├── current_ms
-│   │   │   └── event_ms
-│   │   └── values
-│   ├── gyroscope
-│   │   ├── source_csv
-│   │   └── table
+│   │   ├── value
+│   │   ├── time
+│   │   └── aligned_time
+│   │       ├── value
+│   │       ├── start_clap
+│   │       ├── end_clap
+│   │       └── bias
+│   ├── gyroscope                                 # 与 accel 同构
 │   └── <other-signal>
+│       ├── value
+│       ├── time
+│       └── aligned_time
+│           ├── value
+│           └── bias
 ├── events
-│   ├── epoch_ms
+│   ├── event_id
 │   ├── event_type
-│   ├── payload_json
-│   └── source_line
-├── sync
-│   └── markers
-└── integrity
-    ├── source_files
-    ├── source_sizes
-    ├── sha256
-    └── datasets
+│   ├── phase
+│   ├── time
+│   └── payload_json
+└── sync
+    └── <gesture-N | baseline-N | static-N | pre-gesture-N>
+        ├── aligned_time
+        ├── event_id
+        └── label
 ```
 
-## 6. `/meta`
+`aligned_time/value` 是为标注和切割新增的必需数据集。仅保存 flash/clap 与一个 `bias` 无法可靠处理两端同步点显示出的时钟漂移；它不能满足跨传感器精确切割的要求。
 
-`/meta` 是 Group。以下属性为必填：
+## 5. 时间与同步
 
-| 属性 | HDF5 类型 | 含义 |
-| --- | --- | --- |
-| `session_id` | string | Session ID |
-| `participant_id` | string | 参与者编号 |
-| `capture_id` | string | 兼容 ID，如 `cap-001` |
-| `capture_segment` | integer | Capture 数字编号 |
-| `status` | string | `valid`、`incomplete`、`invalid` 或 `superseded` |
-| `start_epoch_ms` | int64 | Capture 开始 Unix epoch 毫秒 |
+### 5.1 通用约定
 
-以下属性允许缺失：
+- 所有 `time` 和 `aligned_time` 均为 `float64`，单位为毫秒。
+- 每个 `time` 数据集只表达该设备自己的原始时钟；跨设备比较、显示、标注和切割只能使用 `aligned_time/value`。
+- `/video/cam-01/time` 是基准时间轴；`/video/cam-01/aligned_time/value` 必须与其逐元素相等，`bias = 0.0`。
+- 对其余每个流，`time` 为设备原始时间，`aligned_time/value` 是映射后的 Cam-01 时间。两者都必须严格递增，且与该流 `rgb` 或 `value` 的第 0 维一一对应。
+- `start_flash`、`end_flash`、`start_clap`、`end_clap` 是用于计算映射的同步点，均记录为 Cam-01 时间（毫秒）。找不到时写 `NaN`，不得用 `0` 代替。
+- `bias` 为 `float64 (2,)`：`[start_bias_ms, end_bias_ms]`，其中 `bias = aligned_time - time`。Cam-01 为 `[0.0, 0.0]`。两个值不同即表示存在时钟漂移，必须以 `aligned_time/value` 而不是常量 bias 做切割。
 
-- `end_epoch_ms`：采集中断且没有结束时间时缺失；
-- `scene_id`、`scene_label`；
-- `operator`、`batch_id`；
-- `started_at`、`ended_at`：ISO 8601 UTC 文本。
+同步误差记录为流 Group attribute `alignment_residual_ms`（`float64`）；无法同步时设置 `alignment_status = "unavailable"`，但仍保留原始 `time`。
 
-`/meta/notes` 是 UTF-8 标量字符串数据集。不要把长文本放入 attribute。
+### 5.2 视频
 
-## 7. `/video`
-
-### 7.1 固定通道
-
-以下 Group 必须始终存在：
-
-```text
-/video/cam-01
-/video/cam-02
-/video/cam-03
-```
-
-通道不可用时：
-
-```text
-available = false
-reason = "not-recorded"
-```
-
-不得创建空的 `encoded` 数据集冒充视频。
-
-### 7.2 编码视频
+`/video/cam-01`、`/video/cam-02`、`/video/cam-03` 三个 Group 必须存在。`cam-01` 是基准机位，必须 `available = true`；其他未录制通道设置 Group attribute `available = false`，且可以不创建子数据集。
 
 可用通道必须包含：
 
-```text
-/video/<camera>/encoded
-```
-
-规范：
-
-| 项目 | 要求 |
-| --- | --- |
-| dtype | `uint8` |
-| shape | `(原视频字节数,)` |
-| 内容 | 原始 WebM/MP4 文件逐字节内容 |
-| HDF5 compression | 不使用 |
-| SHA-256 | `encoded.attrs["sha256"]` |
-
-视频已经由 VP8、VP9、H.264 等编码器压缩，对 `encoded` 再使用 gzip 会降低写入和随机读取效率，通常不会显著减小文件。
-
-视频 Group 属性：
-
-| 属性 | 必填 | 示例 |
+| Dataset | dtype / shape | 含义 |
 | --- | --- | --- |
-| `available` | 是 | `true` |
-| `container` | 是 | `webm` |
-| `mime_type` | 是 | `video/webm` |
-| `start_epoch_ms` | 是 | `1784208001588` |
-| `end_epoch_ms` | 否 | `1784208204901` |
-| `codec` | 推荐 | `vp8` |
-| `width` / `height` | 推荐 | `640` / `480` |
-| `frame_count` | 推荐 | `6097` |
-| `duration_s` | 推荐 | `203.313` |
+| `rgb` | `uint8 (F, H, W, 3)` | RGB 帧，通道顺序固定为 RGB |
+| `time` | `float64 (F,)` | 相机原始帧时间 |
+| `aligned_time/value` | `float64 (F,)` | 对齐后的 Cam-01 帧时间 |
+| `aligned_time/start_flash` | `float64` scalar | 起始 flash 的 Cam-01 时间 |
+| `aligned_time/end_flash` | `float64` scalar | 结束 flash 的 Cam-01 时间 |
+| `aligned_time/bias` | `float64 (2,)` | 两个同步点对应的 bias |
 
-### 7.3 PTS 与关键帧
+视频 Group 还必须有 `available`、`frame_height`、`frame_width` 和 `rgb_sha256` 属性。`rgb` 使用按帧或小帧组的 chunk；可使用 gzip level 4 + shuffle，但不得改变帧顺序。
 
-采集端能够获得帧时间戳时，建议同时写入：
+### 5.3 手表信号
 
-```text
-/video/<camera>/pts_s       float64 (frame_count,)
-/video/<camera>/keyframe    bool    (frame_count,)
-```
+每种手表信号一个 Group，例如 `accel`、`gyroscope`、`magnetic`、`barometer`、`ppg-green`。`accel` 和 `gyroscope` 为必需信号；其他实际采集到的信号也必须写入。信号名只用小写 ASCII、数字和连字符。
 
-`pts_s` 必须按显示顺序严格递增。两个数据集必须与视频帧一一对应。
+| Dataset | dtype / shape | 含义 |
+| --- | --- | --- |
+| `value` | `float32/float64 (N, C)` | 原始数值；`C` 由 `columns_json` attribute 定义 |
+| `time` | `float64 (N,)` | 设备原始采样时间 |
+| `aligned_time/value` | `float64 (N,)` | 对齐后的 Cam-01 采样时间 |
+| `aligned_time/start_clap` | `float64` scalar | 起始 clap 的 Cam-01 时间（加速度、陀螺仪必填） |
+| `aligned_time/end_clap` | `float64` scalar | 结束 clap 的 Cam-01 时间（加速度、陀螺仪必填） |
+| `aligned_time/bias` | `float64 (2,)` | 两个同步点对应的 bias |
 
-## 8. `/watch`
+`accel` 与 `gyroscope` 的 `value` 必须为 `(N, 3)`，并设置 `columns_json = "[\"x\", \"y\", \"z\"]"` 和 `unit` attribute。其他信号若没有可用 clap 同步点，可只保存 `aligned_time/value` 与 `bias`；无法建立映射则 `aligned_time/value` 全为 `NaN` 且 `alignment_status = "unavailable"`。
 
-每个手表信号一个 Group，Group 名使用规范化信号名：
+## 6. `/events`：采集流程事件
 
-```text
-accel
-gyroscope
-magnetic
-barometer
-ppg-green
-ppg-red
-ppg-ir
-```
-
-### 8.1 原始 CSV 字节
-
-每个信号必须包含：
-
-```text
-/watch/<signal>/source_csv
-```
-
-| 项目 | 要求 |
-| --- | --- |
-| dtype | `uint8` |
-| shape | `(CSV 文件字节数,)` |
-| 内容 | CSV 原始字节，禁止换行或编码转换 |
-| compression | gzip level 4 + shuffle |
-| SHA-256 | `source_csv.attrs["sha256"]` |
-
-保留 `source_csv` 的目的是保证迁移后仍能逐字节恢复原始采集结果。
-
-### 8.2 数值表
-
-CSV 能完全解析为数值矩阵时，应写入：
-
-```text
-/watch/<signal>/table       float64 (N, C)
-```
-
-Group 属性：
-
-```text
-columns_json          = "[\"CurrentTimestamp(ms)\", ...]"
-metadata_json         = "{\"SampleRate\": \"100\", ...}"
-sampling_rate_hz      = 100.0
-numeric_table_available = true
-```
-
-存在文本行或不规则列时，可以不创建 `table`，但必须设置：
-
-```text
-numeric_table_available = false
-```
-
-原始 `source_csv` 仍然必须保留。
-
-### 8.3 加速度标准视图
-
-`accel` 必须额外提供：
-
-```text
-/watch/accel/timestamps/current_ms    float64 (N,)
-/watch/accel/timestamps/event_ms      float64 (N,)
-/watch/accel/values                   float64 (N, 3)
-```
-
-`values` 列顺序固定为 `[x, y, z]`，并设置：
-
-```text
-values.attrs["columns_json"] = "[\"x\", \"y\", \"z\"]"
-```
-
-其中：
-
-- `current_ms` 是 Unix epoch 毫秒；
-- `event_ms` 是手表内部单调事件时间；
-- 两种时间不能互相替代。
-
-## 9. `/events`
-
-只保存时间落入当前 Capture 或显式带有当前 `capture_segment` 的 workflow 事件。
-
-四个平行数据集长度必须相同：
+所有事件时间已转换到 Cam-01 时间轴。五个平行数据集必须等长：
 
 | Dataset | dtype | 含义 |
 | --- | --- | --- |
-| `epoch_ms` | int64 | 事件 Unix epoch 毫秒 |
-| `event_type` | UTF-8 string | workflow status/type |
-| `payload_json` | UTF-8 string | 完整原始事件 JSON |
-| `source_line` | int64 | 在 Session JSONL 中的原始行号 |
+| `event_id` | UTF-8 string | 同一动作/阶段的唯一 ID；开始与结束事件必须相同 |
+| `event_type` | UTF-8 string | 如 `gesture_start`、`gesture_end`、`baseline_start`、`baseline_end`、`static_start`、`static_end`、`pre_gesture_start`、`pre_gesture_end` |
+| `phase` | UTF-8 string | 阶段，例如 `gesture`、`baseline`、`static`、`pre-gesture` |
+| `time` | float64 | Cam-01 时间（ms） |
+| `payload_json` | UTF-8 string | 原始 workflow 信息和补充上下文 |
 
-使用平行数组而不是 compound dtype，以提高 Python、MATLAB 和 R 的兼容性。
+事件按 `time` 非递减排序。同一 `event_id` 的 `*_start` 与 `*_end` 必须各有一条，且结束时间不早于开始时间。这样标注工具可以直接以时间范围选取全部相机帧和手表采样；`payload_json` 可保存任务、场景或方案等上下文，但不得替代上述结构化字段。
 
-## 10. `/sync`
+## 7. `/sync`：可直接使用的切割区间
 
-raw 文件只保存采集时产生的同步标记：
+`/sync` 记录采集端已确定的候选切割区间。Group 必须存在；没有已知切割区间时可为空。每个子 Group 名为 `<phase>-NN`，例如 `gesture-01`、`baseline-02`、`static-01`、`pre-gesture-01`。
 
-```text
-/sync/markers
-```
-
-人工确认的映射、拟合时钟模型和标注边界属于可变数据，应保存在：
-
-```text
-data/annotations/<participant>/<session>/<capture>.json
-```
-
-不得因人工标注而修改 raw HDF5。
-
-## 11. `/integrity`
-
-以下四个平行数据集必须存在且长度相同：
-
-| Dataset | dtype | 含义 |
+| 项目 | 类型 | 含义 |
 | --- | --- | --- |
-| `source_files` | UTF-8 string | 打包前相对 Session 的源路径 |
-| `source_sizes` | int64 | 源文件字节数 |
-| `sha256` | UTF-8 string | 源文件 SHA-256，小写十六进制 |
-| `datasets` | UTF-8 string | 保存源字节的 HDF5 dataset 路径 |
+| `aligned_time` | float64 `(2,)` | `[start_ms, end_ms]`，均在 Cam-01 时间轴上，闭区间 |
+| `event_id` | UTF-8 scalar | 对应 `/events/event_id` |
+| `label` | UTF-8 scalar | 已知类别；未知时为空字符串 |
 
-发布 HDF5 前，采集端必须重新从 `datasets` 指向的数据集流式计算 SHA-256，并与 `sha256` 比较。只检查 HDF5 文件能否打开是不充分的。
+切割端以 `/sync/*/aligned_time` 为优先边界；不存在时由 `/events` 中同一 `event_id` 的 start/end 事件恢复。人工调整后的边界存于 annotation 文件，不修改本 Group。
 
-## 12. `session.json` 索引
+## 8. 标注与分类切割适用性
 
-转换后 Capture 条目示例：
+该结构满足需求，前提是执行以下约束：
 
-```json
-{
-  "capture_id": "cap-001",
-  "capture_segment": 1,
-  "scene_id": "baseline",
-  "scene_label": "基线与准备任务",
-  "status": "incomplete",
-  "start_epoch_ms": 1784208001588,
-  "end_epoch_ms": 1784208204901,
-  "hdf5_file": "20260716T131831Z_capture_01.h5",
-  "video_channels": ["cam-01", "cam-02"],
-  "watch_channels": ["accel", "gyroscope", "ppg-green"]
-}
+1. 每个流的观测数组与 `time`、`aligned_time/value` 等长；
+2. 以 Cam-01 时间范围切割时，对每个流用 `aligned_time/value` 做二分查找，而不是按帧号或样本号猜测；
+3. 以相同 `event_id` 成对的 start/end 事件，或 `/sync/*/aligned_time`，定义一个训练样本的范围和标签；
+4. 训练集划分按 `session_id` 分组，绝不能把同一时间 Session 的不同 Capture 分入训练集与测试集；
+5. 同步不可用、flash/clap 缺失或 `alignment_residual_ms` 超阈值的 Capture 必须在 `status` 或 annotation 中标为不可用。
+
+这使得同一 `aligned_time` 区间能稳定地抽取三路视频帧与全部手表信号，并保留可追溯的原始时间、同步锚点和事件标签。
+
+人工标注路径统一使用时间 ID：
+
+```text
+data/annotations/<session_id>/<session_id>_capture_NN.json
+data/processed/<session_id>/<session_id>_capture_NN/...
 ```
 
-Session 顶层必须包含：
+## 9. `session.json` 索引
+
+`session.json` 仅用于快速列举，HDF5 内元数据是单个 Capture 的完整来源。示例：
 
 ```json
 {
-  "session_tag": "20260716T131831Z",
+  "session_id": "20260810T001",
   "capture_storage": {
     "format": "hdf5",
     "schema_name": "xgr.capture",
-    "schema_version": "1.0",
-    "filename_template": "<session_tag>_capture_NN.h5"
-  }
+    "schema_version": "2.0",
+    "filename_template": "<session_id>_capture_NN.h5"
+  },
+  "captures": [
+    {"capture_index": 1, "hdf5_file": "20260810T001_capture_01.h5", "status": "valid"},
+    {"capture_index": 2, "hdf5_file": "20260810T001_capture_02.h5", "status": "valid"},
+    {"capture_index": 3, "hdf5_file": "20260810T001_capture_03.h5", "status": "valid"}
+  ]
 }
 ```
 
-`session.json` 只负责快速列举 Capture，HDF5 内部元数据是单个 Capture 的完整来源。
+`captures` 必须恰有 3 或 4 项，`capture_index` 连续且不重复；`hdf5_file` 必须严格等于 `<session_id>_capture_NN.h5`。不得再写入 `participant_id`、`capture_id`、`capture_segment`、`video_channels`、`watch_channels`、`scene_label` 等旧索引字段；通道和流程事实均以 HDF5 内容为准。
 
-## 13. 写入事务
+## 10. 写入、完整性与验收
 
-采集端必须采用以下顺序：
+采集端必须先写入 `<filename>.partial`，完成后 flush、关闭、重新打开并验证，最后原子 rename 为 `.h5`，再更新 `session.json`。`.partial` 永远不是有效 Capture。
 
-1. 写入 `<filename>.partial`；
-2. 写完所有 Group、Dataset 和 attributes；
-3. 调用 HDF5 flush 并关闭文件；
-4. 重新打开文件；
-5. 校验 schema、必填路径、长度和全部 SHA-256；
-6. 使用原子 rename 将 `.partial` 改为 `.h5`；
-7. 最后更新 `session.json`。
+发布前至少验证：
 
-程序崩溃后存在 `.partial` 时，不得将其当作有效 Capture。应重新校验或重新采集。
+1. Session ID 仅为时间标识，文件名符合 `<session_id>_capture_NN.h5`；
+2. Session 内 Capture 数量为 3 或 4，且编号连续；
+3. 根属性及 `/video`、`/watch`、`/events`、`/sync` 存在；
+4. 三个 camera Group 均存在，`cam-01` 可用；`accel`、`gyroscope` 存在；所有可用流的值、原始时间和对齐时间长度一致；
+5. `alignment_status` 可用的流，其 `aligned_time/value` 严格递增；Cam-01 的 value 等于其 `time`；
+6. `/events` 平行数组等长，成对事件与 `/sync` 区间均合法；
+7. 不包含 `P001` 等 participant ID、机器绝对路径或人工标注结果。
 
-## 14. 压缩与 Chunk 建议
+发布前运行：
 
-| 数据 | 压缩 | Chunk |
-| --- | --- | --- |
-| 编码视频 `encoded` | 无 | contiguous |
-| 原始 CSV `source_csv` | gzip 4 + shuffle | 约 8 MiB |
-| Watch 数值数组 | gzip 4 + shuffle | 约 4,096 行 |
-| PTS/时间戳 | gzip 4 + shuffle | 自动或 4,096～16,384 项 |
-
-不要对已经编码的视频使用 gzip。不要为传感器数据创建单行 chunk，否则会显著增加元数据和随机访问开销。
-
-## 15. Raw、Processed 和 Annotation 边界
-
-```text
-data/raw/<session>/<session_tag>_capture_NN.h5
-data/processed/<participant>/<session>/<capture>/...
-data/annotations/<participant>/<session>/<capture>.json
+```bash
+make check <session_id> -- --h5
 ```
 
-- Raw HDF5：创建后不可变；
-- Processed：转码媒体、PTS 缓存和算法缓存，可以重建；
-- Annotation：人工边界、同步确认、质量状态和 revision，使用原子 JSON 保存。
-
-禁止将人工标注写入 raw HDF5，避免频繁修改大型容器并破坏原始数据的不可变性。
-
-## 16. 最低验收条件
-
-一个 Capture HDF5 可以发布的最低条件：
-
-1. 文件名符合 `<session_tag>_capture_NN.h5`；
-2. 根属性 `schema_name` 和 `schema_version` 正确；
-3. `/meta`、`/video`、`/watch`、`/events`、`/sync`、`/integrity` 存在；
-4. 三个 camera Group 均存在，并正确设置 `available`；
-5. 所有可用视频包含 `encoded`；
-6. 所有 Watch 信号包含 `source_csv`；
-7. Accel 存在时具有标准时间戳和三轴视图；
-8. `/integrity` 四个数组等长；
-9. 从 HDF5 重新计算的每个 SHA-256 与记录一致；
-10. 文件中不存在机器相关的 `/Users/...` 绝对路径。
-
+只有输出通过的 `valid` Capture 才可进入 `make annotate` 和后续分类数据集。

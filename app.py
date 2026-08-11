@@ -23,10 +23,20 @@ except ImportError:
     h5py = None
     np = None
 
+try:
+    from capture_hdf5_v2 import build_capture_hdf5 as build_capture_hdf5_v2
+except ImportError:
+    build_capture_hdf5_v2 = None
+
 
 APP_DIR = Path(__file__).resolve().parent
 DATA_DIR = APP_DIR / "sessions"
 INDEX = APP_DIR / "index.html"
+
+
+def session_directory(session_id):
+    """Schema 2.0 stores a session by time ID; participant IDs are UI-only."""
+    return DATA_DIR / safe_name(session_id)
 
 
 def now_ms():
@@ -606,7 +616,7 @@ class Handler(BaseHTTPRequestHandler):
                     "ok": True,
                     "data_dir": str(DATA_DIR),
                     "hdf5_ready": h5py is not None and np is not None,
-                    "hdf5_schema": "xgr.capture/1.0",
+                    "hdf5_schema": "xgr.capture/2.0",
                 },
             )
         if parsed.path == "/api/material":
@@ -619,9 +629,9 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path == "/api/list":
             sessions = []
             DATA_DIR.mkdir(parents=True, exist_ok=True)
-            for session in sorted(DATA_DIR.glob("*/*")):
+            for session in sorted(DATA_DIR.glob("*")):
                 if session.is_dir():
-                    sessions.append(str(session.relative_to(DATA_DIR)))
+                    sessions.append(session.name)
             return write_json(self, {"sessions": sessions})
         return self.serve_file(APP_DIR / unquote(parsed.path).lstrip("/"))
 
@@ -650,7 +660,7 @@ class Handler(BaseHTTPRequestHandler):
             payload = read_json(self)
             participant = safe_name(payload.get("participant_id", "participant"))
             session = safe_name(payload.get("session_id", datetime.now().strftime("%Y%m%d_%H%M%S")))
-            session_dir = DATA_DIR / participant / session
+            session_dir = session_directory(session)
             session_dir.mkdir(parents=True, exist_ok=True)
             (session_dir / "config.json").write_text(
                 json.dumps(payload, ensure_ascii=False, indent=2),
@@ -677,7 +687,7 @@ class Handler(BaseHTTPRequestHandler):
         start_ms = int(payload.get("start_ms", now_ms()))
         end_ms = int(payload.get("end_ms", now_ms()))
 
-        session_dir = DATA_DIR / participant / session
+        session_dir = session_directory(session)
         trial_dir = session_dir / "trials" / trial_id
         files_dir = trial_dir / "files"
         trial_dir.mkdir(parents=True, exist_ok=True)
@@ -735,7 +745,7 @@ class Handler(BaseHTTPRequestHandler):
         source_dir = payload.get("source_dir", "")
         import_id = safe_name(payload.get("import_id", datetime.now().strftime("%Y%m%d_%H%M%S")))
 
-        session_dir = DATA_DIR / participant / session
+        session_dir = session_directory(session)
         import_dir = session_dir / "phone_logs" / import_id
         session_dir.mkdir(parents=True, exist_ok=True)
 
@@ -770,7 +780,7 @@ class Handler(BaseHTTPRequestHandler):
         payload = read_json(self)
         participant = safe_name(payload.get("participant_id", "participant"))
         session = safe_name(payload.get("session_id", "session"))
-        session_dir = DATA_DIR / participant / session
+        session_dir = session_directory(session)
         session_dir.mkdir(parents=True, exist_ok=True)
         append_event(session_dir, payload)
         return write_json(self, {"ok": True, "event_log": str(session_dir / "workflow_events.csv")})
@@ -783,7 +793,7 @@ class Handler(BaseHTTPRequestHandler):
         capture_segment = int(params.get("capture_segment", ["0"])[0] or 0)
         camera_id = safe_name(params.get("camera_id", [""])[0])
         length = int(self.headers.get("Content-Length", "0"))
-        session_dir = DATA_DIR / participant / session
+        session_dir = session_directory(session)
         video_dir = session_dir / "videos"
         video_dir.mkdir(parents=True, exist_ok=True)
         requested_container = safe_name(params.get("container", [""])[0]).lower()
@@ -821,10 +831,12 @@ class Handler(BaseHTTPRequestHandler):
         payload = read_json(self)
         participant = safe_name(payload.get("participant_id", "participant"))
         session = safe_name(payload.get("session_id", "session"))
-        session_dir = DATA_DIR / participant / session
+        session_dir = session_directory(session)
         session_dir.mkdir(parents=True, exist_ok=True)
         try:
-            target = build_capture_hdf5(session_dir, payload)
+            if build_capture_hdf5_v2 is None:
+                raise RuntimeError("缺少 xgr.capture 2.0 导出器或 imageio-ffmpeg")
+            target = build_capture_hdf5_v2(session_dir, payload)
         except Exception as exc:
             return write_json(self, {"ok": False, "error": str(exc)}, status=400)
         return write_json(self, {"ok": True, "hdf5_file": str(target), "filename": target.name})
