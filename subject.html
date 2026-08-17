@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gesture Lab Subject Display - PC 修复版 v3（审阅）</title>
   <script>
+    window.GESTURE_LAB_BUILD="20260818-task-questionnaire-q4-v3";
     if (location.protocol === "file:") {
-      location.replace("http://127.0.0.1:8765/subject.html");
+      location.replace("http://127.0.0.1:8766/subject.html");
     }
   </script>
   <style>
@@ -671,7 +672,7 @@
     function cacheBust(url) {
       if (!url) return "";
       const separator = url.includes("?") ? "&" : "?";
-      return `${url}${separator}v=20260708-ui-polish-v6`;
+      return `${url}${separator}v=${encodeURIComponent(window.GESTURE_LAB_BUILD)}`;
     }
 
     function renderRepeatProgress(
@@ -994,7 +995,7 @@
       pages.classList.toggle("single", previews.length <= 1);
       previews.forEach((src, index) => {
         const preview = document.createElement("img");
-        preview.src = src;
+        preview.src = cacheBust(src);
         preview.alt = `${message.title || "问卷"}第 ${index + 1} 页`;
         pages.appendChild(preview);
       });
@@ -1036,6 +1037,10 @@
 
     function handleMessage(message) {
       if (!message || !message.type) return;
+      if (message.build_version && message.build_version !== window.GESTURE_LAB_BUILD) {
+        location.replace(`/subject.html?v=${encodeURIComponent(message.build_version)}`);
+        return;
+      }
       if (message.type === "slide") renderSlide(message);
       if (message.type === "document") renderDocument(message);
       if (message.type === "calibration") renderCalibration(message);
@@ -1092,7 +1097,7 @@
       channel.postMessage({ type: "display_ready" });
     }
     setInterval(() => {
-      const heartbeat = { type: "display_heartbeat", sent_at: new Date().toISOString() };
+      const heartbeat = { type: "display_heartbeat", build_version: window.GESTURE_LAB_BUILD, sent_at: new Date().toISOString() };
       if (channel) channel.postMessage(heartbeat);
       localStorage.setItem("gesture_lab_subject_heartbeat", JSON.stringify(heartbeat));
     }, 2000);

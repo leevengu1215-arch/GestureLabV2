@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gesture Lab V2 - PC 修复版 v3（审阅）</title>
   <script>
-    window.GESTURE_LAB_BUILD="20260714-material-retry-ui-v1";
+    window.GESTURE_LAB_BUILD="20260818-task-questionnaire-q4-v3";
     if (location.protocol === "file:") {
       location.replace("http://127.0.0.1:8766/");
     }
@@ -1471,6 +1471,31 @@
       font-size: 14px;
       line-height: 1;
       white-space: nowrap;
+    }
+    .video-save-results {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .video-save-result {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      min-width: 0;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: #f3f5f8;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .video-save-result strong { color: var(--ink); }
+    .video-save-result.saving { background: #fff6e5; color: #8a5a11; }
+    .video-save-result.saved { background: #e9f7ef; color: #136b45; }
+    .video-save-result.failed { background: #fff0ee; color: #a83228; }
+    .video-save-result span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     #oneClickSyncStartBtn {
       background: #111827;
@@ -3647,6 +3672,10 @@
           <button id="oneClickSyncStartBtn">开始记录</button>
           <button id="oneClickSyncStopBtn" disabled>结束记录</button>
         </div>
+        <div class="video-save-results" aria-live="polite">
+          <div class="video-save-result" id="cam1SaveResult"><strong>摄像头 1</strong><span>本段未开始</span></div>
+          <div class="video-save-result" id="cam2SaveResult"><strong>摄像头 2</strong><span>本段未开始</span></div>
+        </div>
         <div class="status hidden" id="syncStatus"></div>
       </section>
       <section class="panel">
@@ -3913,6 +3942,10 @@
       captureTimerId: null,
       captureSegmentIndex: 0,
       activeCaptureSegment: null,
+      captureAttempts: {},
+      activeCaptureAttempt: 1,
+      activeCaptureKey: "",
+      unresolvedCaptureFailure: null,
       activeGestureMark: null,
       gestureMarks: [],
       gestureRepetitions: {},
@@ -3926,8 +3959,8 @@
       calibrationCountdownActive: false,
       done: {},
       cameras: {
-        cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, deviceId: "", label: "camera1" },
-        cam2: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, deviceId: "", label: "camera2" },
+        cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera1" },
+        cam2: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera2" },
       },
       deckId: "baseline",
       deck: null,
@@ -4168,6 +4201,7 @@
     function subjectMessage(payload) {
       return {
         ...payload,
+        build_version: window.GESTURE_LAB_BUILD,
         participant_id: $("participant").value.trim(),
         session_id: $("session").value.trim(),
         sent_at: nowIso(),
@@ -4217,7 +4251,7 @@
 
     function openSubjectDisplay() {
       localStorage.removeItem("gesture_lab_subject_questionnaire");
-      subjectDisplayWindow = window.open("/subject.html", "gesture_lab_subject_display", "popup=yes,width=1280,height=760");
+      subjectDisplayWindow = window.open(cacheBust("/subject.html"), "gesture_lab_subject_display", "popup=yes,width=1280,height=760");
       const text = subjectDisplayWindow
         ? "被试扩展屏已打开，并将显示准备阶段第 1 页。请把新窗口拖到扩展屏并全屏；主试端保持在当前窗口。"
         : "浏览器拦截了弹窗，请允许弹窗后再打开被试扩展屏。";
@@ -4403,6 +4437,9 @@
         }
         if (event.data?.type === "display_heartbeat") {
           state.subjectLastSeenAt = Date.now();
+          if (event.data.build_version !== window.GESTURE_LAB_BUILD) {
+            $("saveStatus").textContent = "被试扩展屏版本较旧，请点击一次“打开扩展屏”完成同步刷新。";
+          }
           renderCalibrationPanel();
         }
         if (event.data?.type === "calibration_ack") {
@@ -5495,7 +5532,7 @@
       updateCaptureTimer();
       state.captureTimerId = setInterval(updateCaptureTimer, 500);
       $("captureStateText").textContent = "正在记录 + 录制";
-      $("captureSegmentBadge").textContent = `第 ${state.activeCaptureSegment || state.captureSegmentIndex} 段`;
+      $("captureSegmentBadge").textContent = `第 ${state.activeCaptureSegment || state.captureSegmentIndex} 段 · 尝试 ${state.activeCaptureAttempt || 1}`;
       $("captureSegmentBadge").classList.add("active");
       $("oneClickSyncStartBtn").disabled = true;
       $("oneClickSyncStartBtn").classList.add("recording");
@@ -5543,6 +5580,10 @@
 
     function moveSlide(delta) {
       if (!state.deck || activeCalibration()) return;
+      if (delta > 0 && state.unresolvedCaptureFailure) {
+        setSyncStatus(`第 ${state.unresolvedCaptureFailure.segment} 段保存失败，请先重新记录当前阶段。`);
+        return;
+      }
       const page = state.deck.pages[state.slideIndex];
       if (delta > 0 && page?.is_bridge && state.deck.segments?.length) {
         const firstSegment = state.deck.segments[0];
@@ -5642,12 +5683,33 @@
         if (!state.cameras[slot.id].stream) await enableCamera(slot.id);
       }
       const enabled = cameraSlots.filter(slot => state.cameras[slot.id].stream);
+      if (enabled.length !== cameraSlots.length) {
+        state.captureSegmentIndex -= 1;
+        state.activeCaptureSegment = null;
+        $("oneClickSyncStartBtn").disabled = false;
+        $("oneClickSyncStartBtn").textContent = "开始记录";
+        setSyncStatus(`启动失败：需要同时启用 ${cameraSlots.length} 个摄像头，当前仅 ${enabled.length} 个。`);
+        return;
+      }
+      const captureKey = activeCalibration()?.segment_id || currentDeckSegment()?.id || state.deckId || state.scene?.id || "capture";
+      state.captureAttempts[captureKey] = (state.captureAttempts[captureKey] || 0) + 1;
+      state.activeCaptureKey = captureKey;
+      state.activeCaptureAttempt = state.captureAttempts[captureKey];
       const recordingStarted = startRecording();
+      if (!recordingStarted) {
+        state.captureSegmentIndex -= 1;
+        state.activeCaptureSegment = null;
+        $("oneClickSyncStartBtn").disabled = false;
+        $("oneClickSyncStartBtn").textContent = "开始记录";
+        setSyncStatus("视频录制未启动，请检查两个摄像头后重试。");
+        return;
+      }
       await markPhoneSync("phone_start");
       if (!state.captureStartMs) startCaptureTimer(now.getTime());
       state.captureSegments.push({
         segment,
-        segment_id: activeCalibration()?.segment_id || currentDeckSegment()?.id || "",
+        segment_id: captureKey,
+        attempt: state.activeCaptureAttempt,
         scene_id: state.scene?.id || "",
         deck_id: state.deckId,
         start_ms: now.getTime(),
@@ -5675,7 +5737,7 @@
         setSyncStatus(`开始记录事件保存失败：${err.message}`);
       }
       const message = recordingStarted
-        ? `第 ${state.activeCaptureSegment} 段正在记录：已启动 ${enabled.map(slot => slot.label).join(", ")} 视频录制，并记录手机采集开始时间。`
+        ? `第 ${state.activeCaptureSegment} 段（尝试 ${state.activeCaptureAttempt}）正在记录：已启动 ${enabled.map(slot => slot.label).join(", ")} 视频录制，并记录手机采集开始时间。`
         : `第 ${state.activeCaptureSegment} 段已记录手机采集开始时间，但视频录制未启动；请检查摄像头权限/设备。`;
       $("captureStateText").textContent = recordingStarted ? "正在记录 + 录制" : "正在记录（视频未启动）";
       setSyncStatus(message);
@@ -5699,6 +5761,7 @@
     async function oneClickStopAndExport() {
       const segment = state.activeCaptureSegment || state.captureSegmentIndex;
       const stopMs = Date.now();
+      let segmentSaved = false;
       if (!state.captureStartMs) {
         setSyncStatus("当前没有正在记录的段。");
         return;
@@ -5775,15 +5838,33 @@
             ? `第 ${segment} 段已结束并导出。\nHDF5：${exported.filename}\nEng 引用数：${engCount}`
             : `第 ${segment} 段已导出（手机日志缺失，HDF5 根状态标记 incomplete）。\nHDF5：${exported.filename}\n提示：${importError?.message || "未设置 offlinelog 目录"}`
         );
+        segmentSaved = true;
+        if (state.unresolvedCaptureFailure?.key === capture?.segment_id) state.unresolvedCaptureFailure = null;
       } catch (err) {
-        setSyncStatus(`第 ${segment} 段结束已记录，但导入/保存失败：${err.message}`);
+        $("captureStateText").textContent = "保存失败，请重录本段";
+        const failedCapture = state.captureSegments.find(item => item.segment === segment);
+        state.unresolvedCaptureFailure = { segment, key: failedCapture?.segment_id || state.activeCaptureKey };
+        setSyncStatus(`第 ${segment} 段保存失败：${err.message}\n请勿继续下一段。点击“开始记录”重录当前阶段，旧文件会保留。`);
+        postJSON("/api/event", {
+          ...config(),
+          phase: "记录控制",
+          step: `第 ${segment} 段保存失败`,
+          status: "record_segment_save_failed",
+          notes: JSON.stringify({
+            capture_segment: segment,
+            capture_attempt: failedCapture?.attempt || state.activeCaptureAttempt || 1,
+            segment_id: failedCapture?.segment_id || state.activeCaptureKey || "",
+            error: err.message,
+            epoch_ms: Date.now(),
+          }),
+        }).catch(() => {});
       } finally {
         const capture = state.captureSegments.find(item => item.segment === segment);
         if (capture) {
           capture.end_ms = stopMs;
           capture.end_iso = new Date(stopMs).toISOString();
           capture.duration_ms = stopMs - capture.start_ms;
-          capture.status = "ended";
+          capture.status = segmentSaved ? "ended" : "save_failed";
         }
         state.activeCaptureSegment = null;
       }
@@ -5990,11 +6071,11 @@
     function captureAuditRows() {
       if (!state.captureSegments.length) return [auditRow("记录段", "还没有通过“开始记录/结束记录”生成采集段。", false, "正常", "0 段")];
       return state.captureSegments.map(item => auditRow(
-        `第 ${item.segment} 段记录${item.segment_id ? ` · ${item.segment_id}` : ""}`,
-        `${item.status === "ended" ? `时长 ${formatElapsed(item.duration_ms || 0)}` : "正在记录"}｜场景：${item.scene_id || "-"}｜摄像头：${item.cameras?.join(", ") || "未启用"}｜视频：${item.video_recording_started ? "已启动" : "未启动"}`,
+        `第 ${item.segment} 段记录${item.segment_id ? ` · ${item.segment_id}` : ""} · 尝试 ${item.attempt || 1}`,
+        `${item.status === "ended" ? `时长 ${formatElapsed(item.duration_ms || 0)}` : item.status === "save_failed" ? "保存失败，需重录" : "正在记录"}｜场景：${item.scene_id || "-"}｜摄像头：${item.cameras?.join(", ") || "未启用"}｜视频：${item.video_recording_started ? "已启动" : "未启动"}`,
         item.status === "ended",
         "已结束",
-        "进行中",
+        item.status === "save_failed" ? "保存失败" : "进行中",
       ));
     }
 
@@ -6139,7 +6220,7 @@
         ],
         overall: ["/materials/questionnaire_final_full.png"],
       };
-      return previews[cue?.questionnaire] || [];
+      return (previews[cue?.questionnaire] || []).map(cacheBust);
     }
 
     async function showQuestionnaireCue(cue, page) {
@@ -6638,13 +6719,21 @@
       const slot = cameraSlot(slotId);
       const camera = state.cameras[slotId];
       if (!slot || !camera) return;
+      const activeRecorder = camera.recorder && camera.recorder.state !== "inactive";
+      if (activeRecorder) {
+        camera.recordingError = `${slot.label} ${message}`;
+        setCameraSaveResult(slotId, "failed", `录制中断 · ${message}`);
+        try { camera.recorder.stop(); } catch (err) { camera.rejectUpload?.(err); }
+      }
       if (camera.recordingStream) camera.recordingStream.getTracks().forEach(track => track.stop());
       camera.recordingStream = null;
       if (camera.stream) camera.stream.getTracks().forEach(track => track.stop());
       camera.stream = null;
       camera.deviceId = "";
-      camera.recorder = null;
-      camera.chunks = [];
+      if (!activeRecorder) {
+        camera.recorder = null;
+        camera.chunks = [];
+      }
       clearCameraPreview(slot);
       $(slot.badge).textContent = "未启用";
       $(slot.badge).classList.remove("good", "warn");
@@ -6724,7 +6813,7 @@
         updateCameraPreviewGeometry(slot);
         videoTrack?.addEventListener("ended", () => {
           if (state.cameras[slotId].stream === activeStream) {
-            setCameraDisconnected(slotId, "连接已断开");
+            setCameraDisconnected(slotId, state.captureStartMs ? "录制中连接断开" : "连接已断开");
           }
         }, { once: true });
         $(slot.badge).textContent = "已启用";
@@ -6778,7 +6867,15 @@
       if (camera.stream) await enableCamera(slotId);
     }
 
+    function setCameraSaveResult(slotId, stateName, message) {
+      const row = $(`${slotId}SaveResult`);
+      if (!row) return;
+      row.className = `video-save-result ${stateName || ""}`.trim();
+      row.querySelector("span").textContent = message;
+    }
+
     function startRecording() {
+      cameraSlots.forEach(slot => setCameraSaveResult(slot.id, "", "本段未启用"));
       const enabled = cameraSlots.filter(slot => state.cameras[slot.id].stream);
       if (!enabled.length) {
         $("videoStatus").textContent = "请先至少启用一个摄像头。";
@@ -6807,7 +6904,13 @@
         enabled.forEach((slot) => {
           const camera = state.cameras[slot.id];
           camera.chunks = [];
-          camera.uploadPromise = new Promise(resolve => { camera.resolveUpload = resolve; });
+          camera.recordingError = "";
+          camera.uploadPromise = new Promise((resolve, reject) => {
+            camera.resolveUpload = resolve;
+            camera.rejectUpload = reject;
+          });
+          camera.uploadPromise.catch(() => {});
+          setCameraSaveResult(slot.id, "saving", "正在录制");
           camera.events = [{
             type: "start",
             camera: slot.label,
@@ -6815,6 +6918,8 @@
             ms: syncMs,
             iso: syncIso,
             capture_segment: state.activeCaptureSegment || state.captureSegmentIndex,
+            capture_attempt: state.activeCaptureAttempt || 1,
+            capture_key: state.activeCaptureKey || "",
           }];
           camera.recordingStream = camera.stream.clone();
           // 两台相机统一目标码率，避免各自按画面复杂度自动定码率导致不一致。
@@ -6827,12 +6932,23 @@
             if (event.data.size > 0) camera.chunks.push(event.data);
           };
           camera.recorder.onerror = (event) => {
-            $("videoStatus").textContent = `${slot.label} 录制错误：${event.error?.message || "未知错误"}`;
+            camera.recordingError = event.error?.message || "未知录制错误";
+            setCameraSaveResult(slot.id, "failed", `录制错误 · ${camera.recordingError}`);
+            $("videoStatus").textContent = `${slot.label} 录制错误：${camera.recordingError}`;
           };
           camera.recorder.onstop = async () => {
-            await saveRecording(slot.id);
-            camera.resolveUpload?.();
+            try {
+              const saved = await saveRecording(slot.id);
+              if (camera.recordingError) {
+                setCameraSaveResult(slot.id, "failed", `本段不可用 · ${camera.recordingError}`);
+                throw new Error(camera.recordingError);
+              }
+              camera.resolveUpload?.(saved);
+            } catch (err) {
+              camera.rejectUpload?.(err);
+            }
             camera.resolveUpload = null;
+            camera.rejectUpload = null;
           };
           camera.recorder.start(1000);
           keepCameraPreviewAlive(slot.id);
@@ -6870,6 +6986,7 @@
       cameraSlots.forEach((slot) => {
         const camera = state.cameras[slot.id];
         if (camera.recorder && camera.recorder.state !== "inactive") {
+          setCameraSaveResult(slot.id, "saving", "正在保存，请勿进入下一段");
           camera.events.push({ type: "stop", camera: slot.label, ms, iso });
           camera.recorder.stop();
         }
@@ -6890,28 +7007,48 @@
       const container = recordedMime.toLowerCase().includes("mp4") ? "mp4" : "webm";
       const blob = new Blob(camera.chunks, { type: recordedMime });
       const start = camera.events[0]?.sync_ms || Date.now();
-      const label = safePart(`${$("participant").value}_${$("session").value}_${state.scene.id}_${sceneSteps[state.sceneStepIndex].id}_${slot.label}_${start}`);
+      const attempt = Number(camera.events[0]?.capture_attempt || state.activeCaptureAttempt || 1);
+      const label = safePart(`${$("participant").value}_${$("session").value}_${state.scene.id}_${sceneSteps[state.sceneStepIndex].id}_${slot.label}_attempt-${attempt}_${start}`);
       try {
+        if (!blob.size) throw new Error("录制文件为空，请重录本段");
         const cameraNumber = slotId === "cam1" ? "cam-01" : "cam-02";
         const captureSegment = camera.events[0]?.capture_segment || state.activeCaptureSegment || state.captureSegmentIndex;
-        const res = await fetch(`/api/video?participant_id=${encodeURIComponent($("participant").value)}&session_id=${encodeURIComponent($("session").value)}&label=${encodeURIComponent(label)}&capture_segment=${encodeURIComponent(captureSegment)}&camera_id=${encodeURIComponent(cameraNumber)}&start_epoch_ms=${encodeURIComponent(start)}&container=${encodeURIComponent(container)}`, {
-          method: "POST",
-          headers: { "Content-Type": recordedMime },
-          body: blob,
-        });
-        const payload = await res.json();
-        if (!res.ok || payload.ok === false) throw new Error(payload.error || res.statusText);
+        let payload = null;
+        let lastError = null;
+        for (let uploadAttempt = 1; uploadAttempt <= 3; uploadAttempt += 1) {
+          try {
+            setCameraSaveResult(slotId, "saving", `正在保存 · 第 ${uploadAttempt}/3 次`);
+            const res = await fetch(`/api/video?participant_id=${encodeURIComponent($("participant").value)}&session_id=${encodeURIComponent($("session").value)}&label=${encodeURIComponent(label)}&capture_segment=${encodeURIComponent(captureSegment)}&camera_id=${encodeURIComponent(cameraNumber)}&start_epoch_ms=${encodeURIComponent(start)}&container=${encodeURIComponent(container)}`, {
+              method: "POST",
+              headers: { "Content-Type": recordedMime },
+              body: blob,
+            });
+            const response = await res.json();
+            if (!res.ok || response.ok === false) throw new Error(response.error || res.statusText);
+            payload = response;
+            break;
+          } catch (err) {
+            lastError = err;
+            if (uploadAttempt < 3) await new Promise(resolve => setTimeout(resolve, uploadAttempt * 900));
+          }
+        }
+        if (!payload) throw lastError || new Error("视频上传失败");
         await postJSON("/api/event", {
           ...config(),
           phase: "视频",
           step: label,
           status: "saved",
-          notes: JSON.stringify({ camera: slot.label, events: camera.events }),
+          notes: JSON.stringify({ camera: slot.label, capture_attempt: attempt, events: camera.events }),
         });
+        const sizeMb = (payload.bytes / 1024 / 1024).toFixed(1);
+        setCameraSaveResult(slotId, "saved", `已保存 · ${sizeMb} MB`);
         $("videoStatus").textContent = `${slot.label} 已保存：${payload.video_file}\n${payload.bytes} bytes`;
+        return payload;
       } catch (err) {
         $("metricVideo").textContent = "error";
+        setCameraSaveResult(slotId, "failed", `保存失败 · ${err.message}`);
         $("videoStatus").textContent = `${slot.label} 视频保存失败：${err.message}`;
+        throw err;
       } finally {
         if (camera.recordingStream) camera.recordingStream.getTracks().forEach(track => track.stop());
         camera.recordingStream = null;

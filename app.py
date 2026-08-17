@@ -809,12 +809,22 @@ class Handler(BaseHTTPRequestHandler):
                     break
                 f.write(chunk)
                 remaining -= len(chunk)
+            f.flush()
+            os.fsync(f.fileno())
+        written = target.stat().st_size if target.exists() else 0
+        if length <= 0 or written != length:
+            target.unlink(missing_ok=True)
+            return write_json(
+                self,
+                {"ok": False, "error": f"视频保存不完整：应接收 {length} bytes，实际写入 {written} bytes"},
+                status=500,
+            )
         meta = {
             "participant_id": participant,
             "session_id": session,
             "label": label,
             "file": str(target),
-            "bytes": target.stat().st_size if target.exists() else 0,
+            "bytes": written,
             "saved_at_ms": now_ms(),
             "saved_at_iso": datetime.now(timezone.utc).isoformat(),
             "capture_segment": capture_segment,
