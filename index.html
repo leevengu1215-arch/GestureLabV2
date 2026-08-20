@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gesture Lab V2 - PC 修复版 v3（审阅）</title>
   <script>
-    window.GESTURE_LAB_BUILD="20260818-task-questionnaire-q4-v3";
+    window.GESTURE_LAB_BUILD="20260820-capture-folders-v5";
     if (location.protocol === "file:") {
       location.replace("http://127.0.0.1:8766/");
     }
@@ -61,6 +61,13 @@
     }
     button.warning { background: var(--amber); }
     button.danger { background: var(--red); }
+    button.danger-outline {
+      width: 100%;
+      margin-top: 8px;
+      color: #a83228;
+      border-color: #efc2bd;
+      background: #fff8f7;
+    }
     button.success { background: var(--green); }
     button:disabled { opacity: .45; cursor: not-allowed; }
     input, textarea, select {
@@ -3576,7 +3583,7 @@
 
         <section class="panel view hidden" id="view-video">
           <h2>视频与设备</h2>
-          <p class="status">外接摄像头接入后，浏览器会在首次启用时请求摄像头权限。录制文件保存为本 session 下的 `videos/*.webm`，并记录开始、暂停、恢复、停止时间戳。</p>
+          <p class="status">外接摄像头接入后，浏览器会在首次启用时请求摄像头权限。录制文件按场景保存到 `captureN/camera1` 和 `captureN/camera2`，并记录开始、暂停、恢复、停止时间戳。</p>
         </section>
 
         <section class="panel view hidden" id="view-import">
@@ -3616,6 +3623,10 @@
         <section class="panel view hidden" id="view-finish">
           <h2>结束检查</h2>
           <div class="finish-audit" id="finishAudit"></div>
+          <div class="actions finish-actions">
+            <button id="finalizeSessionBtn" type="button">确认本被试整理完成</button>
+            <span class="status" id="finalizeSessionStatus">完成整理后，才能开始下一位被试。</span>
+          </div>
         </section>
 
         <section class="panel collection-panel hidden">
@@ -3672,6 +3683,7 @@
           <button id="oneClickSyncStartBtn">开始记录</button>
           <button id="oneClickSyncStopBtn" disabled>结束记录</button>
         </div>
+        <button id="invalidateCaptureBtn" class="secondary danger-outline" type="button" disabled>本段作废并重录</button>
         <div class="video-save-results" aria-live="polite">
           <div class="video-save-result" id="cam1SaveResult"><strong>摄像头 1</strong><span>本段未开始</span></div>
           <div class="video-save-result" id="cam2SaveResult"><strong>摄像头 2</strong><span>本段未开始</span></div>
@@ -3952,6 +3964,9 @@
       gestureProgressTimer: null,
       gestureProgressStep: 0,
       captureSegments: [],
+      serverCaptureState: { captures: [], discarded: [], next_capture_index: 1, finalized: false },
+      lastSavedSegment: null,
+      roundFinalized: false,
       questionnaireCompletions: [],
       calibrations: {},
       activeCalibrationKey: "",
@@ -4007,6 +4022,21 @@
       });
       const payload = await res.json();
       if (!res.ok || payload.ok === false) throw new Error(payload.error || res.statusText);
+      return payload;
+    }
+
+    async function refreshCaptureState() {
+      const session = $("session").value.trim() || $("startSession").value.trim();
+      if (!session) return state.serverCaptureState;
+      const response = await fetch(`/api/capture_state?session_id=${encodeURIComponent(session)}`);
+      const payload = await response.json();
+      if (!response.ok || payload.ok === false) throw new Error(payload.error || response.statusText);
+      state.serverCaptureState = payload;
+      state.roundFinalized = Boolean(payload.finalized);
+      const last = payload.captures[payload.captures.length - 1];
+      state.captureSegmentIndex = last?.capture_index || 0;
+      state.lastSavedSegment = last?.capture_index || null;
+      $("invalidateCaptureBtn").disabled = Boolean(state.captureStartMs) || !state.lastSavedSegment || state.roundFinalized;
       return payload;
     }
 
@@ -4167,16 +4197,36 @@
     }
 
     async function startRound() {
+      const requestedSession = $("startSession").value.trim() || new Date().toISOString().replace(/[-:]/g, "").slice(0, 15);
+      const currentSession = $("session").value.trim();
+      if (state.roundStarted && currentSession && requestedSession !== currentSession && !state.roundFinalized) {
+        $("startStatus").textContent = "上一位被试尚未确认整理完成。请先进入“结束检查”，完成筛选后再开始下一位。";
+        return;
+      }
+      if (currentSession && requestedSession !== currentSession) {
+        state.captureSegments = [];
+        state.captureAttempts = {};
+        state.captureSegmentIndex = 0;
+        state.lastSavedSegment = null;
+        state.gestureMarks = [];
+        state.questionnaireCompletions = [];
+        state.calibrations = {};
+      }
       $("participant").value = $("startParticipant").value.trim() || "P001";
-      $("session").value = $("startSession").value.trim() || new Date().toISOString().replace(/[-:]/g, "").slice(0, 15);
+      $("session").value = requestedSession;
       $("operator").value = $("startOperator").value.trim() || "researcher";
       $("batchLabel").value = $("startBatchLabel").value.trim() || "batch-01";
       $("sourceDir").value = $("startSourceDir").value.trim();
       state.roundStarted = true;
+      state.roundFinalized = false;
       state.roundStartedAt = nowIso();
       state.calibrations = {};
       state.activeCalibrationKey = "";
       try {
+        await refreshCaptureState();
+        if (state.serverCaptureState.finalized) {
+          throw new Error("该 Session 已确认整理完成，请使用新的 Session ID 开始下一位被试");
+        }
         await postJSON("/api/event", {
           ...config(),
           phase: "本轮实验",
@@ -4191,7 +4241,9 @@
         $("startStatus").textContent = `本轮已开始：${localTimeString(new Date())}。请确认被试扩展屏已打开，再进入场景选择。`;
         $("saveStatus").textContent = `本轮实验已开始：${$("participant").value} / ${$("session").value}`;
       } catch (err) {
+        state.roundStarted = false;
         $("startStatus").textContent = `本轮开始记录失败：${err.message}`;
+        return;
       }
       syncStartFormFromHiddenFields();
       saveConfig();
@@ -5538,6 +5590,7 @@
       $("oneClickSyncStartBtn").classList.add("recording");
       $("oneClickSyncStartBtn").textContent = "正在记录";
       $("oneClickSyncStopBtn").disabled = false;
+      $("invalidateCaptureBtn").disabled = true;
       $("syncBlock").classList.add("recording");
       if (activeCalibration()) {
         broadcastCalibration("flash_ready", { message: "请保持不动，准备闪光" });
@@ -5676,15 +5729,35 @@
       $("oneClickSyncStartBtn").disabled = true;
       $("oneClickSyncStartBtn").textContent = "启动中...";
       setSyncStatus("正在启用摄像头并启动录制...");
-      state.captureSegmentIndex += 1;
-      state.activeCaptureSegment = state.captureSegmentIndex;
+      let serverState;
+      try {
+        serverState = await refreshCaptureState();
+      } catch (err) {
+        $("oneClickSyncStartBtn").disabled = false;
+        $("oneClickSyncStartBtn").textContent = "开始记录";
+        setSyncStatus(`无法读取 Capture 编号：${err.message}`);
+        return;
+      }
+      if (serverState.finalized) {
+        $("oneClickSyncStartBtn").disabled = false;
+        $("oneClickSyncStartBtn").textContent = "开始记录";
+        setSyncStatus("该被试已确认整理完成，不能继续写入。请新建下一位被试的 Session。");
+        return;
+      }
+      if (!serverState.next_capture_index) {
+        $("oneClickSyncStartBtn").disabled = false;
+        $("oneClickSyncStartBtn").textContent = "开始记录";
+        setSyncStatus("本 Session 已有 4 个 Capture；如需重录，请先点击“本段作废并重录”。");
+        return;
+      }
+      state.captureSegmentIndex = serverState.next_capture_index;
+      state.activeCaptureSegment = serverState.next_capture_index;
       const segment = state.activeCaptureSegment;
       for (const slot of cameraSlots) {
         if (!state.cameras[slot.id].stream) await enableCamera(slot.id);
       }
       const enabled = cameraSlots.filter(slot => state.cameras[slot.id].stream);
       if (enabled.length !== cameraSlots.length) {
-        state.captureSegmentIndex -= 1;
         state.activeCaptureSegment = null;
         $("oneClickSyncStartBtn").disabled = false;
         $("oneClickSyncStartBtn").textContent = "开始记录";
@@ -5692,12 +5765,12 @@
         return;
       }
       const captureKey = activeCalibration()?.segment_id || currentDeckSegment()?.id || state.deckId || state.scene?.id || "capture";
-      state.captureAttempts[captureKey] = (state.captureAttempts[captureKey] || 0) + 1;
+      const archivedAttempts = serverState.discarded.filter(item => Number(item.capture_index) === segment).length;
+      state.captureAttempts[captureKey] = Math.max((state.captureAttempts[captureKey] || 0) + 1, archivedAttempts + 1);
       state.activeCaptureKey = captureKey;
       state.activeCaptureAttempt = state.captureAttempts[captureKey];
       const recordingStarted = startRecording();
       if (!recordingStarted) {
-        state.captureSegmentIndex -= 1;
         state.activeCaptureSegment = null;
         $("oneClickSyncStartBtn").disabled = false;
         $("oneClickSyncStartBtn").textContent = "开始记录";
@@ -5728,6 +5801,7 @@
             local_time: localTimeString(now),
             epoch_ms: now.getTime(),
             capture_segment: state.activeCaptureSegment,
+            capture_attempt: state.activeCaptureAttempt,
             camera_enabled: enabled.map(slot => slot.label),
             video_recording_started: recordingStarted,
             phone_capture_hook: "reserved_for_phone_control_api",
@@ -5789,6 +5863,7 @@
           status: "record_segment_stop_export",
           notes: JSON.stringify({
             capture_segment: segment,
+            capture_attempt: state.activeCaptureAttempt,
             local_time: localTimeString(new Date(stopMs)),
             epoch_ms: stopMs,
             phone_capture_hook: "reserved_for_phone_control_api",
@@ -5839,6 +5914,9 @@
             : `第 ${segment} 段已导出（手机日志缺失，HDF5 根状态标记 incomplete）。\nHDF5：${exported.filename}\n提示：${importError?.message || "未设置 offlinelog 目录"}`
         );
         segmentSaved = true;
+        state.lastSavedSegment = segment;
+        $("invalidateCaptureBtn").disabled = false;
+        await refreshCaptureState();
         if (state.unresolvedCaptureFailure?.key === capture?.segment_id) state.unresolvedCaptureFailure = null;
       } catch (err) {
         $("captureStateText").textContent = "保存失败，请重录本段";
@@ -5867,6 +5945,58 @@
           capture.status = segmentSaved ? "ended" : "save_failed";
         }
         state.activeCaptureSegment = null;
+      }
+    }
+
+    async function invalidateLastCapture() {
+      if (state.captureStartMs) {
+        setSyncStatus("请先结束当前记录，再作废本段。");
+        return;
+      }
+      const segment = state.lastSavedSegment || state.serverCaptureState.captures.at(-1)?.capture_index;
+      if (!segment) {
+        setSyncStatus("当前没有可以作废的 Capture。");
+        return;
+      }
+      const reason = window.prompt(`将第 ${segment} 段完整归档并释放 Capture ${String(segment).padStart(2, "0")} 供重录。请输入作废原因：`, "动作或流程有误，需要重录");
+      if (reason === null) return;
+      $("invalidateCaptureBtn").disabled = true;
+      try {
+        const result = await postJSON("/api/invalidate_capture", {
+          session_id: $("session").value.trim(),
+          capture_index: segment,
+          reason: reason.trim() || "主试标记本段作废",
+        });
+        state.serverCaptureState = result;
+        state.captureSegments
+          .filter(item => item.segment === segment && item.status === "ended")
+          .forEach(item => { item.status = "invalid"; item.invalid_reason = reason; });
+        state.captureSegmentIndex = segment - 1;
+        state.lastSavedSegment = null;
+        state.roundFinalized = false;
+        $("captureStateText").textContent = `第 ${segment} 段已作废，等待重录`;
+        $("captureSegmentBadge").textContent = `Capture ${String(segment).padStart(2, "0")} 待重录`;
+        setSyncStatus(`第 ${segment} 段已完整归档，旧 H5 和视频均未删除。下一次“开始记录”仍使用 Capture ${String(segment).padStart(2, "0")}。`);
+      } catch (err) {
+        $("invalidateCaptureBtn").disabled = false;
+        setSyncStatus(`本段作废失败：${err.message}`);
+      }
+    }
+
+    async function finalizeCurrentSession() {
+      if (state.captureStartMs) {
+        $("finalizeSessionStatus").textContent = "仍在记录中，不能完成整理。";
+        return;
+      }
+      $("finalizeSessionBtn").disabled = true;
+      try {
+        const result = await postJSON("/api/finalize_session", { session_id: $("session").value.trim() });
+        state.roundFinalized = true;
+        state.serverCaptureState.finalized = true;
+        $("finalizeSessionStatus").textContent = `已整理完成：${result.captures.length} 个有效 Capture，保留 ${result.discarded_attempts} 个作废尝试。现在可以开始下一位被试。`;
+      } catch (err) {
+        $("finalizeSessionBtn").disabled = false;
+        $("finalizeSessionStatus").textContent = `尚不能完成整理：${err.message}`;
       }
     }
 
@@ -6069,14 +6199,22 @@
     }
 
     function captureAuditRows() {
-      if (!state.captureSegments.length) return [auditRow("记录段", "还没有通过“开始记录/结束记录”生成采集段。", false, "正常", "0 段")];
-      return state.captureSegments.map(item => auditRow(
+      const activeRows = state.captureSegments.map(item => auditRow(
         `第 ${item.segment} 段记录${item.segment_id ? ` · ${item.segment_id}` : ""} · 尝试 ${item.attempt || 1}`,
-        `${item.status === "ended" ? `时长 ${formatElapsed(item.duration_ms || 0)}` : item.status === "save_failed" ? "保存失败，需重录" : "正在记录"}｜场景：${item.scene_id || "-"}｜摄像头：${item.cameras?.join(", ") || "未启用"}｜视频：${item.video_recording_started ? "已启动" : "未启动"}`,
+        `${item.status === "ended" ? `时长 ${formatElapsed(item.duration_ms || 0)}` : item.status === "invalid" ? `已作废：${item.invalid_reason || "需重录"}` : item.status === "save_failed" ? "保存失败，需重录" : "正在记录"}｜场景：${item.scene_id || "-"}｜摄像头：${item.cameras?.join(", ") || "未启用"}｜视频：${item.video_recording_started ? "已启动" : "未启动"}`,
         item.status === "ended",
         "已结束",
-        item.status === "save_failed" ? "保存失败" : "进行中",
+        item.status === "invalid" ? "已归档" : item.status === "save_failed" ? "保存失败" : "进行中",
       ));
+      const discardedRows = (state.serverCaptureState.discarded || []).map(item => auditRow(
+        `Capture ${String(item.capture_index).padStart(2, "0")} · 作废尝试 ${item.attempt}`,
+        `${item.reason || "主试标记作废"}｜归档：${item.archive_dir}｜文件 ${item.files?.length || 0} 个`,
+        true,
+        "已保留",
+        "缺失",
+      ));
+      if (!activeRows.length && !discardedRows.length) return [auditRow("记录段", "还没有通过“开始记录/结束记录”生成采集段。", false, "正常", "0 段")];
+      return [...activeRows, ...discardedRows];
     }
 
     function calibrationAuditRows() {
@@ -6378,7 +6516,12 @@
       }
       if (view === "prep") showPrepPageOnSubject();
       if (view === "end") renderEndStage();
-      if (view === "finish") renderFinishAudit();
+      if (view === "finish") {
+        renderFinishAudit();
+        refreshCaptureState().then(renderFinishAudit).catch(err => {
+          $("finalizeSessionStatus").textContent = `读取采集文件失败：${err.message}`;
+        });
+      }
     }
 
     function taskViewTitle() {
@@ -7088,6 +7231,7 @@
     if ($("phoneStopBtn")) $("phoneStopBtn").addEventListener("click", () => markPhoneSync("phone_stop"));
     $("oneClickSyncStartBtn").addEventListener("click", oneClickSynchronizedStart);
     $("oneClickSyncStopBtn").addEventListener("click", oneClickStopAndExport);
+    $("invalidateCaptureBtn").addEventListener("click", invalidateLastCapture);
     $("flashCalibrationBtn").addEventListener("click", recordFlashCalibration);
     $("clapCalibrationBtn").addEventListener("click", startClapCalibration);
     $("skipCalibrationTestBtn").addEventListener("click", skipCalibrationForTest);
@@ -7107,6 +7251,7 @@
     $("openCueBtn").addEventListener("click", openCurrentQuestionnaireCue);
     $("rebroadcastEndBtn").addEventListener("click", broadcastEndSlide);
     $("goFinishAuditBtn").addEventListener("click", () => setView("finish"));
+    $("finalizeSessionBtn").addEventListener("click", finalizeCurrentSession);
     $("reloadDeckBtn").addEventListener("click", () => loadDeck(state.deckId || defaultDeckForScene(state.scene) || "no_material"));
     $("openQuestionnaireSettingsBtn").addEventListener("click", () => setView("questionnaires"));
     if ($("focusModeBtn")) $("focusModeBtn").addEventListener("click", toggleFocusMode);

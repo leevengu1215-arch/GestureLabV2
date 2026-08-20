@@ -39,6 +39,132 @@ def session_directory(session_id):
     return DATA_DIR / safe_name(session_id)
 
 
+def capture_directory(session_dir, capture_index):
+    """Create the operator-friendly raw-data layout for one scene/capture."""
+    root = Path(session_dir) / f"capture{int(capture_index)}"
+    for name in ("camera1", "camera2", "camera3", "watches"):
+        (root / name).mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def capture_state(session_dir):
+    """Return canonical captures plus retained invalid attempts."""
+    session_dir = Path(session_dir)
+    session_id = safe_name(session_dir.name)
+    captures = []
+    for path in sorted(session_dir.glob(f"{session_id}_capture_*.h5")):
+        match = re.search(r"_capture_(\d+)\.h5$", path.name)
+        if not match:
+            continue
+        index = int(match.group(1))
+        status = "unknown"
+        if h5py is not None:
+            try:
+                with h5py.File(path, "r") as h5:
+                    status = str(h5.attrs.get("status", "unknown"))
+            except OSError:
+                status = "unreadable"
+        captures.append({"capture_index": index, "filename": path.name, "status": status})
+    used = {item["capture_index"] for item in captures}
+    next_index = next((index for index in range(1, 5) if index not in used), None)
+    discarded = []
+    manifest = session_dir / "discarded" / "index.jsonl"
+    if manifest.exists():
+        for line in manifest.read_text(encoding="utf-8", errors="ignore").splitlines():
+            try:
+                discarded.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return {
+        "session_id": session_id,
+        "captures": captures,
+        "discarded": discarded,
+        "next_capture_index": next_index,
+        "finalized": (session_dir / "FINALIZED.json").exists(),
+    }
+
+
+def invalidate_capture(session_dir, capture_index, reason):
+    """Archive a bad attempt and release its canonical Capture number."""
+    session_dir = Path(session_dir)
+    session_id = safe_name(session_dir.name)
+    capture_index = int(capture_index)
+    if capture_index not in range(1, 5):
+        raise RuntimeError("Capture 编号必须为 01–04")
+    stamp = datetime.now().strftime("%Y%m%dT%H%M%S")
+    root = session_dir / "discarded"
+    existing = sorted(root.glob(f"capture_{capture_index:02d}_attempt_*")) if root.exists() else []
+    attempt = len(existing) + 1
+    archive = root / f"capture_{capture_index:02d}_attempt_{attempt:02d}_{stamp}"
+    archive.mkdir(parents=True, exist_ok=False)
+
+    moved = []
+    h5_path = session_dir / f"{session_id}_capture_{capture_index:02d}.h5"
+    if h5_path.exists():
+        if h5py is not None:
+            with h5py.File(h5_path, "r+") as h5:
+                h5.attrs["status"] = "invalid"
+                h5.flush()
+        destination = archive / f"{session_id}_capture_{capture_index:02d}_invalid_attempt_{attempt:02d}.h5"
+        shutil.move(str(h5_path), destination)
+        moved.append(destination.name)
+
+    raw_capture = session_dir / f"capture{capture_index}"
+    if raw_capture.exists():
+        destination = archive / "raw_capture"
+        shutil.move(str(raw_capture), destination)
+        moved.append("raw_capture/")
+
+    # Legacy packages stored every camera directly under sessions/<id>/videos.
+    video_dir = session_dir / "videos"
+    video_archive = archive / "videos"
+    if video_dir.exists():
+        for meta_path in list(video_dir.glob("*.json")):
+            try:
+                meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if int(meta.get("capture_segment") or 0) != capture_index:
+                continue
+            video_archive.mkdir(parents=True, exist_ok=True)
+            video_path = Path(meta.get("file", ""))
+            if video_path.exists() and video_path.parent == video_dir:
+                destination = video_archive / video_path.name
+                shutil.move(str(video_path), destination)
+                moved.append(f"videos/{destination.name}")
+            destination = video_archive / meta_path.name
+            shutil.move(str(meta_path), destination)
+            moved.append(f"videos/{destination.name}")
+
+    session_json = session_dir / "session.json"
+    if session_json.exists():
+        try:
+            index = json.loads(session_json.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            index = {}
+        index["captures"] = [
+            item for item in index.get("captures", [])
+            if int(item.get("capture_index", -1)) != capture_index
+        ]
+        partial = session_dir / "session.json.partial"
+        partial.write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding="utf-8")
+        os.replace(partial, session_json)
+
+    record = {
+        "capture_index": capture_index,
+        "attempt": attempt,
+        "status": "invalid",
+        "reason": str(reason or "主试标记本段作废"),
+        "archived_at": datetime.now(timezone.utc).isoformat(),
+        "archive_dir": str(archive.relative_to(session_dir)),
+        "files": moved,
+    }
+    root.mkdir(parents=True, exist_ok=True)
+    with (root / "index.jsonl").open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    return record
+
+
 def now_ms():
     return int(time.time() * 1000)
 
@@ -633,6 +759,12 @@ class Handler(BaseHTTPRequestHandler):
                 if session.is_dir():
                     sessions.append(session.name)
             return write_json(self, {"sessions": sessions})
+        if parsed.path == "/api/capture_state":
+            params = parse_qs(parsed.query)
+            session = safe_name(params.get("session_id", [""])[0])
+            if not session:
+                return write_json(self, {"ok": False, "error": "缺少 Session ID"}, status=400)
+            return write_json(self, {"ok": True, **capture_state(session_directory(session))})
         return self.serve_file(APP_DIR / unquote(parsed.path).lstrip("/"))
 
     def serve_file(self, path):
@@ -675,6 +807,39 @@ class Handler(BaseHTTPRequestHandler):
             return self.save_video(parsed)
         if parsed.path == "/api/export_hdf5":
             return self.export_hdf5()
+        if parsed.path == "/api/invalidate_capture":
+            payload = read_json(self)
+            session = safe_name(payload.get("session_id", ""))
+            try:
+                record = invalidate_capture(
+                    session_directory(session),
+                    int(payload.get("capture_index") or 0),
+                    payload.get("reason", ""),
+                )
+            except Exception as exc:
+                return write_json(self, {"ok": False, "error": str(exc)}, status=400)
+            return write_json(self, {"ok": True, "discarded": record, **capture_state(session_directory(session))})
+        if parsed.path == "/api/finalize_session":
+            payload = read_json(self)
+            session = safe_name(payload.get("session_id", ""))
+            session_dir = session_directory(session)
+            state = capture_state(session_dir)
+            if len(state["captures"]) not in (3, 4):
+                return write_json(self, {"ok": False, "error": "整理完成前必须有连续的 3 或 4 个 Capture"}, status=400)
+            indexes = [item["capture_index"] for item in state["captures"]]
+            if indexes != list(range(1, len(indexes) + 1)):
+                return write_json(self, {"ok": False, "error": "Capture 编号必须从 01 连续排列"}, status=400)
+            invalid = [item for item in state["captures"] if item["status"] != "valid"]
+            if invalid:
+                return write_json(self, {"ok": False, "error": "仍有未通过校验的 Capture，请先重录或补齐手表数据"}, status=400)
+            finalized = {
+                "session_id": session,
+                "finalized_at": datetime.now(timezone.utc).isoformat(),
+                "captures": state["captures"],
+                "discarded_attempts": len(state["discarded"]),
+            }
+            (session_dir / "FINALIZED.json").write_text(json.dumps(finalized, ensure_ascii=False, indent=2), encoding="utf-8")
+            return write_json(self, {"ok": True, **finalized})
         self.send_error(404)
 
     def save_trial(self):
@@ -794,8 +959,13 @@ class Handler(BaseHTTPRequestHandler):
         camera_id = safe_name(params.get("camera_id", [""])[0])
         length = int(self.headers.get("Content-Length", "0"))
         session_dir = session_directory(session)
-        video_dir = session_dir / "videos"
-        video_dir.mkdir(parents=True, exist_ok=True)
+        if capture_segment < 1:
+            return write_json(self, {"ok": False, "error": "缺少有效的 Capture 编号"}, status=400)
+        capture_dir = capture_directory(session_dir, capture_segment)
+        camera_number = {"cam-01": 1, "cam-02": 2, "cam-03": 3}.get(camera_id)
+        if camera_number is None:
+            return write_json(self, {"ok": False, "error": f"无效摄像头编号：{camera_id}"}, status=400)
+        video_dir = capture_dir / f"camera{camera_number}"
         requested_container = safe_name(params.get("container", [""])[0]).lower()
         request_mime = self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
         container = "mp4" if requested_container == "mp4" or request_mime == "video/mp4" else "webm"
@@ -828,6 +998,7 @@ class Handler(BaseHTTPRequestHandler):
             "saved_at_ms": now_ms(),
             "saved_at_iso": datetime.now(timezone.utc).isoformat(),
             "capture_segment": capture_segment,
+            "capture_dir": capture_dir.name,
             "camera_id": camera_id,
             "container": container,
             "mime_type": mime_type,

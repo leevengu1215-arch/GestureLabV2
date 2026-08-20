@@ -47,8 +47,7 @@ def _read_events(session_dir, capture_index, start_epoch, end_epoch):
             continue
         detail = _notes(event)
         epoch = float(detail.get("epoch_ms") or event.get("saved_at_ms") or 0)
-        explicit = int(detail.get("capture_segment") or 0) == capture_index
-        if explicit or (start_epoch <= epoch <= end_epoch):
+        if start_epoch <= epoch <= end_epoch:
             event["_detail"] = detail
             event["_epoch"] = epoch
             rows.append(event)
@@ -75,10 +74,14 @@ def _marker(events, kind, position):
 
 def _video_metadata(session_dir, capture_index):
     result = {}
-    video_dir = session_dir / "videos"
-    if not video_dir.exists():
-        return result
-    for path in video_dir.glob("*.json"):
+    paths = []
+    capture_dir = session_dir / f"capture{capture_index}"
+    if capture_dir.exists():
+        paths.extend(capture_dir.glob("camera*/*.json"))
+    legacy_dir = session_dir / "videos"
+    if legacy_dir.exists():
+        paths.extend(legacy_dir.glob("*.json"))
+    for path in paths:
         try:
             item = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -88,7 +91,11 @@ def _video_metadata(session_dir, capture_index):
         camera = item.get("camera_id")
         video_path = Path(item.get("file", ""))
         if camera in CAMERAS and video_path.exists():
-            result[camera] = (item, video_path)
+            previous = result.get(camera)
+            saved_at = float(item.get("saved_at_ms") or path.stat().st_mtime * 1000)
+            previous_saved_at = float(previous[0].get("saved_at_ms") or 0) if previous else -1
+            if saved_at >= previous_saved_at:
+                result[camera] = (item, video_path)
     return result
 
 
@@ -344,8 +351,15 @@ def validate_capture(path):
                 raise RuntimeError(f"HDF5 缺少 /video/{camera}")
             group = h5[f"video/{camera}"]
             if bool(group.attrs.get("available", False)):
+                for dataset in ("rgb", "time", "aligned_time/value"):
+                    if dataset not in group:
+                        raise RuntimeError(f"/{camera} 缺少 {dataset}")
+                if len(group["rgb"]) == 0:
+                    raise RuntimeError(f"/{camera} 没有写入任何视频帧")
                 if len(group["rgb"]) != len(group["time"]) or len(group["rgb"]) != len(group["aligned_time/value"]):
                     raise RuntimeError(f"/{camera} 帧与时间长度不一致")
+        if not bool(h5["video/cam-01"].attrs.get("available", False)):
+            raise RuntimeError("/video/cam-01 不可用")
         for signal in REQUIRED_WATCH:
             if signal not in h5["watch"]:
                 continue
@@ -382,7 +396,10 @@ def build_capture_hdf5(session_dir, payload):
     if "cam-01" not in videos:
         raise RuntimeError("Cam-01 视频缺失，不能建立统一时间轴")
     cam1_start_epoch = float(videos["cam-01"][0].get("start_epoch_ms") or start_epoch)
+    manual_watch_root = session_dir / f"capture{capture_index}" / "watches"
     watch_root = Path(payload.get("watch_source_dir", "")).expanduser() if payload.get("watch_source_dir") else None
+    if manual_watch_root.exists() and any(manual_watch_root.rglob("*.csv")):
+        watch_root = manual_watch_root
     watch = _watch_arrays(watch_root, start_epoch, end_epoch)
     missing = [signal for signal in REQUIRED_WATCH if signal not in watch]
     requested_status = str(payload.get("status") or "incomplete")
@@ -454,7 +471,12 @@ def build_capture_hdf5(session_dir, payload):
     session_json = session_dir / "session.json"
     index = json.loads(session_json.read_text(encoding="utf-8")) if session_json.exists() else {}
     captures = [item for item in index.get("captures", []) if int(item.get("capture_index", -1)) != capture_index]
-    captures.append({"capture_index": capture_index, "hdf5_file": filename, "status": status})
+    captures.append({
+        "capture_index": capture_index,
+        "hdf5_file": filename,
+        "raw_data_dir": f"capture{capture_index}",
+        "status": status,
+    })
     captures.sort(key=lambda item: item["capture_index"])
     expected = list(range(1, len(captures) + 1))
     if [item["capture_index"] for item in captures] != expected or len(captures) > 4:
