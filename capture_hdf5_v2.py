@@ -1,4 +1,4 @@
-"""Minimal xgr.capture 2.0 writer. One HDF5 file is one immutable capture."""
+"""Minimal encoded-video HDF5 writer. One file is one immutable capture."""
 
 import csv
 import hashlib
@@ -10,12 +10,11 @@ import re
 from pathlib import Path
 
 import h5py
-import imageio_ffmpeg
 import numpy as np
 
 
 SCHEMA_NAME = "xgr.capture"
-SCHEMA_VERSION = "2.0"
+SCHEMA_VERSION = "2.1-encoded"
 CAMERAS = ("cam-01", "cam-02", "cam-03")
 REQUIRED_WATCH = ("accel", "gyroscope")
 STRING = h5py.string_dtype("utf-8")
@@ -99,51 +98,41 @@ def _video_metadata(session_dir, capture_index):
     return result
 
 
-def _write_video(group, path, start_epoch, cam1_start_epoch, cam1_duration, flash_start, flash_end):
-    reader = imageio_ffmpeg.read_frames(str(path), pix_fmt="rgb24")
-    meta = next(reader)
-    width, height = map(int, meta["size"])
-    fps = float(meta.get("fps") or 0)
-    if fps <= 0:
-        raise RuntimeError(f"无法读取视频帧率：{path.name}")
-    rgb = group.create_dataset(
-        "rgb", shape=(0, height, width, 3), maxshape=(None, height, width, 3),
-        dtype=np.uint8, chunks=(1, height, width, 3), compression="gzip",
-        compression_opts=4, shuffle=True,
-    )
+def _write_video(group, path, meta, cam1_start_epoch, flash_start, flash_end):
+    size = path.stat().st_size
+    if size <= 0:
+        raise RuntimeError(f"视频文件为空：{path.name}")
+    chunk_size = min(size, 8 * 1024 * 1024)
+    encoded = group.create_dataset("encoded", shape=(size,), dtype=np.uint8, chunks=(chunk_size,))
     digest = hashlib.sha256()
-    count = 0
-    batch = []
-    for raw in reader:
-        frame = np.frombuffer(raw, dtype=np.uint8).reshape(height, width, 3)
-        digest.update(frame.tobytes())
-        batch.append(frame)
-        if len(batch) == 4:
-            rgb.resize(count + len(batch), axis=0)
-            rgb[count:count + len(batch)] = batch
-            count += len(batch)
-            batch = []
-    if batch:
-        rgb.resize(count + len(batch), axis=0)
-        rgb[count:count + len(batch)] = batch
-        count += len(batch)
-    times = np.arange(count, dtype=np.float64) * (1000.0 / fps)
-    duration = times[-1] if count else 0.0
-    start_bias = float(start_epoch - cam1_start_epoch)
-    end_bias = start_bias + (cam1_duration - duration if cam1_duration and duration else 0.0)
-    aligned = times + np.linspace(start_bias, end_bias, count, dtype=np.float64) if count else times
-    group.create_dataset("time", data=times)
-    aligned_group = group.create_group("aligned_time")
-    aligned_group.create_dataset("value", data=aligned)
-    aligned_group.create_dataset("start_flash", data=np.float64(flash_start))
-    aligned_group.create_dataset("end_flash", data=np.float64(flash_end))
-    aligned_group.create_dataset("bias", data=np.asarray([start_bias, end_bias], dtype=np.float64))
+    offset = 0
+    with path.open("rb") as source:
+        while True:
+            raw = source.read(chunk_size)
+            if not raw:
+                break
+            digest.update(raw)
+            encoded[offset:offset + len(raw)] = np.frombuffer(raw, dtype=np.uint8)
+            offset += len(raw)
+    start_epoch = float(meta.get("start_epoch_ms") or 0)
+    end_epoch = float(meta.get("end_epoch_ms") or start_epoch)
+    duration = max(0.0, end_epoch - start_epoch)
+    group.create_dataset("time_range", data=np.asarray([0.0, duration], dtype=np.float64))
+    group.create_dataset(
+        "aligned_time_range",
+        data=np.asarray([start_epoch - cam1_start_epoch, end_epoch - cam1_start_epoch], dtype=np.float64),
+    )
     group.attrs.update({
-        "available": True, "frame_height": height, "frame_width": width,
-        "rgb_sha256": digest.hexdigest(), "fps": fps,
-        "alignment_status": "reference" if start_bias == 0 else "estimated",
-        "alignment_residual_ms": 0.0 if start_bias == 0 else abs(end_bias - start_bias),
-        "timestamp_source": "container-fps",
+        "available": True,
+        "storage": "encoded",
+        "container": str(meta.get("container") or path.suffix.lstrip(".") or "mp4"),
+        "mime_type": str(meta.get("mime_type") or "video/mp4"),
+        "encoded_sha256": digest.hexdigest(),
+        "start_epoch_ms": start_epoch,
+        "end_epoch_ms": end_epoch,
+        "start_flash_ms": np.float64(flash_start),
+        "end_flash_ms": np.float64(flash_end),
+        "timestamp_source": "recording-metadata",
     })
     return duration
 
@@ -351,13 +340,13 @@ def validate_capture(path):
                 raise RuntimeError(f"HDF5 缺少 /video/{camera}")
             group = h5[f"video/{camera}"]
             if bool(group.attrs.get("available", False)):
-                for dataset in ("rgb", "time", "aligned_time/value"):
+                for dataset in ("encoded", "time_range", "aligned_time_range"):
                     if dataset not in group:
                         raise RuntimeError(f"/{camera} 缺少 {dataset}")
-                if len(group["rgb"]) == 0:
-                    raise RuntimeError(f"/{camera} 没有写入任何视频帧")
-                if len(group["rgb"]) != len(group["time"]) or len(group["rgb"]) != len(group["aligned_time/value"]):
-                    raise RuntimeError(f"/{camera} 帧与时间长度不一致")
+                if len(group["encoded"]) == 0:
+                    raise RuntimeError(f"/{camera} 没有写入编码视频")
+                if len(group["time_range"]) != 2 or len(group["aligned_time_range"]) != 2:
+                    raise RuntimeError(f"/{camera} 视频时间范围无效")
         if not bool(h5["video/cam-01"].attrs.get("available", False)):
             raise RuntimeError("/video/cam-01 不可用")
         for signal in REQUIRED_WATCH:
@@ -410,9 +399,9 @@ def build_capture_hdf5(session_dir, payload):
                 "schema_name": SCHEMA_NAME, "schema_version": SCHEMA_VERSION,
                 "session_id": session_id, "capture_index": np.uint8(capture_index),
                 "timebase": "cam-01", "time_unit": "ms", "status": status,
+                "video_storage": "encoded-container",
             })
             video_group = h5.create_group("video")
-            cam1_duration = 0.0
             for camera in CAMERAS:
                 group = video_group.create_group(camera)
                 if camera not in videos:
@@ -420,18 +409,13 @@ def build_capture_hdf5(session_dir, payload):
                     group.attrs["alignment_status"] = "unavailable"
                     continue
                 meta, path = videos[camera]
-                duration = _write_video(
-                    group, path, float(meta.get("start_epoch_ms") or start_epoch),
-                    cam1_start_epoch, cam1_duration,
+                _write_video(
+                    group, path, meta, cam1_start_epoch,
                     flash_start_epoch - cam1_start_epoch if np.isfinite(flash_start_epoch) else math.nan,
                     flash_end_epoch - cam1_start_epoch if np.isfinite(flash_end_epoch) else math.nan,
                 )
                 if camera == "cam-01":
-                    cam1_duration = duration
-                    group["aligned_time/bias"][...] = [0.0, 0.0]
-                    group["aligned_time/value"][...] = group["time"][...]
-                    group.attrs["alignment_status"] = "reference"
-                    group.attrs["alignment_residual_ms"] = 0.0
+                    group["aligned_time_range"][...] = group["time_range"][...]
             watch_group = h5.create_group("watch")
             clap_start = clap_start_epoch - cam1_start_epoch if np.isfinite(clap_start_epoch) else math.nan
             clap_end = clap_end_epoch - cam1_start_epoch if np.isfinite(clap_end_epoch) else math.nan
