@@ -66,6 +66,26 @@ def capture_state(session_dir):
                 status = "unreadable"
         captures.append({"capture_index": index, "filename": path.name, "status": status})
     used = {item["capture_index"] for item in captures}
+    for marker in sorted(session_dir.glob("capture*/capture_mode.json")):
+        match = re.fullmatch(r"capture(\d+)", marker.parent.name)
+        if not match:
+            continue
+        index = int(match.group(1))
+        if index in used:
+            continue
+        try:
+            pending = json.loads(marker.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        captures.append({
+            "capture_index": index,
+            "filename": "",
+            "status": pending.get("status", "awaiting_external_video"),
+            "camera_mode": pending.get("camera_mode", "wireless_manual"),
+            "external_camera_dir": pending.get("external_camera_dir", f"capture{index}/camera3"),
+        })
+        used.add(index)
+    captures.sort(key=lambda item: item["capture_index"])
     next_index = next((index for index in range(1, 5) if index not in used), None)
     discarded = []
     manifest = session_dir / "discarded" / "index.jsonl"
@@ -807,6 +827,30 @@ class Handler(BaseHTTPRequestHandler):
             return self.save_video(parsed)
         if parsed.path == "/api/export_hdf5":
             return self.export_hdf5()
+        if parsed.path == "/api/prepare_capture":
+            payload = read_json(self)
+            session = safe_name(payload.get("session_id", ""))
+            capture_index = int(payload.get("capture_segment") or 0)
+            if not session or capture_index not in range(1, 5):
+                return write_json(self, {"ok": False, "error": "Session 或 Capture 编号无效"}, status=400)
+            capture_dir = capture_directory(session_directory(session), capture_index)
+            marker = {
+                "capture_index": capture_index,
+                "camera_mode": "wireless_manual",
+                "status": safe_name(payload.get("status", "recording")) or "recording",
+                "external_camera_dir": f"capture{capture_index}/camera3",
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }
+            (capture_dir / "capture_mode.json").write_text(
+                json.dumps(marker, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            return write_json(self, {
+                "ok": True,
+                **marker,
+                "capture_dir": str(capture_dir),
+                "external_camera_path": str(capture_dir / "camera3"),
+            })
         if parsed.path == "/api/invalidate_capture":
             payload = read_json(self)
             session = safe_name(payload.get("session_id", ""))

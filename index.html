@@ -1050,6 +1050,26 @@
     .questionnaire-dialog {
       width: min(980px, calc(100vw - 30px));
     }
+    .camera-confirm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .camera-confirm-grid label { margin: 0; }
+    .camera-mode-choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      cursor: pointer;
+    }
+    .camera-mode-choice input { width: auto; margin-top: 3px; }
+    .camera-mode-choice span { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    @media (max-width: 620px) { .camera-confirm-grid { grid-template-columns: 1fr; } }
     .questionnaire-frame {
       width: 100%;
       height: min(68vh, 720px);
@@ -3324,6 +3344,45 @@
     @media (max-width: 1050px) {
       .end-stage { grid-template-columns: 1fr; }
     }
+
+    /* Keep the presenter slide unobstructed; marking is a separate control row. */
+    .presenter-workspace,
+    body.scene-active .presenter-workspace {
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+    .presenter-workspace > .gesture-mark-block,
+    body.scene-active .presenter-workspace > .gesture-mark-block {
+      position: static;
+      inset: auto;
+      transform: none;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: none;
+    }
+    .presenter-workspace > .gesture-mark-block.active,
+    body.scene-active .presenter-workspace > .gesture-mark-block.active {
+      background: #f8fafc;
+      box-shadow: inset 0 0 0 2px #111827;
+    }
+    .presenter-workspace > .gesture-mark-block .gesture-mark-actions {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 76px;
+      gap: 8px;
+    }
+    .presenter-workspace > .gesture-mark-block .gesture-mark-actions button {
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+      border-radius: 10px;
+    }
+    @media (max-width: 900px) {
+      .presenter-workspace > .gesture-mark-block .gesture-mark-actions {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 64px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3546,23 +3605,18 @@
                 </div>
                 <img id="slideImage" alt="当前演示页" />
                 <div class="overlay-layer" id="overlayLayer"></div>
-                <div class="gesture-mark-block hidden" id="gestureMarkBlock">
-                  <div class="gesture-mark-head">
-                    <div class="control-title" id="gestureMarkTitle">手势打标</div>
-                    <span class="gesture-mark-badge" id="gestureMarkBadge">待开始</span>
-                  </div>
-                  <div class="gesture-mark-actions">
-                    <button id="gestureStartMarkBtn">手势开始</button>
-                    <button id="gestureEndMarkBtn">手势结束</button>
-                    <button id="gestureResetMarkBtn">重置</button>
-                  </div>
-                  <div class="status hidden" id="gestureMarkStatus"></div>
-                </div>
               </div>
-              <div class="presenter-guide-card">
-                <h3>当前页主试引导语</h3>
-                <button class="secondary" id="saveSlideGuideBtn" type="button">保存</button>
-                <textarea id="slideGuideScript" placeholder="这里写当前 PPT 页对应的主试引导语，可随时修改。"></textarea>
+              <div class="gesture-mark-block hidden" id="gestureMarkBlock">
+                <div class="gesture-mark-head">
+                  <div class="control-title" id="gestureMarkTitle">手势打标</div>
+                  <span class="gesture-mark-badge" id="gestureMarkBadge">待开始</span>
+                </div>
+                <div class="gesture-mark-actions">
+                  <button id="gestureStartMarkBtn">手势开始</button>
+                  <button id="gestureEndMarkBtn">手势结束</button>
+                  <button id="gestureResetMarkBtn">重置</button>
+                </div>
+                <div class="status hidden" id="gestureMarkStatus"></div>
               </div>
             </div>
           </div>
@@ -3780,6 +3834,29 @@
     </aside>
   </div>
 
+  <dialog id="captureSetupDialog">
+    <form method="dialog" class="modal" id="captureSetupForm">
+      <h2>确认本段视频输入</h2>
+      <p class="status" id="captureSetupStatus">正在刷新摄像头端口...</p>
+      <div class="camera-confirm-grid" id="usbCameraChoices">
+        <label>摄像头 1
+          <select id="captureCameraSelect1"></select>
+        </label>
+        <label>摄像头 2
+          <select id="captureCameraSelect2"></select>
+        </label>
+      </div>
+      <label class="camera-mode-choice">
+        <input type="checkbox" id="noUsbCameraCheck">
+        <span><strong>此场景无需 USB 摄像头</strong><br>仍会创建本段的 camera3 文件夹，实验后将无线摄像头视频放入其中。</span>
+      </label>
+      <div class="actions">
+        <button type="button" class="secondary" id="cancelCaptureSetupBtn">取消</button>
+        <button type="submit" id="confirmCaptureSetupBtn">确认并开始记录</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="trialDialog">
     <form method="dialog" class="modal" id="trialForm">
       <h2>本次手势评价</h2>
@@ -3957,6 +4034,8 @@
       captureAttempts: {},
       activeCaptureAttempt: 1,
       activeCaptureKey: "",
+      captureCameraMode: "usb",
+      externalCameraPath: "",
       unresolvedCaptureFailure: null,
       activeGestureMark: null,
       gestureMarks: [],
@@ -4083,33 +4162,6 @@
       localStorage.removeItem(guideKey(step.id));
       $("guideScript").value = step.guide || "";
       $("prepStatus").textContent = `已恢复默认引导语：${step.title}`;
-    }
-
-    function slideGuideKey() {
-      const page = state.deck?.pages?.[state.slideIndex];
-      return `gesture_lab_slide_guide_${state.deckId || "deck"}_${page?.index || "page"}`;
-    }
-
-    function defaultSlideGuide() {
-      const page = state.deck?.pages?.[state.slideIndex];
-      const cue = activeCueForPage(page);
-      if (!page) return "";
-      if (cue) return `本页为问卷页：被试看完后点击问卷按钮。`;
-      if (state.deckId === "baseline") return "按屏幕完成基线动作；需要记录时在扩展屏点开始/结束。";
-      if (state.deckId === "pretask") return "按屏幕完成预备手势；在扩展屏点开始/结束。";
-      return "按屏幕完成当前手势；在扩展屏点开始/结束。";
-    }
-
-    function renderSlideGuide() {
-      const textarea = $("slideGuideScript");
-      if (!textarea) return;
-      textarea.value = localStorage.getItem(slideGuideKey()) || defaultSlideGuide();
-    }
-
-    function saveSlideGuideScript() {
-      if (!$("slideGuideScript")) return;
-      localStorage.setItem(slideGuideKey(), $("slideGuideScript").value.trim());
-      $("slideStatus").textContent = "当前页主试引导语已保存。";
     }
 
     function defaultDeckForScene(scene) {
@@ -5188,7 +5240,6 @@
       renderQuestionnaireCue(page);
       renderOverlays();
       renderGestureMarkPanel();
-      renderSlideGuide();
       renderCalibrationPanel();
       renderSceneNav();
       if (calibrationPending) {
@@ -5631,6 +5682,62 @@
       if (firstLine) $("saveStatus").textContent = firstLine;
     }
 
+    async function openCaptureSetupDialog() {
+      if (state.captureStartMs) {
+        setSyncStatus(`第 ${state.activeCaptureSegment} 段正在记录中，无需重复开始。`);
+        return;
+      }
+      $("oneClickSyncStartBtn").disabled = true;
+      $("oneClickSyncStartBtn").textContent = "刷新设备...";
+      $("captureSetupStatus").textContent = "正在刷新摄像头端口...";
+      try {
+        await refreshCameras();
+        for (const [sourceId, targetId] of [["cameraSelect1", "captureCameraSelect1"], ["cameraSelect2", "captureCameraSelect2"]]) {
+          $(targetId).innerHTML = $(sourceId).innerHTML;
+          $(targetId).value = $(sourceId).value;
+        }
+        const count = document.querySelectorAll("#captureCameraSelect1 option").length;
+        $("captureSetupStatus").textContent = count
+          ? `已刷新，共检测到 ${count} 个视频输入。请确认本段使用的设备。`
+          : "未检测到 USB 摄像头；可选择下方“无需 USB 摄像头”。";
+        $("noUsbCameraCheck").checked = false;
+        updateCaptureSetupMode();
+        $("captureSetupDialog").showModal();
+      } catch (err) {
+        setSyncStatus(`刷新摄像头失败：${err.message}`);
+      } finally {
+        $("oneClickSyncStartBtn").disabled = false;
+        $("oneClickSyncStartBtn").textContent = "开始记录";
+      }
+    }
+
+    function updateCaptureSetupMode() {
+      const manual = $("noUsbCameraCheck").checked;
+      $("usbCameraChoices").classList.toggle("disabled", manual);
+      $("captureCameraSelect1").disabled = manual;
+      $("captureCameraSelect2").disabled = manual;
+      $("confirmCaptureSetupBtn").textContent = manual ? "创建文件夹并开始" : "确认并开始记录";
+    }
+
+    async function confirmCaptureSetup(event) {
+      event.preventDefault();
+      const manual = $("noUsbCameraCheck").checked;
+      if (!manual) {
+        if (!$("captureCameraSelect1").value || !$("captureCameraSelect2").value) {
+          $("captureSetupStatus").textContent = "请选择两个摄像头，或勾选“无需 USB 摄像头”。";
+          return;
+        }
+        if ($("captureCameraSelect1").value === $("captureCameraSelect2").value) {
+          $("captureSetupStatus").textContent = "摄像头 1 和摄像头 2 不能选择同一个端口。";
+          return;
+        }
+        $("cameraSelect1").value = $("captureCameraSelect1").value;
+        $("cameraSelect2").value = $("captureCameraSelect2").value;
+      }
+      $("captureSetupDialog").close();
+      await oneClickSynchronizedStart(manual ? "wireless_manual" : "usb");
+    }
+
     function moveSlide(delta) {
       if (!state.deck || activeCalibration()) return;
       if (delta > 0 && state.unresolvedCaptureFailure) {
@@ -5720,7 +5827,7 @@
       }
     }
 
-    async function oneClickSynchronizedStart() {
+    async function oneClickSynchronizedStart(cameraMode = "usb") {
       const now = new Date();
       if (state.captureStartMs) {
         setSyncStatus(`第 ${state.activeCaptureSegment} 段正在记录中，无需重复开始。`);
@@ -5753,24 +5860,46 @@
       state.captureSegmentIndex = serverState.next_capture_index;
       state.activeCaptureSegment = serverState.next_capture_index;
       const segment = state.activeCaptureSegment;
-      for (const slot of cameraSlots) {
-        if (!state.cameras[slot.id].stream) await enableCamera(slot.id);
-      }
-      const enabled = cameraSlots.filter(slot => state.cameras[slot.id].stream);
-      if (enabled.length !== cameraSlots.length) {
-        state.activeCaptureSegment = null;
-        $("oneClickSyncStartBtn").disabled = false;
-        $("oneClickSyncStartBtn").textContent = "开始记录";
-        setSyncStatus(`启动失败：需要同时启用 ${cameraSlots.length} 个摄像头，当前仅 ${enabled.length} 个。`);
-        return;
+      state.captureCameraMode = cameraMode;
+      state.externalCameraPath = "";
+      let enabled = [];
+      if (cameraMode === "wireless_manual") {
+        try {
+          const prepared = await postJSON("/api/prepare_capture", {
+            session_id: $("session").value.trim(),
+            capture_segment: segment,
+            status: "recording",
+          });
+          state.externalCameraPath = prepared.external_camera_path;
+        } catch (err) {
+          state.activeCaptureSegment = null;
+          $("oneClickSyncStartBtn").disabled = false;
+          $("oneClickSyncStartBtn").textContent = "开始记录";
+          setSyncStatus(`无线摄像头文件夹创建失败：${err.message}`);
+          return;
+        }
+      } else {
+        for (const slot of cameraSlots) {
+          const selected = $(slot.select).value;
+          const camera = state.cameras[slot.id];
+          if (!camera.stream || (selected && selected !== camera.deviceId)) await enableCamera(slot.id);
+        }
+        enabled = cameraSlots.filter(slot => state.cameras[slot.id].stream);
+        if (enabled.length !== cameraSlots.length) {
+          state.activeCaptureSegment = null;
+          $("oneClickSyncStartBtn").disabled = false;
+          $("oneClickSyncStartBtn").textContent = "开始记录";
+          setSyncStatus(`启动失败：需要同时启用 ${cameraSlots.length} 个摄像头，当前仅 ${enabled.length} 个。`);
+          return;
+        }
       }
       const captureKey = activeCalibration()?.segment_id || currentDeckSegment()?.id || state.deckId || state.scene?.id || "capture";
       const archivedAttempts = serverState.discarded.filter(item => Number(item.capture_index) === segment).length;
       state.captureAttempts[captureKey] = Math.max((state.captureAttempts[captureKey] || 0) + 1, archivedAttempts + 1);
       state.activeCaptureKey = captureKey;
       state.activeCaptureAttempt = state.captureAttempts[captureKey];
-      const recordingStarted = startRecording();
-      if (!recordingStarted) {
+      const recordingStarted = cameraMode === "usb" ? startRecording() : false;
+      if (cameraMode === "usb" && !recordingStarted) {
         state.activeCaptureSegment = null;
         $("oneClickSyncStartBtn").disabled = false;
         $("oneClickSyncStartBtn").textContent = "开始记录";
@@ -5787,7 +5916,9 @@
         deck_id: state.deckId,
         start_ms: now.getTime(),
         start_iso: now.toISOString(),
-        cameras: enabled.map(slot => slot.label),
+        cameras: cameraMode === "usb" ? enabled.map(slot => slot.label) : ["camera3_manual"],
+        camera_mode: cameraMode,
+        external_camera_path: state.externalCameraPath,
         video_recording_started: recordingStarted,
         status: "recording",
       });
@@ -5802,7 +5933,9 @@
             epoch_ms: now.getTime(),
             capture_segment: state.activeCaptureSegment,
             capture_attempt: state.activeCaptureAttempt,
-            camera_enabled: enabled.map(slot => slot.label),
+            camera_enabled: cameraMode === "usb" ? enabled.map(slot => slot.label) : [],
+            camera_mode: cameraMode,
+            external_camera_path: state.externalCameraPath,
             video_recording_started: recordingStarted,
             phone_capture_hook: "reserved_for_phone_control_api",
           }, null, 0),
@@ -5810,10 +5943,10 @@
       } catch (err) {
         setSyncStatus(`开始记录事件保存失败：${err.message}`);
       }
-      const message = recordingStarted
-        ? `第 ${state.activeCaptureSegment} 段（尝试 ${state.activeCaptureAttempt}）正在记录：已启动 ${enabled.map(slot => slot.label).join(", ")} 视频录制，并记录手机采集开始时间。`
-        : `第 ${state.activeCaptureSegment} 段已记录手机采集开始时间，但视频录制未启动；请检查摄像头权限/设备。`;
-      $("captureStateText").textContent = recordingStarted ? "正在记录 + 录制" : "正在记录（视频未启动）";
+      const message = cameraMode === "wireless_manual"
+        ? `第 ${state.activeCaptureSegment} 段正在记录（无需 USB 摄像头）。无线视频请放入：${state.externalCameraPath}`
+        : `第 ${state.activeCaptureSegment} 段（尝试 ${state.activeCaptureAttempt}）正在记录：已启动 ${enabled.map(slot => slot.label).join(", ")} 视频录制，并记录手机采集开始时间。`;
+      $("captureStateText").textContent = cameraMode === "wireless_manual" ? "正在记录（无线摄像头）" : "正在记录 + 录制";
       setSyncStatus(message);
       if ($("prepStatus")) $("prepStatus").textContent = message;
     }
@@ -5885,13 +6018,28 @@
         } catch (impErr) {
           importError = impErr;
         }
+        const capture = state.captureSegments.find(item => item.segment === segment);
+        if (capture?.camera_mode === "wireless_manual") {
+          const prepared = await postJSON("/api/prepare_capture", {
+            session_id: $("session").value.trim(),
+            capture_segment: segment,
+            status: "awaiting_external_video",
+          });
+          segmentSaved = true;
+          state.lastSavedSegment = segment;
+          $("invalidateCaptureBtn").disabled = false;
+          await refreshCaptureState();
+          setSyncStatus(
+            `第 ${segment} 段记录已结束，等待无线摄像头视频。\n请将视频放入：${prepared.external_camera_path}\n放入视频后再进行最终 HDF5 整理。`
+          );
+          return;
+        }
         // Wait for every enabled camera to finish uploading. A fixed delay was
         // unreliable on Windows and could assemble HDF5 before large videos arrived.
         if (pendingVideoUploads.length) {
           setSyncStatus(`第 ${segment} 段视频正在保存，完成后自动生成 HDF5...`);
           await Promise.all(pendingVideoUploads);
         }
-        const capture = state.captureSegments.find(item => item.segment === segment);
         const exported = await postJSON("/api/export_hdf5", {
           ...config(),
           session_tag: $("session").value.trim(),
@@ -7229,7 +7377,10 @@
     if ($("phoneStartBtn")) $("phoneStartBtn").addEventListener("click", () => markPhoneSync("phone_start"));
     if ($("syncMarkBtn")) $("syncMarkBtn").addEventListener("click", () => markPhoneSync("sync_mark"));
     if ($("phoneStopBtn")) $("phoneStopBtn").addEventListener("click", () => markPhoneSync("phone_stop"));
-    $("oneClickSyncStartBtn").addEventListener("click", oneClickSynchronizedStart);
+    $("oneClickSyncStartBtn").addEventListener("click", openCaptureSetupDialog);
+    $("captureSetupForm").addEventListener("submit", confirmCaptureSetup);
+    $("noUsbCameraCheck").addEventListener("change", updateCaptureSetupMode);
+    $("cancelCaptureSetupBtn").addEventListener("click", () => $("captureSetupDialog").close());
     $("oneClickSyncStopBtn").addEventListener("click", oneClickStopAndExport);
     $("invalidateCaptureBtn").addEventListener("click", invalidateLastCapture);
     $("flashCalibrationBtn").addEventListener("click", recordFlashCalibration);
@@ -7247,7 +7398,6 @@
     $("prevSlideBtn").addEventListener("click", () => moveSlide(-1));
     $("nextSlideBtn").addEventListener("click", () => moveSlide(1));
     if ($("completeSlideBtn")) $("completeSlideBtn").addEventListener("click", completeSlideAndQuestionnaire);
-    $("saveSlideGuideBtn").addEventListener("click", saveSlideGuideScript);
     $("openCueBtn").addEventListener("click", openCurrentQuestionnaireCue);
     $("rebroadcastEndBtn").addEventListener("click", broadcastEndSlide);
     $("goFinishAuditBtn").addEventListener("click", () => setView("finish"));
