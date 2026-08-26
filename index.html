@@ -3275,6 +3275,32 @@
     .calibration-step span { color: #667085; font-size: 12px; }
     .calibration-step button { min-width: 150px; min-height: 40px; }
     .calibration-step button.done { background: #edf7f1; border-color: #cbe7d8; color: #17633a; }
+    .host-clap-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .host-clap-indicator.hidden { display: none; }
+    .host-clap-label {
+      min-width: 72px;
+      color: #17633a !important;
+      font-weight: 800;
+    }
+    .host-clap-dot {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e8edf2;
+      color: #667085 !important;
+      font-size: 12px !important;
+      font-weight: 850;
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+    .host-clap-dot.active { background: #176f5f; color: #fff !important; transform: scale(1.18); }
+    .host-clap-dot.done { background: #d8f0e5; color: #17633a !important; }
     .calibration-flash-option {
       display: inline-flex;
       align-items: center;
@@ -3626,7 +3652,16 @@
                       </label>
                       <div class="calibration-step" id="clapCalibrationStep">
                         <div class="calibration-index">2</div>
-                        <div><strong>视频与 IMU 拍手标记</strong><span id="clapCalibrationMeta">闪光后等待 2 秒，再启动拍手倒计时</span></div>
+                        <div>
+                          <strong>视频与 IMU 拍手标记</strong>
+                          <span id="clapCalibrationMeta">闪光后等待 2 秒，再启动拍手倒计时</span>
+                          <div class="host-clap-indicator hidden" id="hostClapIndicator" aria-live="polite">
+                            <span class="host-clap-label" id="hostClapLabel">准备</span>
+                            <span class="host-clap-dot" data-host-clap="1">1</span>
+                            <span class="host-clap-dot" data-host-clap="2">2</span>
+                            <span class="host-clap-dot" data-host-clap="3">3</span>
+                          </div>
+                        </div>
                         <button id="clapCalibrationBtn" type="button" disabled>记录拍手标记</button>
                       </div>
                     </div>
@@ -4090,6 +4125,7 @@
       activeCalibrationKey: "",
       calibrationCountdownId: null,
       calibrationCountdownActive: false,
+      hostClapProgress: { visible: false, phase: "", progress: 0, countdown: 0 },
       done: {},
       cameras: {
         cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera1" },
@@ -4929,6 +4965,7 @@
 
     function activateCalibrationForDeck(deckId, position = "start", segmentId = "") {
       const descriptor = calibrationDescriptor(deckId, position, segmentId);
+      state.hostClapProgress = { visible: false, phase: "", progress: 0, countdown: 0 };
       if (!descriptor) {
         state.activeCalibrationKey = "";
         return;
@@ -5022,6 +5059,34 @@
       if (recording && record.flash && !flashRecoveryDone) {
         setTimeout(renderCalibrationPanel, Math.max(100, 2050 - (Date.now() - record.flash.epoch_ms)));
       }
+      renderHostClapProgress();
+    }
+
+    function setHostClapProgress(phase, progress = 0, countdown = 0) {
+      state.hostClapProgress = { visible: true, phase, progress, countdown };
+      renderHostClapProgress();
+    }
+
+    function renderHostClapProgress() {
+      const indicator = $("hostClapIndicator");
+      if (!indicator) return;
+      const progress = state.hostClapProgress || {};
+      indicator.classList.toggle("hidden", !progress.visible);
+      if (!progress.visible) return;
+      const labels = {
+        countdown: `倒计时 ${progress.countdown}`,
+        prepare: `第 ${progress.progress} 次准备`,
+        clap: `第 ${progress.progress} 次拍手`,
+        lower: `第 ${progress.progress} 次放下`,
+        wait: `第 ${progress.progress} 次完成`,
+        complete: "三次完成",
+      };
+      $("hostClapLabel").textContent = labels[progress.phase] || "准备";
+      document.querySelectorAll("[data-host-clap]").forEach(dot => {
+        const value = Number(dot.dataset.hostClap);
+        dot.classList.toggle("active", progress.phase !== "complete" && value === progress.progress);
+        dot.classList.toggle("done", progress.phase === "complete" || value < progress.progress || (value === progress.progress && progress.phase === "wait"));
+      });
     }
 
     async function saveCalibrationEvent(status, record, marker) {
@@ -5081,6 +5146,7 @@
       if (state.calibrationCountdownId) clearInterval(state.calibrationCountdownId);
       state.calibrationCountdownId = null;
       state.calibrationCountdownActive = false;
+      state.hostClapProgress = { visible: false, phase: "", progress: 0, countdown: 0 };
       const record = activeCalibration();
       if (record) {
         broadcastCalibration("waiting", { message: reason });
@@ -5098,6 +5164,7 @@
       state.calibrationCountdownActive = true;
       let count = 3;
       broadcastCalibration("clap_countdown", { countdown: count });
+      setHostClapProgress("countdown", 0, count);
       renderCalibrationPanel();
       state.calibrationCountdownId = setInterval(async () => {
         if (!state.captureStartMs) {
@@ -5107,6 +5174,7 @@
         count -= 1;
         if (count > 0) {
           broadcastCalibration("clap_countdown", { countdown: count });
+          setHostClapProgress("countdown", 0, count);
           return;
         }
         clearInterval(state.calibrationCountdownId);
@@ -5131,6 +5199,7 @@
             retry_count: retryCount,
           };
           record.clap = marker;
+          setHostClapProgress("complete", 3, 0);
           renderCalibrationPanel();
           await saveCalibrationEvent("imu_clap_marker", record, marker);
           setTimeout(() => {
@@ -5143,6 +5212,7 @@
             return;
           }
           if (phase === "prepare") {
+            setHostClapProgress("prepare", clapProgress);
             broadcastCalibration("clap_prepare", {
               clap_progress: clapProgress,
               clap_total: 3,
@@ -5153,6 +5223,7 @@
             return;
           }
           if (phase === "clap") {
+            setHostClapProgress("clap", clapProgress);
             clapEpochs.push(Date.now());
             broadcastCalibration("clap_now", {
               clap_progress: clapProgress,
@@ -5164,6 +5235,7 @@
             return;
           }
           if (phase === "lower") {
+            setHostClapProgress("lower", clapProgress);
             broadcastCalibration("clap_lower", {
               clap_progress: clapProgress,
               clap_total: 3,
@@ -5173,6 +5245,7 @@
             state.calibrationCountdownId = setTimeout(() => runClapPhase(clapProgress, "wait"), phaseDurations.lower);
             return;
           }
+          setHostClapProgress("wait", clapProgress);
           broadcastCalibration("clap_wait", {
             clap_progress: clapProgress,
             clap_total: 3,
