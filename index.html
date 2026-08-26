@@ -308,8 +308,26 @@
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .scene-map {
       display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .scene-group {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      align-items: start;
+      gap: 14px;
+    }
+    .scene-group-title {
+      padding: 14px 0;
+      color: #657285;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: left;
+    }
+    .scene-group-items {
+      display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 10px;
     }
     .scene {
       border: 0;
@@ -321,10 +339,14 @@
     .scene-head {
       padding: 8px 10px;
       background: #f8f9fb;
-      border-bottom: 1px solid var(--line);
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
+      align-items: center;
       gap: 8px;
+    }
+    .scene-head strong {
+      min-width: 0;
+      text-align: left;
     }
     .task {
       padding: 8px 10px;
@@ -3253,6 +3275,16 @@
     .calibration-step span { color: #667085; font-size: 12px; }
     .calibration-step button { min-width: 150px; min-height: 40px; }
     .calibration-step button.done { background: #edf7f1; border-color: #cbe7d8; color: #17633a; }
+    .calibration-flash-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      color: #475467;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .calibration-flash-option input { width: 18px; height: 18px; margin: 0; }
     .calibration-footer {
       display: flex;
       align-items: center;
@@ -3588,6 +3620,10 @@
                         <div><strong>双摄像头闪光标记</strong><span id="flashCalibrationMeta">通过引闪器闪光一次，再记录标记</span></div>
                         <button id="flashCalibrationBtn" type="button">记录闪光标记</button>
                       </div>
+                      <label class="calibration-flash-option">
+                        <input id="skipFlashCalibrationCheck" type="checkbox" />
+                        本次同步不使用闪光
+                      </label>
                       <div class="calibration-step" id="clapCalibrationStep">
                         <div class="calibration-index">2</div>
                         <div><strong>视频与 IMU 拍手标记</strong><span id="clapCalibrationMeta">闪光后等待 2 秒，再启动拍手倒计时</span></div>
@@ -3918,12 +3954,15 @@
   <script>
     const $ = (id) => document.getElementById(id);
     const scenes = [
-      { id: "S01", name: "场景1 单一设备场景", selected: false, material_path: "" },
-      { id: "S02", name: "场景2 桌面计算场景", selected: false, material_path: "" },
-      { id: "S03-1", name: "场景3-1 厨房家居场景", selected: false, material_path: "" },
-      { id: "S03-2", name: "场景3-2 客厅家居场景", selected: false, material_path: "" },
-      { id: "S04", name: "场景4 车场景", selected: false, material_path: "" },
-      { id: "S05", name: "场景5 运动移动场景", selected: false, material_path: "" },
+      { id: "S01-1", parent_id: "S01", segment_id: "1-1", deck_id: "scene1_sequence", name: "场景1-1 单一设备场景", selected: false, material_path: "" },
+      { id: "S01-2", parent_id: "S01", segment_id: "1-2", deck_id: null, name: "场景1-2 单一设备场景", selected: false, material_path: "" },
+      { id: "S02-1", parent_id: "S02", segment_id: "2-1", deck_id: "scene2_sequence", name: "场景2-1 桌面计算场景", selected: false, material_path: "" },
+      { id: "S02-2", parent_id: "S02", segment_id: "2-2", deck_id: "scene2_sequence", name: "场景2-2 AI眼镜场景", selected: false, material_path: "" },
+      { id: "S03-1", parent_id: "S03", segment_id: "3-1", deck_id: "scene3_1", name: "场景3-1 厨房家居场景", selected: false, material_path: "" },
+      { id: "S03-2", parent_id: "S03", segment_id: "3-2", deck_id: "scene3_2", name: "场景3-2 客厅家居场景", selected: false, material_path: "" },
+      { id: "S04-1", parent_id: "S04", segment_id: "4-1", deck_id: "scene4", name: "场景4-1 车外场景", selected: false, material_path: "" },
+      { id: "S04-2", parent_id: "S04", segment_id: "4-2", deck_id: "scene4", name: "场景4-2 车内场景", selected: false, material_path: "" },
+      { id: "S05-1", parent_id: "S05", segment_id: "5-1", deck_id: null, name: "场景5-1 运动移动场景", selected: false, material_path: "" },
     ];
     const sceneSteps = [
       {
@@ -4165,12 +4204,40 @@
     }
 
     function defaultDeckForScene(scene) {
+      if (Object.prototype.hasOwnProperty.call(scene || {}, "deck_id")) return scene.deck_id;
       if (scene.id === "S01") return "scene1_sequence";
       if (scene.id === "S02") return "scene2_sequence";
       if (scene.id === "S03-1") return "scene3_1";
       if (scene.id === "S03-2") return "scene3_2";
       if (scene.id === "S04") return "scene4";
       return null;
+    }
+
+    function inferredDeckSegments(deckId, deck) {
+      if (Array.isArray(deck?.segments) && deck.segments.length) return deck.segments;
+      if (deckId === "scene1_sequence") return [{ id: "1-1", name: "场景1-1", scene_id: "S01", start_page: 1, end_page: deck.pages.length }];
+      if (deckId === "scene2_sequence") return [
+        { id: "2-1", name: "场景2-1", scene_id: "S02", start_page: 1, end_page: 16 },
+        { id: "2-2", name: "场景2-2", scene_id: "S02", start_page: 17, end_page: 34 },
+      ];
+      return [];
+    }
+
+    function deckForSelectedSubscene(deckId, loadedDeck) {
+      const segments = inferredDeckSegments(deckId, loadedDeck);
+      const requestedId = state.scene?.deck_id === deckId ? state.scene.segment_id : "";
+      if (!requestedId) return { ...loadedDeck, segments };
+      const segment = segments.find(item => item.id === requestedId);
+      if (!segment) return loadedDeck;
+      const inSegment = page => Number(page.page ?? page.index) >= Number(segment.start_page) && Number(page.page ?? page.index) <= Number(segment.end_page);
+      return {
+        ...loadedDeck,
+        name: state.scene.name,
+        pages: loadedDeck.pages.filter(inSegment).map(page => ({ ...page, segment_id: requestedId })),
+        overlays: (loadedDeck.overlays || []).filter(inSegment).map(item => ({ ...item, segment_id: requestedId })),
+        cue_points: (loadedDeck.cue_points || []).filter(inSegment).map(item => ({ ...item, segment_id: requestedId })),
+        segments: [segment],
+      };
     }
 
     function deckSegments(deck = state.deck) {
@@ -4703,17 +4770,26 @@
     function renderSceneMap() {
       const map = $("sceneMap");
       map.innerHTML = "";
+      const groups = new Map();
       scenes.forEach((scene) => {
+        const group = String(scene.segment_id || scene.id).replace(/^S/i, "").split("-")[0];
+        if (!groups.has(group)) groups.set(group, []);
+        groups.get(group).push(scene);
+      });
+      groups.forEach((groupScenes, group) => {
+        const section = document.createElement("section");
+        section.className = "scene-group";
+        section.innerHTML = `<div class="scene-group-title">场景 ${group}</div><div class="scene-group-items"></div>`;
+        const items = section.querySelector(".scene-group-items");
+        groupScenes.forEach((scene) => {
         const box = document.createElement("div");
         box.className = "scene";
-        const doneCount = sceneSteps.filter(step => state.done[`${scene.id}:${step.id}`]).length;
         box.innerHTML = `
           <div class="scene-head">
             <label class="scene-check" title="${scene.name}">
               <input type="checkbox" data-select-scene="${scene.id}" aria-label="选择 ${scene.name}" ${scene.selected ? "checked" : ""}>
             </label>
             <strong>${scene.name}</strong>
-            <span class="badge ${doneCount === sceneSteps.length ? "good" : "warn"}">${doneCount}/${sceneSteps.length}</span>
           </div>
         `;
         box.querySelector("[data-select-scene]").addEventListener("change", (event) => {
@@ -4736,7 +4812,9 @@
           else showMissingSceneDeck(scene);
           setView("scene");
         });
-        map.appendChild(box);
+          items.appendChild(box);
+        });
+        map.appendChild(section);
       });
     }
 
@@ -4822,9 +4900,13 @@
         };
       }
       if (!base) return null;
+      const segment = segmentId ? deckSegmentById(segmentId) : null;
+      const segmentSuffix = segmentId ? `:${segmentId}` : "";
       return {
         ...base,
-        key: `${base.base_key}:${position}`,
+        key: `${base.base_key}${segmentSuffix}:${position}`,
+        segment_id: segmentId || base.segment_id || "",
+        label: segment?.name || base.label,
         position,
         position_label: position === "end" ? "结束后" : "开始前",
       };
@@ -4838,6 +4920,7 @@
           deck_id: state.deckId,
           flash: null,
           clap: null,
+          skip_flash: false,
           completed: false,
         };
       }
@@ -4897,41 +4980,46 @@
       if (!record) return;
       const recording = Boolean(state.captureStartMs);
       const subjectReady = subjectCalibrationReady(record);
-      const flashDone = Boolean(record.flash);
+      const flashSkipped = Boolean(record.skip_flash);
+      const flashDone = Boolean(record.flash) || flashSkipped;
       const clapDone = Boolean(record.clap);
       const flashStep = $("flashCalibrationStep");
       const clapStep = $("clapCalibrationStep");
       flashStep.classList.toggle("done", flashDone);
       clapStep.classList.toggle("done", clapDone);
       const isEnd = record.position === "end";
-      flashStep.classList.toggle("hidden", isEnd);
+      flashStep.classList.remove("hidden");
+      $("skipFlashCalibrationCheck").checked = flashSkipped;
+      $("skipFlashCalibrationCheck").disabled = state.calibrationCountdownActive;
       $("calibrationStageBadge").textContent = `${record.label} · ${record.position_label}`;
       $("calibrationTitle").textContent = `${record.label}${record.position_label}同步校准`;
-      $("flashCalibrationBtn").textContent = flashDone ? "重新记录闪光" : "记录闪光标记";
+      $("flashCalibrationBtn").textContent = flashSkipped ? "本次已跳过闪光" : record.flash ? "重新记录闪光" : "记录闪光标记";
       $("flashCalibrationBtn").classList.toggle("done", flashDone);
-      $("flashCalibrationBtn").disabled = isEnd || !recording || !subjectReady || state.calibrationCountdownActive;
-      $("flashCalibrationMeta").textContent = flashDone
+      $("flashCalibrationBtn").disabled = flashSkipped || !recording || state.calibrationCountdownActive;
+      $("flashCalibrationMeta").textContent = flashSkipped
+        ? "本次只进行拍手同步"
+        : record.flash
         ? `已记录 ${localTimeString(new Date(record.flash.epoch_ms))}｜重做 ${record.flash.retry_count} 次`
         : "通过引闪器闪光一次，再点击记录";
-      const flashRecoveryDone = isEnd || (flashDone && Date.now() - record.flash.epoch_ms >= 2000);
+      const flashRecoveryDone = flashSkipped || (record.flash && Date.now() - record.flash.epoch_ms >= 2000);
       $("clapCalibrationBtn").textContent = state.calibrationCountdownActive
         ? "倒计时中..."
         : clapDone ? "重新记录拍手" : "记录拍手标记";
       $("clapCalibrationBtn").classList.toggle("done", clapDone);
-      $("clapCalibrationBtn").disabled = !recording || !subjectReady || !flashRecoveryDone || state.calibrationCountdownActive;
+      $("clapCalibrationBtn").disabled = !recording || !flashRecoveryDone || state.calibrationCountdownActive;
       $("clapCalibrationMeta").textContent = clapDone
         ? `已记录 ${localTimeString(new Date(record.clap.epoch_ms))}｜重做 ${record.clap.retry_count} 次`
-        : !isEnd && flashDone && !flashRecoveryDone ? "等待摄像头曝光恢复..." : "启动倒计时，被试快速用力连续拍手三次";
+        : record.flash && !flashRecoveryDone ? "等待摄像头曝光恢复..." : "启动倒计时，被试快速用力连续拍手三次";
       $("enterCalibratedTaskBtn").textContent = isEnd ? "结束记录并完成阶段" : "进入正式任务";
-      const markersDone = isEnd ? clapDone : flashDone && clapDone;
+      const markersDone = flashDone && clapDone;
       $("enterCalibratedTaskBtn").disabled = !recording || !markersDone || state.calibrationCountdownActive;
-      $("calibrationStatus").textContent = !subjectReady
-        ? "被试扩展屏未连接，请先打开扩展屏"
-        : !recording
+      $("calibrationStatus").textContent = !recording
         ? isEnd ? "当前记录已停止；结束同步必须在记录中完成" : "请主试先点击右侧“开始记录”"
-        : markersDone ? isEnd ? "结束拍手已完成，请结束本段记录" : "同步标记已齐全，可以进入正式任务"
-        : isEnd ? "请完成三次快速用力拍手" : flashDone ? "闪光已记录，下一步完成三次拍手" : "请先触发闪光并记录标记";
-      if (recording && flashDone && !flashRecoveryDone) {
+        : !subjectReady
+        ? "扩展屏未连接；仍可记录同步标记，但被试看不到倒计时"
+        : markersDone ? isEnd ? "结束同步已完成，请结束本段记录" : "同步标记已齐全，可以进入正式任务"
+        : flashDone ? "下一步完成三次拍手" : "请先触发闪光并记录标记，或勾选不使用闪光";
+      if (recording && record.flash && !flashRecoveryDone) {
         setTimeout(renderCalibrationPanel, Math.max(100, 2050 - (Date.now() - record.flash.epoch_ms)));
       }
     }
@@ -4960,7 +5048,7 @@
 
     async function recordFlashCalibration() {
       const record = activeCalibration();
-      if (!record || !state.captureStartMs || !subjectCalibrationReady(record) || state.calibrationCountdownActive) return;
+      if (!record || record.skip_flash || !state.captureStartMs || state.calibrationCountdownActive) return;
       const previousRetries = record.flash?.retry_count || 0;
       const marker = {
         epoch_ms: Date.now(),
@@ -4976,6 +5064,19 @@
       await saveCalibrationEvent("camera_flash_marker", record, marker);
     }
 
+    function toggleCalibrationFlashSkip() {
+      const record = activeCalibration();
+      if (!record || state.calibrationCountdownActive) return;
+      record.skip_flash = $("skipFlashCalibrationCheck").checked;
+      if (record.skip_flash) record.flash = null;
+      record.clap = null;
+      record.completed = false;
+      broadcastCalibration(record.skip_flash ? "flash_skipped" : "flash_ready", {
+        message: record.skip_flash ? "本次不使用闪光，准备拍手同步" : "请保持不动，准备闪光",
+      });
+      renderCalibrationPanel();
+    }
+
     function cancelCalibrationCountdown(reason = "记录已停止") {
       if (state.calibrationCountdownId) clearInterval(state.calibrationCountdownId);
       state.calibrationCountdownId = null;
@@ -4989,9 +5090,8 @@
 
     function startClapCalibration() {
       const record = activeCalibration();
-      const isEnd = record?.position === "end";
-      if (!record || (!isEnd && !record.flash) || !state.captureStartMs || !subjectCalibrationReady(record) || state.calibrationCountdownActive) return;
-      if (!isEnd && Date.now() - record.flash.epoch_ms < 2000) return;
+      if (!record || (!record.skip_flash && !record.flash) || !state.captureStartMs || state.calibrationCountdownActive) return;
+      if (record.flash && Date.now() - record.flash.epoch_ms < 2000) return;
       const retryCount = record.clap ? record.clap.retry_count + 1 : 0;
       record.clap = null;
       record.completed = false;
@@ -5000,8 +5100,8 @@
       broadcastCalibration("clap_countdown", { countdown: count });
       renderCalibrationPanel();
       state.calibrationCountdownId = setInterval(async () => {
-        if (!state.captureStartMs || !subjectCalibrationReady(record)) {
-          cancelCalibrationCountdown(!state.captureStartMs ? "记录已停止" : "被试扩展屏连接已中断");
+        if (!state.captureStartMs) {
+          cancelCalibrationCountdown("记录已停止");
           return;
         }
         count -= 1;
@@ -5038,8 +5138,8 @@
           }, 1000);
         };
         const runClapPhase = (clapProgress, phase = "prepare") => {
-          if (!state.captureStartMs || !subjectCalibrationReady(record)) {
-            cancelCalibrationCountdown(!state.captureStartMs ? "记录已停止" : "被试扩展屏连接已中断");
+          if (!state.captureStartMs) {
+            cancelCalibrationCountdown("记录已停止");
             return;
           }
           if (phase === "prepare") {
@@ -5090,7 +5190,7 @@
 
     async function enterCalibratedTask() {
       const record = activeCalibration();
-      const markersDone = record?.position === "end" ? record?.clap : record?.flash && record?.clap;
+      const markersDone = (record?.flash || record?.skip_flash) && record?.clap;
       const testSkipped = Boolean(record?.test_skipped);
       if ((!state.captureStartMs && !testSkipped) || !markersDone || state.calibrationCountdownActive) return;
       record.completed = true;
@@ -5099,14 +5199,27 @@
         epoch_ms: Date.now(),
         iso: record.completed_at,
         flash_epoch_ms: record.flash?.epoch_ms || null,
+        flash_skipped: Boolean(record.skip_flash),
         clap_epoch_ms: record.clap.epoch_ms,
         clap_epoch_ms_all: record.clap.clap_epoch_ms || [],
         test_skip: testSkipped,
-        skipped_markers: testSkipped ? (record.position === "end" ? ["imu_clap_marker"] : ["camera_flash_marker", "imu_clap_marker"]) : [],
+        skipped_markers: testSkipped ? ["camera_flash_marker", "imu_clap_marker"] : [],
       });
       state.activeCalibrationKey = "";
       if (record.position === "end") {
         if (state.captureStartMs) await oneClickStopAndExport();
+        const pendingSegmentId = state.pendingSegmentStartId || "";
+        if (pendingSegmentId) {
+          const nextSegment = deckSegmentById(pendingSegmentId);
+          state.pendingSegmentStartId = "";
+          if (nextSegment) {
+            state.slideIndex = state.deck.pages.findIndex(item => Number(item.index) === Number(nextSegment.start_page));
+            activateCalibrationForDeck(state.deckId, "start", nextSegment.id);
+            $("slideStatus").textContent = `${nextSegment.name}即将开始，请开始新的记录段并完成开始同步。`;
+            renderDeck();
+            return;
+          }
+        }
         const continuation = state.deckId === "scene3_1" && scenes.find(item => item.id === "S03-2")?.selected;
         if (continuation) {
           state.scene = scenes.find(item => item.id === "S03-2");
@@ -5133,7 +5246,7 @@
         test_skip: true,
       };
       record.test_skipped = true;
-      record.flash = record.position === "end" ? null : { ...marker };
+      record.flash = { ...marker };
       record.clap = { ...marker };
       await enterCalibratedTask();
     }
@@ -5156,11 +5269,12 @@
       try {
         const loadedDeck = await fetchDeckWithRetry(source);
         if (loadToken !== state.deckLoadToken) return;
+        const selectedDeck = deckForSelectedSubscene(deckId, loadedDeck);
         state.deck = {
-          ...loadedDeck,
-          pages: insertTaskValueReadbackPages(loadedDeck),
+          ...selectedDeck,
+          pages: insertTaskValueReadbackPages(selectedDeck),
         };
-        if (loadedDeck.segments?.length) {
+        if (selectedDeck.segments?.length) {
           state.deck = {
             ...state.deck,
             pages: [{
@@ -5243,9 +5357,10 @@
       renderCalibrationPanel();
       renderSceneNav();
       if (calibrationPending) {
-        broadcastCalibration(state.captureStartMs ? "flash_ready" : "waiting", {
+        const calibrationRecord = activeCalibration();
+        broadcastCalibration(state.captureStartMs ? (calibrationRecord?.skip_flash ? "flash_skipped" : "flash_ready") : "waiting", {
           message: state.captureStartMs
-            ? "请保持不动，准备闪光"
+            ? calibrationRecord?.skip_flash ? "本次不使用闪光，准备拍手同步" : "请保持不动，准备闪光"
             : activeCalibration()?.position === "end" ? "请主试保持本段记录并完成结束同步" : "等待主试开始记录",
         });
       } else {
@@ -5427,11 +5542,13 @@
       stopGestureProgress();
       if (total <= 1) return;
       $("gestureEndMarkBtn").disabled = true;
+      const page = state.deck?.pages?.[state.slideIndex];
+      const durationMultiplier = compactPageText(page).includes("自动泊出") ? 2 : 1;
       const phaseDurations = {
-        prepare: 1080,
-        active: 1440,
-        lower: 720,
-        wait: 960,
+        prepare: 1080 * durationMultiplier,
+        active: 1440 * durationMultiplier,
+        lower: 720 * durationMultiplier,
+        wait: 960 * durationMultiplier,
       };
       const runRepeatPhase = (step, phase = "prepare") => {
         state.gestureProgressStep = step;
@@ -5753,6 +5870,16 @@
         return;
       }
       const atDeckEnd = state.slideIndex >= state.deck.pages.length - 1;
+      const nextPage = delta > 0 ? state.deck.pages[state.slideIndex + 1] : null;
+      const currentSegment = currentDeckSegment(page?.index);
+      const nextSegment = nextPage ? currentDeckSegment(nextPage.index) : null;
+      if (delta > 0 && currentSegment && nextSegment && currentSegment.id !== nextSegment.id) {
+        state.pendingSegmentStartId = nextSegment.id;
+        activateCalibrationForDeck(state.deckId, "end", currentSegment.id);
+        $("slideStatus").textContent = `${currentSegment.name}已完成，请完成结束同步并结束本段记录。`;
+        renderDeck();
+        return;
+      }
       if (delta > 0 && atDeckEnd && supportsEndCalibration()) {
         activateEndCalibrationForDeck();
         $("slideStatus").textContent = `${state.deck.name} 已完成，请完成结束拍手并结束本段记录。`;
@@ -6376,23 +6503,27 @@
         { key: "pretask:end", label: "预备手势 · 结束后" },
         ...selectedScenes().flatMap(scene => {
           const segmentIds = knownSegments[scene.id];
-          if (!segmentIds) return [
-            { key: `scene:${scene.id}:start`, label: `${scene.name} · 开始前` },
-            { key: `scene:${scene.id}:end`, label: `${scene.name} · 结束后` },
-          ];
-          return segmentIds.flatMap(segmentId => ([
+          if (segmentIds) return segmentIds.flatMap(segmentId => ([
             { key: `scene:${scene.id}:${segmentId}:start`, label: `${scene.name} · ${segmentId} · 开始前` },
             { key: `scene:${scene.id}:${segmentId}:end`, label: `${scene.name} · ${segmentId} · 结束后` },
           ]));
+          const baseId = scene.parent_id || scene.id;
+          const segmentSuffix = scene.segment_id ? `:${scene.segment_id}` : "";
+          return [
+            { key: `scene:${baseId}${segmentSuffix}:start`, label: `${scene.name} · 开始前` },
+            { key: `scene:${baseId}${segmentSuffix}:end`, label: `${scene.name} · 结束后` },
+          ];
         }),
       ];
       return expected.map(item => {
         const record = state.calibrations[item.key];
         const flash = record?.flash;
         const clap = record?.clap;
-        const ok = Boolean(record?.completed && flash && clap);
+        const flashOk = Boolean(flash || record?.skip_flash);
+        const ok = Boolean(record?.completed && flashOk && clap);
         const segment = flash?.capture_segment || clap?.capture_segment || "-";
-        const meta = `记录段 ${segment}｜闪光：${flash ? localTimeString(new Date(flash.epoch_ms)) : "缺失"}｜拍手：${clap ? localTimeString(new Date(clap.epoch_ms)) : "缺失"}${flash || clap ? `｜重做 ${Math.max(flash?.retry_count || 0, clap?.retry_count || 0)} 次` : ""}`;
+        const flashText = record?.skip_flash ? "已选择不使用" : flash ? localTimeString(new Date(flash.epoch_ms)) : "缺失";
+        const meta = `记录段 ${segment}｜闪光：${flashText}｜拍手：${clap ? localTimeString(new Date(clap.epoch_ms)) : "缺失"}${flash || clap ? `｜重做 ${Math.max(flash?.retry_count || 0, clap?.retry_count || 0)} 次` : ""}`;
         return auditRow(item.label, meta, ok, "同步完成", "同步缺失");
       });
     }
@@ -7384,6 +7515,7 @@
     $("oneClickSyncStopBtn").addEventListener("click", oneClickStopAndExport);
     $("invalidateCaptureBtn").addEventListener("click", invalidateLastCapture);
     $("flashCalibrationBtn").addEventListener("click", recordFlashCalibration);
+    $("skipFlashCalibrationCheck").addEventListener("change", toggleCalibrationFlashSkip);
     $("clapCalibrationBtn").addEventListener("click", startClapCalibration);
     $("skipCalibrationTestBtn").addEventListener("click", skipCalibrationForTest);
     $("enterCalibratedTaskBtn").addEventListener("click", enterCalibratedTask);

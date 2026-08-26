@@ -944,6 +944,7 @@
       const content = {
         waiting: [message.position === "end" ? "等待结束同步" : "等待开始记录", message.message || "请保持自然姿势，等待主试操作"],
         flash_ready: ["请保持不动", "主试正在准备闪光，请面向前方"],
+        flash_skipped: ["准备拍手同步", message.message || "本次不使用闪光，请等待主试开始拍手倒计时"],
         flash_recorded: ["闪光标记已完成", "请继续保持姿势，接下来进行拍手同步"],
         clap_countdown: ["准备拍手", "倒计时结束后，请跟随屏幕完成三次拍手"],
         clap_prepare: [currentClapLabel, ""],

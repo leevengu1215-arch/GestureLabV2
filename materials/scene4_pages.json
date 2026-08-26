@@ -438,14 +438,14 @@
   "segments": [
     {
       "id": "4-1",
-      "name": "子场景 4-1",
+      "name": "车外场景",
       "scene_id": "S04",
       "start_page": 1,
       "end_page": 29
     },
     {
       "id": "4-2",
-      "name": "子场景 4-2",
+      "name": "车内场景",
       "scene_id": "S04",
       "start_page": 30,
       "end_page": 46
@@ -718,7 +718,7 @@
     },
     {
       "page": 39,
-      "path": "/materials/generated/scene4/wrist_inward_wave_twice.gif",
+      "path": "/materials/generated/scene4/wrist_motion_from_img7419.gif?v=20260826",
       "x": 56.0876,
       "y": 51.0248,
       "w": 27.4445,
@@ -729,7 +729,7 @@
     },
     {
       "page": 40,
-      "path": "/materials/generated/scene4/wrist_inward_wave_twice.gif",
+      "path": "/materials/generated/scene4/wrist_motion_from_img7419.gif?v=20260826",
       "x": 56.0876,
       "y": 51.0248,
       "w": 27.4445,
