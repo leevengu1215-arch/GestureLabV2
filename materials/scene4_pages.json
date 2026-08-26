@@ -65,6 +65,17 @@
       "repeat_total": 3
     },
     {
+      "index": 6.5,
+      "title": "车外场景车辆免触控制",
+      "text": "车外场景车辆免触控制\n任务目标：自动泊出\n手势方案A：手指向内招两下\n请背对摄像头\n请连做3下\n场景任务-场景4-1-01-A-背对",
+      "image": "/materials/scene4_pages/page-auto-park-back-A.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3,
+      "back_facing": true
+    },
+    {
       "index": 7,
       "title": "任务目标",
       "text": "任务目标\n：\n车外开车门\n手势方案A\n：\n捏两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-02-A",
@@ -151,6 +162,17 @@
       "repeat_total": 3
     },
     {
+      "index": 15.5,
+      "title": "车外场景车辆免触控制",
+      "text": "车外场景车辆免触控制\n任务目标：自动泊出\n手势方案B：手腕向内招两下\n请背对摄像头\n请连做3下\n场景任务-场景4-1-01-B-背对",
+      "image": "/materials/scene4_pages/page-auto-park-back-B.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3,
+      "back_facing": true
+    },
+    {
       "index": 16,
       "title": "任务目标",
       "text": "任务目标\n：\n车外开车门\n手势方案\nB\n：\n手腕向内招两下\n请连做3下\n车外场景车辆免触控制\n场景任务-场景\n4\n-\n1-02-B",
@@ -235,6 +257,17 @@
       "has_gesture": true,
       "repeat_index": 1,
       "repeat_total": 3
+    },
+    {
+      "index": 24.5,
+      "title": "车外场景车辆免触控制",
+      "text": "车外场景车辆免触控制\n任务目标：自动泊出\n手势方案C：手臂带手腕向内招两下\n请背对摄像头\n请连做3下\n场景任务-场景4-1-01-C-背对",
+      "image": "/materials/scene4_pages/page-auto-park-back-C.png",
+      "segment_id": "4-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3,
+      "back_facing": true
     },
     {
       "index": 25,
@@ -707,7 +740,7 @@
     },
     {
       "page": 38,
-      "path": "/materials/generated/scene4/image6-13.gif",
+      "path": "/materials/generated/common/press_remote_twice_img7430.gif?v=20260826",
       "x": 55.95,
       "y": 50.8211,
       "w": 27.6509,
@@ -758,6 +791,39 @@
       "h": 36.4779,
       "kind": "embedded_gif",
       "segment_id": "4-2",
+      "order": 1
+    },
+    {
+      "page": 6.5,
+      "path": "/materials/generated/scene4/image1-1.gif",
+      "x": 56.1896,
+      "y": 51.1845,
+      "w": 26.9971,
+      "h": 35.9961,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 15.5,
+      "path": "/materials/generated/scene4/wrist_motion_from_img7419.gif?v=20260825",
+      "x": 56.2185,
+      "y": 51.0966,
+      "w": 27.4671,
+      "h": 36.6227,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
+      "order": 1
+    },
+    {
+      "page": 24.5,
+      "path": "/materials/generated/scene4/image13-8.gif",
+      "x": 56.2623,
+      "y": 51.1745,
+      "w": 27.1587,
+      "h": 36.2116,
+      "kind": "embedded_gif",
+      "segment_id": "4-1",
       "order": 1
     }
   ],
