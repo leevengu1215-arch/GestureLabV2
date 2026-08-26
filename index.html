@@ -3992,10 +3992,8 @@
   <script>
     const $ = (id) => document.getElementById(id);
     const scenes = [
-      { id: "S01-1", parent_id: "S01", segment_id: "1-1", deck_id: "scene1_sequence", name: "场景1-1 单一设备场景", selected: false, material_path: "" },
-      { id: "S01-2", parent_id: "S01", segment_id: "1-2", deck_id: null, name: "场景1-2 单一设备场景", selected: false, material_path: "" },
-      { id: "S02-1", parent_id: "S02", segment_id: "2-1", deck_id: "scene2_sequence", name: "场景2-1 桌面计算场景", selected: false, material_path: "" },
-      { id: "S02-2", parent_id: "S02", segment_id: "2-2", deck_id: "scene2_sequence", name: "场景2-2 AI眼镜场景", selected: false, material_path: "" },
+      { id: "S01", parent_id: "S01", segment_id: "1", deck_id: "scene1_sequence", name: "场景1 单一设备场景", selected: false, material_path: "" },
+      { id: "S02", parent_id: "S02", segment_id: "2", deck_id: "scene2_sequence", name: "场景2 桌面计算与AI眼镜场景", selected: false, material_path: "" },
       { id: "S03-1", parent_id: "S03", segment_id: "3-1", deck_id: "scene3_1", name: "场景3-1 厨房家居场景", selected: false, material_path: "" },
       { id: "S03-2", parent_id: "S03", segment_id: "3-2", deck_id: "scene3_2", name: "场景3-2 客厅家居场景", selected: false, material_path: "" },
       { id: "S04-1", parent_id: "S04", segment_id: "4-1", deck_id: "scene4", name: "场景4-1 车外场景", selected: false, material_path: "" },
@@ -4745,9 +4743,8 @@
       const configuredPageCounts = {
         baseline: 5,
         pretask: 8,
-        "S01-1": 25,
-        "S02-1": 16,
-        "S02-2": 18,
+        S01: 25,
+        S02: 34,
         "S03-1": 35,
         "S03-2": 62,
         "S04-1": 32,
