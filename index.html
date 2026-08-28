@@ -6291,6 +6291,11 @@
         $("captureStateText").textContent = "保存失败，请重录本段";
         const failedCapture = state.captureSegments.find(item => item.segment === segment);
         state.unresolvedCaptureFailure = { segment, key: failedCapture?.segment_id || state.activeCaptureKey };
+        // A failed HDF5 assembly can still leave complete raw camera files behind.
+        // Expose the archive/retry path immediately instead of trapping the
+        // operator behind the global next-page guard with no available action.
+        state.lastSavedSegment = segment;
+        $("invalidateCaptureBtn").disabled = false;
         setSyncStatus(`第 ${segment} 段保存失败：${err.message}\n请勿继续下一段。点击“开始记录”重录当前阶段，旧文件会保留。`);
         postJSON("/api/event", {
           ...config(),
@@ -6338,14 +6343,18 @@
         });
         state.serverCaptureState = result;
         state.captureSegments
-          .filter(item => item.segment === segment && item.status === "ended")
+          .filter(item => item.segment === segment && ["ended", "save_failed"].includes(item.status))
           .forEach(item => { item.status = "invalid"; item.invalid_reason = reason; });
+        if (state.unresolvedCaptureFailure?.segment === segment) {
+          state.unresolvedCaptureFailure = null;
+        }
         state.captureSegmentIndex = segment - 1;
         state.lastSavedSegment = null;
         state.roundFinalized = false;
         $("captureStateText").textContent = `第 ${segment} 段已作废，等待重录`;
         $("captureSegmentBadge").textContent = `Capture ${String(segment).padStart(2, "0")} 待重录`;
         setSyncStatus(`第 ${segment} 段已完整归档，旧 H5 和视频均未删除。下一次“开始记录”仍使用 Capture ${String(segment).padStart(2, "0")}。`);
+        renderDeck();
       } catch (err) {
         $("invalidateCaptureBtn").disabled = false;
         setSyncStatus(`本段作废失败：${err.message}`);
