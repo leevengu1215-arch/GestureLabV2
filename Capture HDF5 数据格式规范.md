@@ -13,7 +13,7 @@
 
 - **Session**：一次完整采集的唯一实体；后续数据模型中不再存在独立的 participant 概念或字段。
 - **Session ID**：唯一身份，统一使用采集时间字符串，例如 `20260810T001`。不得使用 `P001`、`P002` 等参与者编号。
-- **Capture**：Session 内的一段连续采集。每个 Session 必须包含 **3 或 4 个** Capture。
+- **Capture**：Session 内的一段连续采集。每个 Session 的 Capture 数量由本轮实际选择并完成的采集段决定，不设固定上限。
 - **Capture 编号**：同一 Session 内必须连续为 `01`、`02`、`03`（及可选 `04`）；重录在采集完成前替换对应编号，发布后不得覆盖已发布文件。
 - **Cam-01 时间轴**：本规范中唯一的统一时间轴。所有 `aligned_time` 均映射到它。
 
@@ -26,7 +26,8 @@ data/raw/
     ├── 20260810T001_capture_01.h5
     ├── 20260810T001_capture_02.h5
     ├── 20260810T001_capture_03.h5
-    └── 20260810T001_capture_04.h5   # 可选；仅四段 Capture 时存在
+    ├── 20260810T001_capture_04.h5
+    └── ...                          # 按实际采集段数继续连续编号
 ```
 
 ## 3. 文件命名与根属性
@@ -215,7 +216,7 @@ data/processed/<session_id>/<session_id>_capture_NN/...
 }
 ```
 
-`captures` 必须恰有 3 或 4 项，`capture_index` 连续且不重复；`hdf5_file` 必须严格等于 `<session_id>_capture_NN.h5`。不得再写入 `participant_id`、`capture_id`、`capture_segment`、`video_channels`、`watch_channels`、`scene_label` 等旧索引字段；通道和流程事实均以 HDF5 内容为准。
+`captures` 的数量必须等于本轮实际完成的采集段数，`capture_index` 从 1 开始连续且不重复；`hdf5_file` 必须严格等于 `<session_id>_capture_NN.h5`。不得再写入 `participant_id`、`capture_id`、`capture_segment`、`video_channels`、`watch_channels`、`scene_label` 等旧索引字段；通道和流程事实均以 HDF5 内容为准。
 
 ## 10. 写入、完整性与验收
 
@@ -224,7 +225,7 @@ data/processed/<session_id>/<session_id>_capture_NN/...
 发布前至少验证：
 
 1. Session ID 仅为时间标识，文件名符合 `<session_id>_capture_NN.h5`；
-2. Session 内 Capture 数量为 3 或 4，且编号连续；
+2. Session 内 Capture 数量与本轮实际完成的采集段数一致，且编号连续；
 3. 根属性及 `/video`、`/watch`、`/events`、`/sync` 存在；
 4. 三个 camera Group 均存在，`cam-01` 可用；`accel`、`gyroscope` 存在；所有可用流的值、原始时间和对齐时间长度一致；
 5. `alignment_status` 可用的流，其 `aligned_time/value` 严格递增；Cam-01 的 value 等于其 `time`；

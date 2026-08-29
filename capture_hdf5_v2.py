@@ -366,8 +366,8 @@ def build_capture_hdf5(session_dir, payload):
     session_dir = Path(session_dir)
     capture_index = int(payload.get("capture_segment") or 0)
     session_id = re.sub(r"[^0-9TZ]+", "", str(payload.get("session_id", "")))
-    if not session_id or capture_index not in range(1, 5):
-        raise RuntimeError("Session 必须使用时间 ID，Capture 编号必须为 01–04")
+    if not session_id or capture_index < 1:
+        raise RuntimeError("Session 必须使用时间 ID，Capture 编号必须为正整数")
     start_epoch = float(payload.get("start_epoch_ms") or 0)
     end_epoch = float(payload.get("end_epoch_ms") or 0)
     if not start_epoch or end_epoch <= start_epoch:
@@ -397,7 +397,7 @@ def build_capture_hdf5(session_dir, payload):
         with h5py.File(partial, "w") as h5:
             h5.attrs.update({
                 "schema_name": SCHEMA_NAME, "schema_version": SCHEMA_VERSION,
-                "session_id": session_id, "capture_index": np.uint8(capture_index),
+                "session_id": session_id, "capture_index": np.uint32(capture_index),
                 "timebase": "cam-01", "time_unit": "ms", "status": status,
                 "video_storage": "encoded-container",
             })
@@ -463,9 +463,9 @@ def build_capture_hdf5(session_dir, payload):
     })
     captures.sort(key=lambda item: item["capture_index"])
     expected = list(range(1, len(captures) + 1))
-    if [item["capture_index"] for item in captures] != expected or len(captures) > 4:
+    if [item["capture_index"] for item in captures] != expected:
         target.unlink(missing_ok=True)
-        raise RuntimeError("Capture 编号必须从 01 连续递增，且最多 4 段")
+        raise RuntimeError("Capture 编号必须从 01 连续递增")
     clean_index = {
         "session_id": session_id,
         "capture_storage": {

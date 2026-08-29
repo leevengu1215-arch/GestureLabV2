@@ -32,7 +32,7 @@
 make check <session_id> -- --h5
 ```
 
-只有 3 或 4 个 Capture 均通过且状态为 `valid`，才可进入标注流程。
+本轮实际产生的 Capture 必须编号连续，并且全部通过、状态为 `valid`，才可进入标注流程。Capture 数量不设固定上限。
 
 ## 实验数据
 

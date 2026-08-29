@@ -1,0 +1,271 @@
+{
+  "id": "scene5_1",
+  "name": "场景5-1 运动移动场景",
+  "source_pptx": "/Users/leevengu/Desktop/小米手势交互/场景库/场景5-1.pptx",
+  "logical_size": {
+    "width": 12192000,
+    "height": 6858000
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "运动场景安全",
+      "text": "运动场景安全\n免触控制\n场景\n5\n-1\n运动移动场景",
+      "image": "/materials/scene5_1_pages/page-01.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 2,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n5\n-\n1\n运动场景\n运动设备免触交互\n情境说明\n：\n椭圆机\n/\n跑步机运动\n请想象你正站在椭圆机或跑步机上，准备开始运动。设备已显示你选择的训练计划，需要你通过免触手势确认并开始训练。\n运动过程中，你希望在不松开扶手、不触碰屏幕、不中断运动节奏的情况下，通过手势快速切换屏幕中的训练数据、音乐控制、课程进度等信息卡片。\n请进行手势价值评价-问卷",
+      "image": "/materials/scene5_1_pages/page-02.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 3,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n5\n-1\n-A\n场景任务-场景\n5\n-1-A",
+      "image": "/materials/scene5_1_pages/page-03.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 4,
+      "title": "运动设备安全免触场景",
+      "text": "运动设备安全免触场景\n任务目标\n：\n确认开始\n手势方案A\n：\n捏两下\n请连做3下\n场景任务-场景\n5\n-\n1-01-A",
+      "image": "/materials/scene5_1_pages/page-04.png",
+      "segment_id": "5-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 5,
+      "title": "运动设备安全免触场景",
+      "text": "运动设备安全免触场景\n任务目标\n：\n切换查看数据卡片\n手势方案A\n：\n用力捏两下\n请连做3下\n场景任务-场景\n5\n-\n1-0\n2\n-A",
+      "image": "/materials/scene5_1_pages/page-05.png",
+      "segment_id": "5-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 6,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n手势评价\n5\n-1\n-A\n场景任务-场景\n5\n-1-A\n运动设备安全免触场景",
+      "image": "/materials/scene5_1_pages/page-06.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 7,
+      "title": "手势方案",
+      "text": "手势方案\nB\n5\n-1-B\n场景任务-场景\n5\n-1-B",
+      "image": "/materials/scene5_1_pages/page-07.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 8,
+      "title": "运动设备安全免触场景",
+      "text": "运动设备安全免触场景\n任务目标\n：\n确认开始\n手势方案\nB\n：\n敲两下\n请连做3下\n场景任务-场景\n5\n-\n1-01-B",
+      "image": "/materials/scene5_1_pages/page-08.png",
+      "segment_id": "5-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 9,
+      "title": "运动设备安全免触场景",
+      "text": "运动设备安全免触场景\n任务目标\n：\n切换查看数据卡片\n手势方案\nB\n：\n用力握拳两下\n请连做3下\n场景任务-场景\n5\n-\n1-0\n2\n-B",
+      "image": "/materials/scene5_1_pages/page-09.png",
+      "segment_id": "5-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 10,
+      "title": "手势方案",
+      "text": "手势方案\nB\n手势评价\n5\n-1\n-\nB\n场景任务-场景\n5\n-1-B\n运动设备安全免触场景",
+      "image": "/materials/scene5_1_pages/page-10.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 11,
+      "title": "手势方案",
+      "text": "手势方案\nC\n5\n-1-C\n场景任务-场景\n5\n-1-C",
+      "image": "/materials/scene5_1_pages/page-11.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 12,
+      "title": "运动设备安全免触场景",
+      "text": "运动设备安全免触场景\n任务目标\n：\n确认开始\n手势方案\nC\n：\n晃两下\n请连做3下\n场景任务-场景\n5\n-\n1-01-C",
+      "image": "/materials/scene5_1_pages/page-12.png",
+      "segment_id": "5-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 13,
+      "title": "运动设备安全免触场景",
+      "text": "运动设备安全免触场景\n任务目标\n：\n切换查看数据卡片\n手势方案\nC\n：\n用力长握拳\n请连做3下\n场景任务-场景\n5\n-\n1-0\n2\n-C",
+      "image": "/materials/scene5_1_pages/page-13.png",
+      "segment_id": "5-1",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 14,
+      "title": "手势方案",
+      "text": "手势方案\nC\n手势评价\n5\n-1\n-\nC\n场景任务-场景\n5\n-1-C\n运动设备安全免触场景",
+      "image": "/materials/scene5_1_pages/page-14.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    },
+    {
+      "index": 15,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n5-1\nABC 方案评价\n5\n-1\n只能测小于五分钟的数据\n同步时长，要看同步是否完成\n每个手势3遍\n手势方案A\n：\n捏两下\n（确认开始）\n用力捏两下\n（\n切换卡片\n）\n手势方案\nB：\n敲两下\n（\n确认开始\n）\n用力握拳两下\n（\n切换卡片\n）\n手势方案\nC：\n晃两下\n（\n确认开始\n）\n用力长握拳\n（\n切换卡片\n）",
+      "image": "/materials/scene5_1_pages/page-15.png",
+      "segment_id": "5-1",
+      "has_gesture": false
+    }
+  ],
+  "segments": [
+    {
+      "id": "5-1",
+      "name": "场景5-1 运动移动场景",
+      "scene_id": "S05-1",
+      "start_page": 1,
+      "end_page": 15
+    }
+  ],
+  "overlays": [
+    {
+      "page": 4,
+      "path": "/materials/generated/scene5_1/image2.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-1",
+      "order": 1
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/scene5_1/image2.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-1",
+      "order": 1
+    },
+    {
+      "page": 8,
+      "path": "/materials/generated/scene5_1/image4.gif",
+      "x": 56.0067,
+      "y": 51.2083,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-1",
+      "order": 1
+    },
+    {
+      "page": 9,
+      "path": "/materials/generated/scene5_1/image5.gif",
+      "x": 56.3062,
+      "y": 51.2525,
+      "w": 26.9461,
+      "h": 35.9281,
+      "kind": "embedded_gif",
+      "segment_id": "5-1",
+      "order": 1
+    },
+    {
+      "page": 12,
+      "path": "/materials/generated/scene5_1/image6.gif",
+      "x": 56.1564,
+      "y": 51.2525,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "5-1",
+      "order": 1
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/scene5_1/image7.gif",
+      "x": 56.3062,
+      "y": 51.2525,
+      "w": 26.9461,
+      "h": 35.9281,
+      "kind": "embedded_gif",
+      "segment_id": "5-1",
+      "order": 1
+    }
+  ],
+  "cue_points": [
+    {
+      "id": "5-1:task_value",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "title": "任务组价值评价问卷",
+      "type": "questionnaire",
+      "page": 2,
+      "segment_id": "5-1"
+    },
+    {
+      "id": "5-1:scheme:A",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "title": "方案A后任务评价问卷",
+      "type": "questionnaire",
+      "page": 6,
+      "segment_id": "5-1"
+    },
+    {
+      "id": "5-1:scheme:B",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "title": "方案B后任务评价问卷",
+      "type": "questionnaire",
+      "page": 10,
+      "segment_id": "5-1"
+    },
+    {
+      "id": "5-1:scheme:C",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "title": "方案C后任务评价问卷",
+      "type": "questionnaire",
+      "page": 14,
+      "segment_id": "5-1"
+    },
+    {
+      "id": "5-1:overall",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "title": "场景总体评价问卷",
+      "type": "questionnaire",
+      "page": 15,
+      "segment_id": "5-1"
+    }
+  ],
+  "generation_warnings": []
+}

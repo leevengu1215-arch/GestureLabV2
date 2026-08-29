@@ -86,7 +86,9 @@ def capture_state(session_dir):
         })
         used.add(index)
     captures.sort(key=lambda item: item["capture_index"])
-    next_index = next((index for index in range(1, 5) if index not in used), None)
+    next_index = 1
+    while next_index in used:
+        next_index += 1
     discarded = []
     manifest = session_dir / "discarded" / "index.jsonl"
     if manifest.exists():
@@ -109,8 +111,8 @@ def invalidate_capture(session_dir, capture_index, reason):
     session_dir = Path(session_dir)
     session_id = safe_name(session_dir.name)
     capture_index = int(capture_index)
-    if capture_index not in range(1, 5):
-        raise RuntimeError("Capture 编号必须为 01–04")
+    if capture_index < 1:
+        raise RuntimeError("Capture 编号必须为正整数")
     stamp = datetime.now().strftime("%Y%m%dT%H%M%S")
     root = session_dir / "discarded"
     existing = sorted(root.glob(f"capture_{capture_index:02d}_attempt_*")) if root.exists() else []
@@ -831,7 +833,7 @@ class Handler(BaseHTTPRequestHandler):
             payload = read_json(self)
             session = safe_name(payload.get("session_id", ""))
             capture_index = int(payload.get("capture_segment") or 0)
-            if not session or capture_index not in range(1, 5):
+            if not session or capture_index < 1:
                 return write_json(self, {"ok": False, "error": "Session 或 Capture 编号无效"}, status=400)
             capture_dir = capture_directory(session_directory(session), capture_index)
             marker = {
@@ -868,8 +870,8 @@ class Handler(BaseHTTPRequestHandler):
             session = safe_name(payload.get("session_id", ""))
             session_dir = session_directory(session)
             state = capture_state(session_dir)
-            if len(state["captures"]) not in (3, 4):
-                return write_json(self, {"ok": False, "error": "整理完成前必须有连续的 3 或 4 个 Capture"}, status=400)
+            if not state["captures"]:
+                return write_json(self, {"ok": False, "error": "整理完成前至少需要 1 个 Capture"}, status=400)
             indexes = [item["capture_index"] for item in state["captures"]]
             if indexes != list(range(1, len(indexes) + 1)):
                 return write_json(self, {"ok": False, "error": "Capture 编号必须从 01 连续排列"}, status=400)

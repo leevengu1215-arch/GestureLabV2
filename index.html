@@ -3998,7 +3998,7 @@
       { id: "S03-2", parent_id: "S03", segment_id: "3-2", deck_id: "scene3_2", name: "场景3-2 客厅家居场景", selected: false, material_path: "" },
       { id: "S04-1", parent_id: "S04", segment_id: "4-1", deck_id: "scene4", name: "场景4-1 车外场景", selected: false, material_path: "" },
       { id: "S04-2", parent_id: "S04", segment_id: "4-2", deck_id: "scene4", name: "场景4-2 车内场景", selected: false, material_path: "" },
-      { id: "S05-1", parent_id: "S05", segment_id: "5-1", deck_id: null, name: "场景5-1 运动移动场景", selected: false, material_path: "" },
+      { id: "S05-1", parent_id: "S05", segment_id: "5-1", deck_id: "scene5_1", name: "场景5-1 运动移动场景", selected: false, material_path: "" },
     ];
     const sceneSteps = [
       {
@@ -4046,6 +4046,7 @@
       scene3_1: "/materials/scene3_1_pages.json",
       scene3_2: "/materials/scene3_2_pages.json",
       scene4: "/materials/scene4_pages.json",
+      scene5_1: "/materials/scene5_1_pages.json",
       end_stage: "/materials/end_pages.json",
     };
     const prepSteps = [
@@ -4749,6 +4750,7 @@
         "S03-2": 62,
         "S04-1": 32,
         "S04-2": 17,
+        "S05-1": 17,
       };
       const pageCountLabel = (deckId, active = false, fallbackKey = deckId) => {
         if (!active) return "";
@@ -5421,10 +5423,14 @@
       const calibrationPending = Boolean(activeCalibration());
       $("prevSlideBtn").disabled = calibrationPending || !deck || state.slideIndex <= 0;
       const atLastSlide = Boolean(deck && state.slideIndex >= deck.pages.length - 1);
+      const currentCue = activeCueForPage(page);
+      const unresolvedPageCue = Boolean(currentCue && !state.completedCues[currentCue.id]);
       const endDescriptor = supportsEndCalibration() ? calibrationDescriptor(state.deckId, "end", currentDeckSegment()?.id || "") : null;
       const endCalibrationDone = Boolean(endDescriptor && state.calibrations[endDescriptor.key]?.completed);
-      $("nextSlideBtn").disabled = calibrationPending || !deck || (atLastSlide && (!supportsEndCalibration() || endCalibrationDone));
-      $("nextSlideBtn").title = atLastSlide && supportsEndCalibration() && !endCalibrationDone ? "进入结束同步" : "下一页";
+      $("nextSlideBtn").disabled = calibrationPending || !deck || (atLastSlide && !unresolvedPageCue && (!supportsEndCalibration() || endCalibrationDone));
+      $("nextSlideBtn").title = unresolvedPageCue
+        ? "填写当前页问卷"
+        : atLastSlide && supportsEndCalibration() && !endCalibrationDone ? "进入结束同步" : "下一页";
       if ($("completeSlideBtn")) $("completeSlideBtn").disabled = !deck;
       renderQuestionnaireCue(page);
       renderOverlays();
@@ -5951,11 +5957,16 @@
 
     function moveSlide(delta) {
       if (!state.deck || activeCalibration()) return;
+      const page = state.deck.pages[state.slideIndex];
+      const pageCue = activeCueForPage(page);
+      if (delta > 0 && pageCue && !state.completedCues[pageCue.id]) {
+        showQuestionnaireCue(pageCue, page);
+        return;
+      }
       if (delta > 0 && state.unresolvedCaptureFailure) {
         setSyncStatus(`第 ${state.unresolvedCaptureFailure.segment} 段保存失败，请先重新记录当前阶段。`);
         return;
       }
-      const page = state.deck.pages[state.slideIndex];
       if (delta > 0 && page?.is_bridge && state.deck.segments?.length) {
         const firstSegment = state.deck.segments[0];
         state.slideIndex = state.deck.pages.findIndex(item => Number(item.index) === Number(firstSegment.start_page));
@@ -6070,12 +6081,6 @@
         $("oneClickSyncStartBtn").disabled = false;
         $("oneClickSyncStartBtn").textContent = "开始记录";
         setSyncStatus("该被试已确认整理完成，不能继续写入。请新建下一位被试的 Session。");
-        return;
-      }
-      if (!serverState.next_capture_index) {
-        $("oneClickSyncStartBtn").disabled = false;
-        $("oneClickSyncStartBtn").textContent = "开始记录";
-        setSyncStatus("本 Session 已有 4 个 Capture；如需重录，请先点击“本段作废并重录”。");
         return;
       }
       state.captureSegmentIndex = serverState.next_capture_index;

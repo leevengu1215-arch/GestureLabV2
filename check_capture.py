@@ -23,8 +23,8 @@ def main():
         return 1
     index = json.loads(index_path.read_text(encoding="utf-8"))
     captures = index.get("captures", [])
-    if len(captures) not in (3, 4):
-        print(f"失败：Session 必须有 3 或 4 段，目前为 {len(captures)} 段")
+    if not captures:
+        print("失败：Session 中没有 Capture")
         return 1
     expected = list(range(1, len(captures) + 1))
     actual = [int(item.get("capture_index", -1)) for item in captures]
