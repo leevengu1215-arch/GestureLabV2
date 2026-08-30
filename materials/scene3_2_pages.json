@@ -18,7 +18,7 @@
     {
       "index": 2,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n在\n客厅\n中\n控制\n灯具\n情境说明：\n客厅场景\n-\n灯具\n你在家中客厅里，想要不费劲地用手势直接控制吸顶灯和落地灯\n请进行手势价值评价-问卷",
+      "text": "场景任务-场景3-\n2\n-\n1\n在\n客厅\n中\n控制\n灯具\n情境说明：\n客厅场景\n-\n灯具\n你在家中客厅里，想要不费劲地用手势直接控制吸顶灯和床头灯\n请进行手势价值评价-问卷",
       "image": "/materials/scene3_2_pages/page-02.png",
       "segment_id": "3-2-1",
       "has_gesture": false
@@ -64,7 +64,7 @@
     {
       "index": 7,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-A\n在\n客厅\n中\n控制\n灯具\n任务目标：\n开启落地灯\n手势方案A：\n低位打响指\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-A\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n开启床头灯\n手势方案A：\n低位打响指\n请连做3下",
       "image": "/materials/scene3_2_pages/page-07.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -74,7 +74,7 @@
     {
       "index": 8,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-A\n在\n客厅\n中\n控制\n灯具\n任务目标：\n关闭落地灯\n手势方案A：\n低位\n打响指\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-A\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n关闭床头灯\n手势方案A：\n低位\n打响指\n请连做3下",
       "image": "/materials/scene3_2_pages/page-08.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -84,7 +84,7 @@
     {
       "index": 9,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-A\n在\n客厅\n中\n控制\n灯具\n任务目标：\n落地灯调亮度\n手势方案A：\n低位\n拇指食指旋转\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-A\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n床头灯调亮度\n手势方案A：\n低位\n拇指食指旋转\n请连做3下",
       "image": "/materials/scene3_2_pages/page-09.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -140,7 +140,7 @@
     {
       "index": 15,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nB\n在\n客厅\n中\n控制\n灯具\n任务目标：\n开启落地灯\n手势方案A：\n低位\n五指张开\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nB\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n开启床头灯\n手势方案A：\n低位\n五指张开\n请连做3下",
       "image": "/materials/scene3_2_pages/page-15.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -150,7 +150,7 @@
     {
       "index": 16,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nB\n在\n客厅\n中\n控制\n灯具\n任务目标：\n关闭落地灯\n手势方案A：\n低位五指握拳\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nB\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n关闭床头灯\n手势方案A：\n低位五指握拳\n请连做3下",
       "image": "/materials/scene3_2_pages/page-16.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -160,7 +160,7 @@
     {
       "index": 17,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nB\n在\n客厅\n中\n控制\n灯具\n任务目标：\n落地灯调亮度\n手势方案A：\n低位五指旋钮\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nB\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n床头灯调亮度\n手势方案A：\n低位五指旋钮\n请连做3下",
       "image": "/materials/scene3_2_pages/page-17.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -196,7 +196,7 @@
     {
       "index": 21,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nC\n在\n客厅\n中\n控制\n灯具\n任务目标：\n落地灯调亮度\n手势方案A：\n握拳力度由紧到松\n请连做3下",
+      "text": "场景任务-场景3-\n2\n-\n1\n-0\n2\n-\nC\n在\n客厅\n中\n控制\n灯具\n任务目标\n：\n床头灯调亮度\n手势方案A：\n握拳力度由紧到松\n请连做3下",
       "image": "/materials/scene3_2_pages/page-21.png",
       "segment_id": "3-2-1",
       "has_gesture": true,
@@ -621,7 +621,7 @@
     },
     {
       "page": 7,
-      "path": "/materials/generated/scene3_2/image5-3.gif",
+      "path": "/materials/generated/scene3_2/image4-3.gif",
       "x": 56.3099,
       "y": 51.662,
       "w": 27.0833,
@@ -632,7 +632,7 @@
     },
     {
       "page": 8,
-      "path": "/materials/generated/scene3_2/image5-3.gif",
+      "path": "/materials/generated/scene3_2/image4-3.gif",
       "x": 56.3099,
       "y": 51.662,
       "w": 27.0833,

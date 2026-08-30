@@ -1,0 +1,376 @@
+{
+  "id": "scene5_2",
+  "name": "场景5-2 跑步机运动场景",
+  "source_pptx": "/Users/leevengu/Desktop/小米手势交互/场景库/场景5-2.pptx",
+  "logical_size": {
+    "width": 12192000,
+    "height": 6858000
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "运动场景安全",
+      "text": "运动场景安全\n免触控制\n场景\n5-2\n运动移动场景",
+      "image": "/materials/scene5_2_pages/page-01.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 2,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n5-2\n运动场景\n运动设备免触交互\n情境说明\n：\n跑步机\n/\n跑步机运动\n请想象你正在跑步机运动，运动过程中，你希望在不松开扶手、不触碰屏幕、不中断运动节奏的情况下，通过手势接打电话、查看短信、操控导航菜单等。\n请进行手势价值评价-问卷",
+      "image": "/materials/scene5_2_pages/page-02.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 3,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n5-2\n-A\n场景任务-场景\n5-2\n-A",
+      "image": "/materials/scene5_2_pages/page-03.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 4,
+      "title": "跑步机安全免触场景",
+      "text": "跑步机安全免触场景\n任务目标\n：\n接听电话\n手势方案A\n：\n捏两下\n请连做3下\n场景任务-场景\n5-2\n-01-A",
+      "image": "/materials/scene5_2_pages/page-04.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 5,
+      "title": "任务目标",
+      "text": "任务目标\n：\n挂掉电话\n手势方案A\n：\n搓两下\n请连做3下\n场景任务-场景\n5-2\n-0\n2\n-A\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-05.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 6,
+      "title": "任务目标",
+      "text": "任务目标\n：\n查看信息\n手势方案A\n：\n捏两下\n请连做3下\n场景任务-场景\n5-2\n-0\n3\n-A\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-06.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 7,
+      "title": "任务目标",
+      "text": "任务目标\n：\n浏览菜单\n手势方案A\n：\n捏两下\n请连做3下\n场景任务-场景\n5-2\n-0\n4\n-A\n椭圆机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-07.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 8,
+      "title": "手势方案 A",
+      "text": "手势方案 A\n手势评价\n5-2\n-A\n场景任务-场景\n5-2\n-A\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-08.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 9,
+      "title": "手势方案",
+      "text": "手势方案\nB\n5-2\n-B\n场景任务-场景\n5-2\n-B\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-09.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 10,
+      "title": "跑步机安全免触场景",
+      "text": "跑步机安全免触场景\n任务目标\n：\n接听电话\n手势方案\nB\n：\n招两下\n请连做3下\n场景任务-场景\n5-2\n-01-B",
+      "image": "/materials/scene5_2_pages/page-10.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 11,
+      "title": "任务目标",
+      "text": "任务目标\n：\n挂掉电话\n手势方案\nB\n：\n甩两下\n请连做3下\n场景任务-场景\n5-2\n-0\n2\n-B\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-11.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 12,
+      "title": "任务目标",
+      "text": "任务目标\n：\n查看信息\n手势方案\nB\n：\n招两下\n请连做3下\n场景任务-场景\n5-2\n-0\n3\n-B\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-12.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 13,
+      "title": "任务目标",
+      "text": "任务目标\n：\n浏览菜单\n手势方案\nB\n：\n挥两下\n请连做3下\n场景任务-场景\n5-2\n-0\n4\n-B\n椭圆机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-13.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 14,
+      "title": "手势方案",
+      "text": "手势方案\nB\n手势评价\n5-2\n-\nB\n场景任务-场景\n5-2\n-B\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-14.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 15,
+      "title": "手势方案",
+      "text": "手势方案\nC\n5-2\n-C\n场景任务-场景\n5-2\n-C\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-15.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 16,
+      "title": "跑步机安全免触场景",
+      "text": "跑步机安全免触场景\n任务目标\n：\n接听电话\n手势方案\nC\n：\n握拳两下\n请连做3下\n场景任务-场景\n5-2\n-01-C",
+      "image": "/materials/scene5_2_pages/page-16.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 17,
+      "title": "任务目标",
+      "text": "任务目标\n：\n挂掉电话\n手势方案\nC：\n翻腕两下\n请连做3下\n场景任务-场景\n5-2\n-0\n2\n-C\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-17.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 18,
+      "title": "任务目标",
+      "text": "任务目标\n：\n查看信息\n手势方案\nC\n：\n握拳两下\n请连做3下\n场景任务-场景\n5-2\n-0\n3\n-C\n跑步机安全免触场景",
+      "image": "/materials/scene5_2_pages/page-18.png",
+      "segment_id": "5-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 19,
+      "title": "手势方案",
+      "text": "手势方案\nC\n手势评价\n5-2\n-\nC\n场景任务-场景\n5-2\n-C\n运动设备安全免触场景",
+      "image": "/materials/scene5_2_pages/page-19.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    },
+    {
+      "index": 20,
+      "title": "场景任务-场景",
+      "text": "场景任务-场景\n5-2\nABC 方案评价\n5-2\n手势方案A\n：\n捏两下\n（接听电话）\n捏两下\n（\n查看信息\n）\n手势方案\nB：\n招两下\n（\n接听电话\n）\n招两下\n（\n查看信息\n）\n手势方案\nC：\n握拳两下\n（\n接听电话\n）\n握拳两下\n（\n查看信息\n）",
+      "image": "/materials/scene5_2_pages/page-20.png",
+      "segment_id": "5-2",
+      "has_gesture": false
+    }
+  ],
+  "segments": [
+    {
+      "id": "5-2",
+      "name": "场景5-2 跑步机运动场景",
+      "scene_id": "S05-2",
+      "start_page": 1,
+      "end_page": 20
+    }
+  ],
+  "overlays": [
+    {
+      "page": 4,
+      "path": "/materials/generated/scene5_2/image2.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/scene5_2/image5.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9461,
+      "h": 35.9281,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 6,
+      "path": "/materials/generated/scene5_2/image2.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 7,
+      "path": "/materials/generated/scene5_2/image2.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 10,
+      "path": "/materials/generated/scene5_2/image5.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9461,
+      "h": 35.9281,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 11,
+      "path": "/materials/generated/scene5_2/image8.gif",
+      "x": 56.5722,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 12,
+      "path": "/materials/generated/scene5_2/image5.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9461,
+      "h": 35.9281,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/scene5_2/image9.gif",
+      "x": 56.3062,
+      "y": 51.2525,
+      "w": 26.8294,
+      "h": 35.7726,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 16,
+      "path": "/materials/generated/scene5_2/image10.gif",
+      "x": 56.3062,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 17,
+      "path": "/materials/generated/scene5_2/image11.gif",
+      "x": 56.3062,
+      "y": 51.2083,
+      "w": 27.2452,
+      "h": 36.3269,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    },
+    {
+      "page": 18,
+      "path": "/materials/generated/scene5_2/image10.gif",
+      "x": 56.3062,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "5-2",
+      "order": 1
+    }
+  ],
+  "cue_points": [
+    {
+      "id": "5-2:task_value",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "title": "任务组价值评价问卷",
+      "type": "questionnaire",
+      "page": 2,
+      "segment_id": "5-2"
+    },
+    {
+      "id": "5-2:scheme:A",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "title": "方案A后任务评价问卷",
+      "type": "questionnaire",
+      "page": 8,
+      "segment_id": "5-2"
+    },
+    {
+      "id": "5-2:scheme:B",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "title": "方案B后任务评价问卷",
+      "type": "questionnaire",
+      "page": 14,
+      "segment_id": "5-2"
+    },
+    {
+      "id": "5-2:scheme:C",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "C",
+      "title": "方案C后任务评价问卷",
+      "type": "questionnaire",
+      "page": 19,
+      "segment_id": "5-2"
+    },
+    {
+      "id": "5-2:overall",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "title": "场景总体评价问卷",
+      "type": "questionnaire",
+      "page": 20,
+      "segment_id": "5-2"
+    }
+  ],
+  "generation_warnings": []
+}

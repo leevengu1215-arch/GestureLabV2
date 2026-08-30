@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gesture Lab Subject Display - PC 修复版 v3（审阅）</title>
   <script>
-    window.GESTURE_LAB_BUILD="20260820-encoded-video-h5-v6";
+    window.GESTURE_LAB_BUILD="20260830-raw-capture-no-h5-v1";
     if (location.protocol === "file:") {
       location.replace("http://127.0.0.1:8766/subject.html");
     }
@@ -242,6 +242,7 @@
       gap: 8px;
     }
     .repeat-progress-circle {
+      position: relative;
       display: grid;
       place-items: center;
       width: 34px;
@@ -586,6 +587,155 @@
       background: #fff;
       transition: width .3s linear;
     }
+
+    /* On a landscape subject display, reserve a quiet side rail for gesture
+       guidance so the slide always remains fully visible. */
+    @media (min-width: 1100px) and (min-height: 650px) {
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .stage-shell:has(> .subject-mark-dock:not(.hidden)) {
+        grid-template-columns: minmax(0, 1fr) clamp(260px, 18vw, 340px);
+        grid-template-rows: minmax(0, 1fr);
+        column-gap: 16px;
+        row-gap: 0;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .stage-shell:has(> .subject-mark-dock:not(.hidden)) .slide-stage {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .stage-shell:has(> .subject-mark-dock:not(.hidden)) .subject-mark-dock {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: stretch;
+        width: 100%;
+        max-height: calc(100vh - 48px);
+        min-height: 0;
+        padding: 22px 18px;
+        overflow: hidden;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-mark-dock.sequence-mode,
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-mark-dock.timed-mode {
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-mark-status {
+        font-size: clamp(24px, 2.2vw, 34px);
+        text-align: center;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-repeat-progress {
+        position: relative;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 0;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-mark-dock:not(.repetitions-complete) .subject-repeat-progress::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        top: 17px;
+        left: 17%;
+        right: 17%;
+        height: 2px;
+        background: #dfe5eb;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .repeat-progress-unit {
+        position: relative;
+        z-index: 1;
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        gap: 10px;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .repeat-progress-circle {
+        background: #fff;
+        border: 2px solid #dfe5eb;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .repeat-progress-unit.current .repeat-progress-circle {
+        color: #fff;
+        border-color: #176b5b;
+        background: #176b5b;
+        box-shadow: 0 0 0 6px rgba(23, 107, 91, .12);
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .repeat-progress-unit.done .repeat-progress-circle {
+        color: transparent;
+        border-color: #b8d8cf;
+        background: #e7f3ef;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .repeat-progress-unit.done .repeat-progress-circle::after {
+        content: "\2713";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        line-height: 1;
+        color: #176b5b;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .repeat-progress-track {
+        width: 100%;
+        height: 5px;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-mark-dock.repetitions-complete {
+        min-height: 112px;
+        padding-block: 18px;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .subject-mark-dock.repetitions-complete .subject-repeat-progress {
+        display: none;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .motion-sequence,
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .baseline-timer-sequence {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+        margin-top: 0;
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .motion-sequence-step:not(:last-child)::after,
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .baseline-timer-step:not(:last-child)::after {
+        content: "\2193";
+        left: 50%;
+        top: calc(100% + 1px);
+        width: 16px;
+        transform: translateX(-50%);
+      }
+
+      body:not(.questionnaire-side-open):not(.questionnaire-full-open)
+      .baseline-timer-step.timer {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
@@ -744,8 +894,11 @@
       $("subjectMarkDock").classList.toggle("active", active);
       $("subjectMarkDock").classList.toggle("ended", ended);
       const label = currentSlide?.gesture_label || "手势";
-      const repetitionsDone = active && currentSlide?.repeat_total > 1 && currentSlide.repeat_index >= currentSlide.repeat_total;
       const repeatPhase = currentSlide?.repeat_phase || "";
+      const repetitionsDone = active
+        && currentSlide?.repeat_total > 1
+        && repeatPhase === "complete";
+      $("subjectMarkDock").classList.toggle("repetitions-complete", repetitionsDone);
       const timedTotal = Number(currentSlide?.timed_total || 0);
       const timedElapsed = Number(currentSlide?.timed_elapsed || 0);
       const formatSeconds = (value) => `00:${String(Math.max(0, value)).padStart(2, "0")}`;

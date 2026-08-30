@@ -17,32 +17,6 @@ START_PORT = 8766
 MAX_PORT = 8795
 
 
-def ensure_hdf5_dependencies():
-    try:
-        import h5py  # noqa: F401
-        import numpy  # noqa: F401
-        import imageio_ffmpeg  # noqa: F401
-        return True
-    except ImportError:
-        print("[Gesture Lab] Installing required HDF5 components (h5py, numpy)...")
-        result = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "--user", "-r", str(APP_DIR / "requirements-hdf5.txt")],
-            check=False,
-        )
-        if result.returncode != 0:
-            print("[Gesture Lab] HDF5 components could not be installed.")
-            print(f"[Gesture Lab] Run manually: {sys.executable} -m pip install --user h5py numpy")
-            return False
-        try:
-            import h5py  # noqa: F401
-            import numpy  # noqa: F401
-            import imageio_ffmpeg  # noqa: F401
-            return True
-        except ImportError:
-            print("[Gesture Lab] HDF5 components are still unavailable after installation.")
-            return False
-
-
 def get_gesture_lab_status(port):
     try:
         with urllib.request.urlopen(
@@ -60,11 +34,6 @@ def is_gesture_lab(port):
     return bool(status and status.get("ok"))
 
 
-def is_hdf5_ready_gesture_lab(port):
-    status = get_gesture_lab_status(port)
-    return bool(status and status.get("ok") and status.get("hdf5_ready"))
-
-
 def port_is_free(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -76,7 +45,7 @@ def port_is_free(port):
 
 
 def choose_port():
-    if is_hdf5_ready_gesture_lab(START_PORT):
+    if is_gesture_lab(START_PORT):
         return START_PORT, True
     for port in range(START_PORT, MAX_PORT + 1):
         if port_is_free(port):
@@ -97,9 +66,6 @@ def wait_until_ready(port, process, timeout=20):
 
 def main():
     os.chdir(APP_DIR)
-    if not ensure_hdf5_dependencies():
-        input("Press Enter to close...")
-        return 1
     port, already_running = choose_port()
     url = f"http://{HOST}:{port}/"
 

@@ -1,33 +1,40 @@
 {
-  "generated_at": "2026-07-22 15:21:15",
+  "generated_at": "2026-08-30 15:15:10",
   "decks": [
     {
-      "id": "scene4",
-      "source": [
-        "/Users/leevengu/Desktop/小米手势交互/场景库/场景4-1 框架+图(改）.pptx",
-        "/Users/leevengu/Desktop/小米手势交互/场景库/场景4-2 框架+图（改）.pptx"
-      ],
-      "pages": 46,
-      "gifs": 28,
-      "questionnaires": 10,
+      "id": "scene3_2",
+      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2.pptx",
+      "pages": 60,
+      "gifs": 60,
+      "questionnaires": 13,
       "segments": [
         {
-          "id": "4-1",
-          "name": "子场景 4-1",
-          "scene_id": "S04",
+          "id": "3-2-1",
+          "name": "子场景 3-2-1",
+          "scene_id": "S03-2",
           "start_page": 1,
-          "end_page": 29
+          "end_page": 23
         },
         {
-          "id": "4-2",
-          "name": "子场景 4-2",
-          "scene_id": "S04",
-          "start_page": 30,
-          "end_page": 46
+          "id": "3-2-2",
+          "name": "子场景 3-2-2",
+          "scene_id": "S03-2",
+          "start_page": 24,
+          "end_page": 44
+        },
+        {
+          "id": "3-2-3",
+          "name": "子场景 3-2-3",
+          "scene_id": "S03-2",
+          "start_page": 45,
+          "end_page": 60
         }
       ],
-      "warnings": []
+      "warnings": [
+        "缺少预期问卷：3-2-2:scheme:C",
+        "缺少预期问卷：3-2-3:scheme:C"
+      ]
     }
   ],
-  "backup": "/Users/leevengu/Documents/Codex/2026-07-01/zhe/outputs/gesture_lab/work/ppt_import/backups/20260722-152115"
+  "backup": "/Users/leevengu/Documents/Gesture Lab/github/GestureLabV2/work/ppt_import/backups/20260830-151510"
 }

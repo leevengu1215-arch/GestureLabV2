@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gesture Lab V2 - PC 修复版 v3（审阅）</title>
   <script>
-    window.GESTURE_LAB_BUILD="20260820-encoded-video-h5-v6";
+    window.GESTURE_LAB_BUILD="20260830-raw-capture-no-h5-v1";
     if (location.protocol === "file:") {
       location.replace("http://127.0.0.1:8766/");
     }
@@ -3998,7 +3998,8 @@
       { id: "S03-2", parent_id: "S03", segment_id: "3-2", deck_id: "scene3_2", name: "场景3-2 客厅家居场景", selected: false, material_path: "" },
       { id: "S04-1", parent_id: "S04", segment_id: "4-1", deck_id: "scene4", name: "场景4-1 车外场景", selected: false, material_path: "" },
       { id: "S04-2", parent_id: "S04", segment_id: "4-2", deck_id: "scene4", name: "场景4-2 车内场景", selected: false, material_path: "" },
-      { id: "S05-1", parent_id: "S05", segment_id: "5-1", deck_id: "scene5_1", name: "场景5-1 运动移动场景", selected: false, material_path: "" },
+      { id: "S05-1", parent_id: "S05", segment_id: "5-1", deck_id: "scene5_1", name: "场景5-1 椭圆机运动场景", selected: false, material_path: "" },
+      { id: "S05-2", parent_id: "S05", segment_id: "5-2", deck_id: "scene5_2", name: "场景5-2 跑步机运动场景", selected: false, material_path: "" },
     ];
     const sceneSteps = [
       {
@@ -4047,6 +4048,7 @@
       scene3_2: "/materials/scene3_2_pages.json",
       scene4: "/materials/scene4_pages.json",
       scene5_1: "/materials/scene5_1_pages.json",
+      scene5_2: "/materials/scene5_2_pages.json",
       end_stage: "/materials/end_pages.json",
     };
     const prepSteps = [
@@ -4750,7 +4752,8 @@
         "S03-2": 62,
         "S04-1": 32,
         "S04-2": 17,
-        "S05-1": 17,
+        "S05-1": 21,
+        "S05-2": 21,
       };
       const pageCountLabel = (deckId, active = false, fallbackKey = deckId) => {
         if (!active) return "";
@@ -6094,6 +6097,7 @@
           const prepared = await postJSON("/api/prepare_capture", {
             session_id: $("session").value.trim(),
             capture_segment: segment,
+            camera_mode: "wireless_manual",
             status: "recording",
           });
           state.externalCameraPath = prepared.external_camera_path;
@@ -6131,6 +6135,23 @@
         $("oneClickSyncStartBtn").textContent = "开始记录";
         setSyncStatus("视频录制未启动，请检查两个摄像头后重试。");
         return;
+      }
+      if (cameraMode === "usb") {
+        try {
+          await postJSON("/api/prepare_capture", {
+            session_id: $("session").value.trim(),
+            capture_segment: segment,
+            camera_mode: "usb",
+            status: "recording",
+          });
+        } catch (err) {
+          stopRecording();
+          state.activeCaptureSegment = null;
+          $("oneClickSyncStartBtn").disabled = false;
+          $("oneClickSyncStartBtn").textContent = "开始记录";
+          setSyncStatus(`Capture 文件夹创建失败：${err.message}`);
+          return;
+        }
       }
       await markPhoneSync("phone_start");
       if (!state.captureStartMs) startCaptureTimer(now.getTime());
@@ -6230,13 +6251,7 @@
           }, null, 0),
         });
         setSyncStatus(`第 ${segment} 段已结束记录，正在导入手机端日志...`);
-        // The phone offline-log import must NOT block the HDF5 export. Previously
-        // a missing/invalid offlinelog folder (e.g. the source path is only valid
-        // on the original macOS machine) made /api/import_log return 400, the
-        // exception aborted this whole block, and /api/export_hdf5 was never
-        // reached -- so Windows was left with only the loose csv/json/video files
-        // and no .h5. Now we import best-effort and always assemble the .h5,
-        // marking it incomplete when the phone log is unavailable.
+        // Phone logs are optional and never block raw video persistence.
         let imported = null;
         let importError = null;
         try {
@@ -6245,48 +6260,26 @@
           importError = impErr;
         }
         const capture = state.captureSegments.find(item => item.segment === segment);
-        if (capture?.camera_mode === "wireless_manual") {
-          const prepared = await postJSON("/api/prepare_capture", {
-            session_id: $("session").value.trim(),
-            capture_segment: segment,
-            status: "awaiting_external_video",
-          });
-          segmentSaved = true;
-          state.lastSavedSegment = segment;
-          $("invalidateCaptureBtn").disabled = false;
-          await refreshCaptureState();
-          setSyncStatus(
-            `第 ${segment} 段记录已结束，等待无线摄像头视频。\n请将视频放入：${prepared.external_camera_path}\n放入视频后再进行最终 HDF5 整理。`
-          );
-          return;
-        }
-        // Wait for every enabled camera to finish uploading. A fixed delay was
-        // unreliable on Windows and could assemble HDF5 before large videos arrived.
+        // Wait for every enabled camera to finish uploading before marking the
+        // capture complete. This keeps the operator-visible state truthful.
         if (pendingVideoUploads.length) {
-          setSyncStatus(`第 ${segment} 段视频正在保存，完成后自动生成 HDF5...`);
+          setSyncStatus(`第 ${segment} 段视频正在保存，请勿进入下一段...`);
           await Promise.all(pendingVideoUploads);
         }
-        const exported = await postJSON("/api/export_hdf5", {
-          ...config(),
-          session_tag: $("session").value.trim(),
+        const prepared = await postJSON("/api/prepare_capture", {
+          session_id: $("session").value.trim(),
           capture_segment: segment,
-          start_epoch_ms: capture?.start_ms || stopMs,
-          end_epoch_ms: stopMs,
-          scene_id: capture?.scene_id || state.scene?.id || "",
-          scene_label: state.scene?.name || state.deck?.name || "",
-          status: imported ? "valid" : "incomplete",
-          batch_id: $("batchLabel").value.trim(),
-          watch_source_dir: imported?.import_dir || "",
-          notes: imported
-            ? `手机日志：${imported.import_dir}`
-            : `手机日志缺失或导入失败：${importError?.message || "未设置 offlinelog 目录"}`,
+          camera_mode: capture?.camera_mode || state.captureCameraMode || "usb",
+          status: "valid",
         });
         const engCount = imported?.eng_reference_count ?? 0;
-        setSyncStatus(
-          imported
-            ? `第 ${segment} 段已结束并导出。\nHDF5：${exported.filename}\nEng 引用数：${engCount}`
-            : `第 ${segment} 段已导出（手机日志缺失，HDF5 根状态标记 incomplete）。\nHDF5：${exported.filename}\n提示：${importError?.message || "未设置 offlinelog 目录"}`
-        );
+        const rawMessage = capture?.camera_mode === "wireless_manual"
+          ? `第 ${segment} 段已结束。无线视频请放入：${prepared.external_camera_path}`
+          : `第 ${segment} 段视频已完整保存到 capture${segment}/camera1、camera2。`;
+        const logMessage = imported
+          ? `手机日志已导入，Eng 引用数：${engCount}`
+          : `手机日志未导入：${importError?.message || "未设置 offlinelog 目录"}`;
+        setSyncStatus(`${rawMessage}\n${logMessage}\n本版本不生成 H5 文件。`);
         segmentSaved = true;
         state.lastSavedSegment = segment;
         $("invalidateCaptureBtn").disabled = false;
@@ -6296,9 +6289,7 @@
         $("captureStateText").textContent = "保存失败，请重录本段";
         const failedCapture = state.captureSegments.find(item => item.segment === segment);
         state.unresolvedCaptureFailure = { segment, key: failedCapture?.segment_id || state.activeCaptureKey };
-        // A failed HDF5 assembly can still leave complete raw camera files behind.
-        // Expose the archive/retry path immediately instead of trapping the
-        // operator behind the global next-page guard with no available action.
+        // Expose the archive/retry path immediately when raw persistence fails.
         state.lastSavedSegment = segment;
         $("invalidateCaptureBtn").disabled = false;
         setSyncStatus(`第 ${segment} 段保存失败：${err.message}\n请勿继续下一段。点击“开始记录”重录当前阶段，旧文件会保留。`);
@@ -6358,7 +6349,7 @@
         state.roundFinalized = false;
         $("captureStateText").textContent = `第 ${segment} 段已作废，等待重录`;
         $("captureSegmentBadge").textContent = `Capture ${String(segment).padStart(2, "0")} 待重录`;
-        setSyncStatus(`第 ${segment} 段已完整归档，旧 H5 和视频均未删除。下一次“开始记录”仍使用 Capture ${String(segment).padStart(2, "0")}。`);
+        setSyncStatus(`第 ${segment} 段已完整归档，旧视频不会删除。下一次“开始记录”仍使用 Capture ${String(segment).padStart(2, "0")}。`);
         renderDeck();
       } catch (err) {
         $("invalidateCaptureBtn").disabled = false;

@@ -14,21 +14,6 @@ HOST = "127.0.0.1"
 PORT = 8766
 
 
-def ensure_hdf5_dependencies():
-    try:
-        import h5py  # noqa: F401
-        import numpy  # noqa: F401
-        import imageio_ffmpeg  # noqa: F401
-        return True
-    except ImportError:
-        print("[Gesture Lab] 正在安装 HDF5 组件（h5py、numpy）...")
-        result = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "--user", "-r", str(APP_DIR / "requirements-hdf5.txt")],
-            check=False,
-        )
-        return result.returncode == 0
-
-
 def ready():
     try:
         with urllib.request.urlopen(f"http://{HOST}:{PORT}/api/status", timeout=0.5) as response:
@@ -39,10 +24,6 @@ def ready():
 
 def main():
     os.chdir(APP_DIR)
-    if not ensure_hdf5_dependencies():
-        input("HDF5 组件安装失败。请检查网络后按 Return 关闭...")
-        return 1
-
     env = os.environ.copy()
     env["GESTURE_LAB_PORT"] = str(PORT)
     url = f"http://{HOST}:{PORT}/"
