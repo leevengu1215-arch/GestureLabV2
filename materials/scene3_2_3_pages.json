@@ -1,0 +1,451 @@
+{
+  "id": "scene3_2_3",
+  "name": "场景3-2-3 客厅家居电视控制",
+  "source_pptx": "/Users/leevengu/Desktop/小米手势交互/场景库/场景库3-2-3.pptx",
+  "logical_size": {
+    "width": 12192000,
+    "height": 6858000
+  },
+  "pages": [
+    {
+      "index": 1,
+      "title": "客厅场景下的家居设备免触控制",
+      "text": "客厅场景下的家居设备免触控制\n场景3-2-3\n在客厅中控制电视",
+      "image": "/materials/scene3_2_3_pages/page-01.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    },
+    {
+      "index": 2,
+      "title": "场景任务-场景3-2-3",
+      "text": "场景任务-场景3-2-3\n在客厅中控制电视\n情境说明：家中客厅 / 沙发上\n你正坐在家中客厅的沙发上，想要直接用手势遥控电视\n。\n你需要通过免触手势完成开关电视、浏览定位、进度条、调音量等任务\n。\n请进行手势价值评价-问卷",
+      "image": "/materials/scene3_2_3_pages/page-02.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    },
+    {
+      "index": 3,
+      "title": "场景任务-场景3-2-3-A",
+      "text": "场景任务-场景3-2-3-A\n在客厅中控制电视\n手势方案 A\n3-2-3-A",
+      "image": "/materials/scene3_2_3_pages/page-03.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    },
+    {
+      "index": 4,
+      "title": "场景任务-场景3-2-3-01-A",
+      "text": "场景任务-场景3-2-3-01-A\n在客厅中控制电视\n任务目标：\n开电视\n手势方案A：\n中位按一下遥控器\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-04.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 5,
+      "title": "场景任务-场景3-2-3-01-A",
+      "text": "场景任务-场景3-2-3-01-A\n在客厅中控制电视\n任务目标：\n开电视\n手势方案A：\n中位按一下遥控器\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-05.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 6,
+      "title": "场景任务-场景3-2-3-01-A",
+      "text": "场景任务-场景3-2-3-01-A\n在客厅中控制电视\n任务目标\n：\n选中目标\n手势方案A\n：\n捏两下\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-06.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 7,
+      "title": "场景任务-场景3-2-3-01-A",
+      "text": "场景任务-场景3-2-3-01-A\n在客厅中控制电视\n任务目标：\n进度条\n手势方案A：\n中位捏指左右移动\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-07.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 8,
+      "title": "场景任务-场景3-2-3-01-A",
+      "text": "场景任务-场景3-2-3-01-A\n在客厅中控制电视\n任务目标：\n调音量\n手势方案A：\n中位捏指上下手腕移动\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-08.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 9,
+      "title": "场景任务-场景3-2-3-01-A",
+      "text": "场景任务-场景3-2-3-01-A\n在客厅中控制电视\n任务目标：\n关电视\n手势方案A\n：\n中位按一下遥控器\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-09.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 10,
+      "title": "场景任务-场景3-2-3-A",
+      "text": "场景任务-场景3-2-3-A\n在客厅中控制电视\n手势方案 A\n手势评价\n3-2-3-A",
+      "image": "/materials/scene3_2_3_pages/page-10.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    },
+    {
+      "index": 11,
+      "title": "场景任务-场景3-2-3-B",
+      "text": "场景任务-场景3-2-3-B\n在客厅中控制电视\n手势方案 B\n3-2-3-B",
+      "image": "/materials/scene3_2_3_pages/page-11.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    },
+    {
+      "index": 12,
+      "title": "场景任务-场景3-2-3-01-B",
+      "text": "场景任务-场景3-2-3-01-B\n在客厅中控制电视\n任务目标：\n开电视\n手势方案B：\n中位按两下遥控器\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-12.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 13,
+      "title": "场景任务-场景3-2-3-01-B",
+      "text": "场景任务-场景3-2-3-01-B\n在客厅中控制电视\n任务目标：\n浏览定位\n手势方案B\n：\n中位上下左右挥手两下\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-13.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 14,
+      "title": "场景任务-场景3-2-3-01-",
+      "text": "场景任务-场景3-2-3-01-\nB\n在客厅中控制电视\n任务目标\n：\n选中目标\n手势方案\nB\n：\n招两下\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-14.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 15,
+      "title": "场景任务-场景3-2-3-01-B",
+      "text": "场景任务-场景3-2-3-01-B\n在客厅中控制电视\n任务目标：\n调音量\n手势方案B\n：\n中位捏指上下小臂移动\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-15.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 16,
+      "title": "场景任务-场景3-2-3-01-B",
+      "text": "场景任务-场景3-2-3-01-B\n在客厅中控制电视\n任务目标：\n关电视\n手势方案B：\n中位按两下遥控器\n请连做3下",
+      "image": "/materials/scene3_2_3_pages/page-16.png",
+      "segment_id": "3-2-3",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 17,
+      "title": "场景任务-场景3-2-3-B",
+      "text": "场景任务-场景3-2-3-B\n在客厅中控制电视\n手势方案 B\n手势评价\n3-2-3-B",
+      "image": "/materials/scene3_2_3_pages/page-17.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    },
+    {
+      "index": 18,
+      "title": "ABC 方案评价",
+      "text": "ABC 方案评价\n3\n-\n2-3\n只能测小于五分钟的数据\n同步时长，要看同步是否完成\n每个手势3遍\n手势方案A\n：\n中位上下左右挥手一下\n（\n浏览定位\n）\n中位按一下遥控器\n（开关电视）\n手势方案\nB：\n中位上下左右挥手两下\n（浏览定位）\n中位按两下遥控器\n（开关电视）\n手势方案\nC：\n场景任务-场景3-2-\n3",
+      "image": "/materials/scene3_2_3_pages/page-18.png",
+      "segment_id": "3-2-3",
+      "has_gesture": false
+    }
+  ],
+  "segments": [
+    {
+      "id": "3-2-3",
+      "name": "场景3-2-3 客厅家居电视控制",
+      "scene_id": "S03-2-3",
+      "start_page": 1,
+      "end_page": 18
+    }
+  ],
+  "overlays": [
+    {
+      "page": 4,
+      "path": "/materials/generated/scene3_2_3/image1-1.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 4,
+      "path": "/materials/generated/scene3_2_3/image2-2.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/scene3_2_3/image1-1.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 5,
+      "path": "/materials/generated/scene3_2_3/image2-2.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 6,
+      "path": "/materials/generated/scene3_2_3/image4-3.gif",
+      "x": 56.1564,
+      "y": 51.2525,
+      "w": 26.9213,
+      "h": 35.8951,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 7,
+      "path": "/materials/generated/scene3_2_3/image5-4.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 7,
+      "path": "/materials/generated/scene3_2_3/image6-5.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 8,
+      "path": "/materials/generated/scene3_2_3/image7-6.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 8,
+      "path": "/materials/generated/scene3_2_3/image8-7.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 9,
+      "path": "/materials/generated/scene3_2_3/image9-8.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 9,
+      "path": "/materials/generated/scene3_2_3/image2-2.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 12,
+      "path": "/materials/generated/scene3_2_3/image1-1.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 12,
+      "path": "/materials/generated/scene3_2_3/image10-9.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/scene3_2_3/image11-10.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 13,
+      "path": "/materials/generated/scene3_2_3/image12-11.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 14,
+      "path": "/materials/generated/scene3_2_3/image13-12.gif",
+      "x": 56.1565,
+      "y": 51.2525,
+      "w": 26.9792,
+      "h": 35.9722,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 15,
+      "path": "/materials/generated/scene3_2_3/image7-6.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 15,
+      "path": "/materials/generated/scene3_2_3/image14-13.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    },
+    {
+      "page": 16,
+      "path": "/materials/generated/scene3_2_3/image9-8.gif",
+      "x": 17.0141,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 1
+    },
+    {
+      "page": 16,
+      "path": "/materials/generated/scene3_2_3/image10-9.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-2-3",
+      "order": 2
+    }
+  ],
+  "cue_points": [
+    {
+      "id": "3-2-3:task_value",
+      "questionnaire": "task_value",
+      "url_key": "qTaskUrl",
+      "title": "任务组价值评价问卷",
+      "type": "questionnaire",
+      "page": 2,
+      "segment_id": "3-2-3"
+    },
+    {
+      "id": "3-2-3:scheme:A",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "A",
+      "title": "方案A后任务评价问卷",
+      "type": "questionnaire",
+      "page": 10,
+      "segment_id": "3-2-3"
+    },
+    {
+      "id": "3-2-3:scheme:B",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "scheme": "B",
+      "title": "方案B后任务评价问卷",
+      "type": "questionnaire",
+      "page": 17,
+      "segment_id": "3-2-3"
+    },
+    {
+      "id": "3-2-3:overall",
+      "questionnaire": "overall",
+      "url_key": "qFinalUrl",
+      "title": "场景总体评价问卷",
+      "type": "questionnaire",
+      "page": 18,
+      "segment_id": "3-2-3"
+    }
+  ],
+  "generation_warnings": [
+    "缺少预期问卷：3-2-3:scheme:C"
+  ]
+}

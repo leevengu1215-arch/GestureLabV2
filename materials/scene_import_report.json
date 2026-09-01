@@ -1,40 +1,61 @@
 {
-  "generated_at": "2026-08-30 15:15:10",
+  "generated_at": "2026-08-31 18:44:31",
   "decks": [
     {
-      "id": "scene3_2",
-      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2.pptx",
-      "pages": 60,
-      "gifs": 60,
-      "questionnaires": 13,
+      "id": "scene3_2_1",
+      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2-1.pptx",
+      "pages": 23,
+      "gifs": 14,
+      "questionnaires": 5,
       "segments": [
         {
           "id": "3-2-1",
-          "name": "子场景 3-2-1",
-          "scene_id": "S03-2",
+          "name": "场景3-2-1 客厅家居灯光控制",
+          "scene_id": "S03-2-1",
           "start_page": 1,
           "end_page": 23
-        },
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "id": "scene3_2_2",
+      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2-2.pptx",
+      "pages": 21,
+      "gifs": 28,
+      "questionnaires": 4,
+      "segments": [
         {
           "id": "3-2-2",
-          "name": "子场景 3-2-2",
-          "scene_id": "S03-2",
-          "start_page": 24,
-          "end_page": 44
-        },
-        {
-          "id": "3-2-3",
-          "name": "子场景 3-2-3",
-          "scene_id": "S03-2",
-          "start_page": 45,
-          "end_page": 60
+          "name": "场景3-2-2 客厅家居温度控制",
+          "scene_id": "S03-2-2",
+          "start_page": 1,
+          "end_page": 21
         }
       ],
       "warnings": [
-        "缺少预期问卷：3-2-2:scheme:C",
+        "缺少预期问卷：3-2-2:scheme:C"
+      ]
+    },
+    {
+      "id": "scene3_2_3",
+      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景库3-2-3.pptx",
+      "pages": 18,
+      "gifs": 20,
+      "questionnaires": 4,
+      "segments": [
+        {
+          "id": "3-2-3",
+          "name": "场景3-2-3 客厅家居电视控制",
+          "scene_id": "S03-2-3",
+          "start_page": 1,
+          "end_page": 18
+        }
+      ],
+      "warnings": [
         "缺少预期问卷：3-2-3:scheme:C"
       ]
     }
   ],
-  "backup": "/Users/leevengu/Documents/Gesture Lab/github/GestureLabV2/work/ppt_import/backups/20260830-151510"
+  "backup": "/Users/leevengu/Documents/Gesture Lab/github/GestureLabV2/work/ppt_import/backups/20260831-184430"
 }
