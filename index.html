@@ -544,11 +544,11 @@
       font-size: 14px;
     }
     .page-jump-step:hover:not(:disabled) { background: #eef2f6; color: #121821; }
-    .camera-focus-control {
+    .camera-lens-control {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
       padding: 8px 10px;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -556,7 +556,27 @@
       color: var(--muted);
       font-size: 13px;
     }
-    .camera-focus-control button { min-height: 34px; padding: 6px 10px; white-space: nowrap; }
+    .camera-lens-control .lens-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .camera-lens-control button { min-height: 34px; padding: 6px 10px; white-space: nowrap; flex: 1 1 auto; }
+    .camera-lens-control .lens-line { line-height: 1.5; word-break: break-word; }
+    .camera-lens-control .lens-line.warn { color: #b54708; font-weight: 600; }
+    .camera-lens-control .lens-line.good { color: #157347; }
+    .lens-preflight {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffaf3;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .lens-preflight summary { cursor: pointer; color: #b54708; font-weight: 600; }
+    .lens-preflight ul { margin: 8px 0 0; padding-left: 20px; line-height: 1.7; }
+    .lens-preflight code { background: #f1f3f5; padding: 1px 4px; border-radius: 3px; }
     .slide-side {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -4025,6 +4045,18 @@
       </section>
       <section class="panel">
         <h2>双摄像头同步采集</h2>
+        <details class="lens-preflight">
+          <summary>开机自检：先在 HIK IN 上位机关闭相机内置 AI 功能</summary>
+          <p>海康 U62 Pro 的「AI 人像居中」是<strong>相机固件内的数字裁切</strong>，画面裁完才通过 USB 输出，浏览器完全看不到也关不掉。必须用海康 <code>HIK IN</code> 上位机关闭一次（设置写入相机，长期有效）：</p>
+          <ul>
+            <li>关闭 <strong>AI 人像居中 / 人脸跟踪 / 自动构图</strong>（这是画面自己平移的根源）</li>
+            <li>关闭 <strong>AI 美颜</strong>（会改变肤色与纹理，污染手势数据）</li>
+            <li>对焦模式改为 <strong>手动</strong>，并固定<strong>视场角档位</strong></li>
+            <li>白平衡 / 亮度 / 对比度 / 饱和度改为<strong>手动固定值</strong></li>
+          </ul>
+          <p>HIK IN 下载：海康威视官网 → 服务支持 → 工具专区（hitools）。菜单名称以实际软件版本为准。</p>
+          <p>关完后回到本页启用摄像头，程序会自动锁死对焦/变焦/曝光/白平衡，并可用「追踪自检」验证 AI 居中是否真的关掉了。</p>
+        </details>
         <div class="camera-grid">
           <div class="camera-card">
             <div class="camera-head">
@@ -4040,9 +4072,13 @@
               <button id="enableCamera1Btn" class="secondary">启用 1</button>
               <button id="disableCamera1Btn" class="secondary" disabled>关闭 1</button>
             </div>
-            <div class="camera-focus-control hidden" id="cam1FocusControl">
-              <span id="cam1FocusStatus">对焦能力检测中</span>
-              <button id="cam1FocusBtn" class="secondary" type="button">关闭自动对焦</button>
+            <div class="camera-lens-control hidden" id="cam1LensControl">
+              <span class="lens-line" id="cam1LensStatus">镜头能力检测中</span>
+              <span class="lens-line" id="cam1FramingStatus">追踪自检：未执行</span>
+              <div class="lens-actions">
+                <button id="cam1LensBtn" class="secondary" type="button">锁定镜头</button>
+                <button id="cam1FramingBtn" class="secondary" type="button">追踪自检</button>
+              </div>
             </div>
           </div>
           <div class="camera-card">
@@ -4059,9 +4095,13 @@
               <button id="enableCamera2Btn" class="secondary">启用 2</button>
               <button id="disableCamera2Btn" class="secondary" disabled>关闭 2</button>
             </div>
-            <div class="camera-focus-control hidden" id="cam2FocusControl">
-              <span id="cam2FocusStatus">对焦能力检测中</span>
-              <button id="cam2FocusBtn" class="secondary" type="button">关闭自动对焦</button>
+            <div class="camera-lens-control hidden" id="cam2LensControl">
+              <span class="lens-line" id="cam2LensStatus">镜头能力检测中</span>
+              <span class="lens-line" id="cam2FramingStatus">追踪自检：未执行</span>
+              <div class="lens-actions">
+                <button id="cam2LensBtn" class="secondary" type="button">锁定镜头</button>
+                <button id="cam2FramingBtn" class="secondary" type="button">追踪自检</button>
+              </div>
             </div>
           </div>
         </div>
@@ -4354,8 +4394,8 @@
       hostClapProgress: { visible: false, phase: "", progress: 0, countdown: 0 },
       done: {},
       cameras: {
-        cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera1", videoTrack: null, focusManual: false },
-        cam2: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera2", videoTrack: null, focusManual: false },
+        cam1: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera1", videoTrack: null, lensLock: null, lensWatchdog: null, lensBusy: false, framingBusy: false, framingCheck: null },
+        cam2: { stream: null, recordingStream: null, recorder: null, chunks: [], events: [], uploadPromise: null, resolveUpload: null, rejectUpload: null, recordingError: "", deviceId: "", label: "camera2", videoTrack: null, lensLock: null, lensWatchdog: null, lensBusy: false, framingBusy: false, framingCheck: null },
       },
       deckId: "baseline",
       deck: null,
@@ -6858,7 +6898,12 @@
       const pages = state.deck.pages.filter(page => pageHasGesture(page));
       if (!pages.length) return [auditRow(`${state.deck.name}`, "当前演示材料没有检测到带 GIF 的手势页。", false, "已打标", "无手势页")];
       return pages.map((page) => {
-        const marks = state.gestureMarks.filter(item => item.deck_id === state.deckId && Number(item.page_index) === Number(page.index));
+        const marks = state.gestureMarks.filter(item =>
+          item.deck_id === state.deckId &&
+          Number(item.page_index) === Number(page.index) &&
+          (item.scene_id || "") === (state.scene?.id || "") &&
+          (item.round_started_at || "") === (state.roundStartedAt || "")
+        );
         const starts = marks.filter(item => item.status === "start").length;
         const ends = marks.filter(item => item.status === "end").length;
         const ok = starts > 0 && ends > 0 && starts === ends;
@@ -6954,7 +6999,12 @@
         const cuesDone = cues.filter(item => state.completedCues[item.id]).length;
         const gesturePages = state.deck.pages.filter(page => page.segment_id === segment.id && pageHasGesture(page));
         const gesturesDone = gesturePages.filter(page => {
-          const marks = state.gestureMarks.filter(item => item.deck_id === state.deckId && Number(item.page_index) === Number(page.index));
+          const marks = state.gestureMarks.filter(item =>
+            item.deck_id === state.deckId &&
+            Number(item.page_index) === Number(page.index) &&
+            (item.scene_id || "") === (state.scene?.id || "") &&
+            (item.round_started_at || "") === (state.roundStartedAt || "")
+          );
           return marks.some(item => item.status === "start") && marks.some(item => item.status === "end");
         }).length;
         const recordDone = records.some(item => item.status === "ended");
@@ -7505,62 +7555,430 @@
     }
 
     const cameraSlots = [
-      { id: "cam1", select: "cameraSelect1", preview: "preview1", enable: "enableCamera1Btn", disable: "disableCamera1Btn", badge: "camera1Badge", focusControl: "cam1FocusControl", focusStatus: "cam1FocusStatus", focusButton: "cam1FocusBtn", label: "camera1" },
-      { id: "cam2", select: "cameraSelect2", preview: "preview2", enable: "enableCamera2Btn", disable: "disableCamera2Btn", badge: "camera2Badge", focusControl: "cam2FocusControl", focusStatus: "cam2FocusStatus", focusButton: "cam2FocusBtn", label: "camera2" },
+      { id: "cam1", select: "cameraSelect1", preview: "preview1", enable: "enableCamera1Btn", disable: "disableCamera1Btn", badge: "camera1Badge", lensControl: "cam1LensControl", lensStatus: "cam1LensStatus", lensButton: "cam1LensBtn", framingStatus: "cam1FramingStatus", framingButton: "cam1FramingBtn", label: "camera1" },
+      { id: "cam2", select: "cameraSelect2", preview: "preview2", enable: "enableCamera2Btn", disable: "disableCamera2Btn", badge: "camera2Badge", lensControl: "cam2LensControl", lensStatus: "cam2LensStatus", lensButton: "cam2LensBtn", framingStatus: "cam2FramingStatus", framingButton: "cam2FramingBtn", label: "camera2" },
     ];
 
     function cameraSlot(id) {
       return cameraSlots.find(slot => slot.id === id);
     }
 
-    function updateCameraFocusControl(slotId) {
-      const slot = cameraSlot(slotId);
-      const camera = state.cameras[slotId];
-      const control = $(slot.focusControl);
-      const button = $(slot.focusButton);
-      const status = $(slot.focusStatus);
-      const capabilities = camera.videoTrack?.getCapabilities?.() || {};
-      const modes = Array.isArray(capabilities.focusMode) ? capabilities.focusMode : [];
-      const supportsManual = modes.includes("manual");
-      const supportsAuto = modes.includes("continuous") || modes.includes("single-shot");
-      control.classList.toggle("hidden", !camera.videoTrack);
-      if (!camera.videoTrack) return;
-      if (!supportsManual) {
-        status.textContent = "此设备或浏览器未开放手动对焦";
-        button.classList.add("hidden");
-        return;
-      }
-      button.classList.remove("hidden");
-      button.disabled = camera.focusManual && !supportsAuto;
-      button.textContent = camera.focusManual ? "恢复自动对焦" : "关闭自动对焦";
-      status.textContent = camera.focusManual ? "手动对焦已启用" : "检测到自动对焦";
+    // ── 镜头锁定 ────────────────────────────────────────────────────────────
+    // 目的：消除自动对焦/自动变焦/自动曝光/自动白平衡带来的画面漂移。
+    // 现场调参只改这一处常量。
+    const LENS_LOCK = {
+      settleMs: 1500,           // 取流后先让自动算法收敛，再读当时的值锁死
+      watchdogMs: 2000,         // 看门狗巡检周期（USB 带宽波动会把 UVC 控制复位）
+      framingCheckMs: 5000,     // 追踪自检时长
+      framingSampleHz: 4,       // 自检采样率
+      framingBorderRatio: 0.15, // 参与统计的边框带宽度占比（排除中心人物区）
+      framingSuspectMad: 1.5,   // 边框带帧间平均绝对差：可疑阈值（灰度 0-255）
+      framingWarnMad: 3.0,      // 判定「画面在跟随人物」的阈值
+    };
+
+    const LENS_ITEM_LABELS = {
+      focus: "对焦", zoom: "变焦", pan: "水平", tilt: "俯仰",
+      exposure: "曝光", whiteBalance: "白平衡",
+    };
+    const LENS_ITEM_ORDER = ["focus", "zoom", "pan", "tilt", "exposure", "whiteBalance"];
+
+    function lensSleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function toggleCameraAutofocus(slotId) {
+    function lensClamp(value, min, max) {
+      if (!Number.isFinite(min) || !Number.isFinite(max)) return value;
+      return Math.min(max, Math.max(min, value));
+    }
+
+    // 设备常把数值量化到档位，回读值不会和下发值完全相等，按步长/2% 容差判定。
+    function lensValueMatches(actual, target, tolerance) {
+      if (typeof target === "string") return actual === target;
+      if (!Number.isFinite(target)) return true;
+      if (!Number.isFinite(actual)) return false;
+      const allow = Math.max(tolerance || 0, Math.abs(target) * 0.02, 1e-6);
+      return Math.abs(actual - target) <= allow;
+    }
+
+    function lensMismatchKeys(settings, constraint, tolerances) {
+      return Object.keys(constraint)
+        .filter(key => !lensValueMatches(settings[key], constraint[key], tolerances?.[key]));
+    }
+
+    // 逐项构造约束。关键：每项独立下发，不合并进一个 advanced 组
+    // ——Chrome 对 advanced 组是「整组能满足才应用」，混在一起时一项不支持会静默丢掉整组。
+    function buildLensLockItems(caps, cur) {
+      const items = [];
+      const unsupported = [];
+      const tolerances = {};
+
+      const focusModes = Array.isArray(caps.focusMode) ? caps.focusMode : [];
+      if (focusModes.includes("manual")) {
+        const constraint = { focusMode: "manual" };
+        if (caps.focusDistance && Number.isFinite(cur.focusDistance)) {
+          constraint.focusDistance = cur.focusDistance;
+          tolerances.focusDistance = caps.focusDistance.step;
+        }
+        items.push({ key: "focus", constraint, fallback: { focusMode: "manual" } });
+      } else {
+        unsupported.push("focus");
+      }
+
+      // U62 Pro 的「视场角档位」在 UVC 里就是 zoom；锁到最小 = 最广、不做数字裁切。
+      if (caps.zoom && Number.isFinite(caps.zoom.min)) {
+        tolerances.zoom = caps.zoom.step;
+        items.push({ key: "zoom", constraint: { zoom: caps.zoom.min } });
+      } else {
+        unsupported.push("zoom");
+      }
+
+      ["pan", "tilt"].forEach((axis) => {
+        const range = caps[axis];
+        if (range && Number.isFinite(range.min) && Number.isFinite(range.max)) {
+          tolerances[axis] = range.step;
+          items.push({ key: axis, constraint: { [axis]: lensClamp(0, range.min, range.max) } });
+        } else {
+          unsupported.push(axis);
+        }
+      });
+
+      const exposureModes = Array.isArray(caps.exposureMode) ? caps.exposureMode : [];
+      if (exposureModes.includes("manual")) {
+        const constraint = { exposureMode: "manual" };
+        if (caps.exposureTime && Number.isFinite(cur.exposureTime)) {
+          constraint.exposureTime = cur.exposureTime;
+          tolerances.exposureTime = caps.exposureTime.step;
+        }
+        if (caps.iso && Number.isFinite(cur.iso)) {
+          constraint.iso = cur.iso;
+          tolerances.iso = caps.iso.step;
+        }
+        items.push({ key: "exposure", constraint, fallback: { exposureMode: "manual" } });
+      } else {
+        unsupported.push("exposure");
+      }
+
+      const wbModes = Array.isArray(caps.whiteBalanceMode) ? caps.whiteBalanceMode : [];
+      if (wbModes.includes("manual")) {
+        const constraint = { whiteBalanceMode: "manual" };
+        if (caps.colorTemperature && Number.isFinite(cur.colorTemperature)) {
+          constraint.colorTemperature = cur.colorTemperature;
+          tolerances.colorTemperature = caps.colorTemperature.step;
+        }
+        items.push({ key: "whiteBalance", constraint, fallback: { whiteBalanceMode: "manual" } });
+      } else {
+        unsupported.push("whiteBalance");
+      }
+
+      return { items, unsupported, tolerances };
+    }
+
+    // applyConstraints 对不支持的项不会抛错，一律以回读结果为准。
+    async function applyLensConstraint(track, constraint, tolerances) {
+      try {
+        await track.applyConstraints({ advanced: [constraint] });
+      } catch (err) { /* 交给下面的回读校验判定 */ }
+      return lensMismatchKeys(track.getSettings?.() || {}, constraint, tolerances);
+    }
+
+    async function enforceLensItem(track, item, tolerances) {
+      let mismatched = await applyLensConstraint(track, item.constraint, tolerances);
+      if (!mismatched.length) {
+        item.applied = item.constraint;
+        item.status = "locked";
+        return item;
+      }
+      // 设备接受模式切换但拒绝我们给的具体数值时，退回只切模式。
+      if (item.fallback) {
+        mismatched = await applyLensConstraint(track, item.fallback, tolerances);
+        if (!mismatched.length) {
+          item.applied = item.fallback;
+          item.status = "locked";
+          return item;
+        }
+      }
+      item.applied = item.constraint;
+      item.status = "rejected";
+      item.mismatched = mismatched;
+      return item;
+    }
+
+    async function lockCameraLens(slotId, { settle = false, silent = false } = {}) {
+      const slot = cameraSlot(slotId);
       const camera = state.cameras[slotId];
       const track = camera.videoTrack;
-      if (!track) return;
-      const modes = track.getCapabilities?.().focusMode || [];
-      const nextMode = camera.focusManual
-        ? (modes.includes("continuous") ? "continuous" : "single-shot")
-        : "manual";
+      if (!track || camera.lensBusy) return null;
+      camera.lensBusy = true;
+      updateCameraLensControl(slotId);
       try {
-        const capabilities = track.getCapabilities?.() || {};
-        const settings = track.getSettings?.() || {};
-        const constraint = { focusMode: nextMode };
-        if (nextMode === "manual" && capabilities.focusDistance && Number.isFinite(settings.focusDistance)) {
-          constraint.focusDistance = settings.focusDistance;
+        // 先让 AE/AWB/AF 收敛到当前光照下的合理值，再把那个值锁死；
+        // 否则会把冷启动时的错误曝光固定下来。
+        if (settle) await lensSleep(LENS_LOCK.settleMs);
+        if (track.readyState !== "live") return null;
+        const caps = track.getCapabilities?.() || {};
+        const cur = track.getSettings?.() || {};
+        const { items, unsupported, tolerances } = buildLensLockItems(caps, cur);
+        for (const item of items) {
+          if (track.readyState !== "live") break;
+          await enforceLensItem(track, item, tolerances);
         }
-        if (nextMode === "manual" && capabilities.zoom && Number.isFinite(settings.zoom)) {
-          constraint.zoom = settings.zoom;
+        camera.lensLock = {
+          at: Date.now(), iso: nowIso(), items, unsupported, tolerances,
+          driftCount: 0, lastDriftMs: 0,
+        };
+        startLensWatchdog(slotId);
+        if (!silent) {
+          const locked = items.filter(item => item.status === "locked").map(item => LENS_ITEM_LABELS[item.key]);
+          $("videoStatus").textContent = `${slot.label} 镜头已锁定：${locked.join(" / ") || "无可锁定项"}`;
         }
-        await track.applyConstraints({ advanced: [constraint] });
-        camera.focusManual = nextMode === "manual";
-        updateCameraFocusControl(slotId);
-        $("videoStatus").textContent = `${camera.label}：${camera.focusManual ? "已关闭自动对焦" : "已恢复自动对焦"}`;
-      } catch (err) {
-        $("videoStatus").textContent = `${camera.label} 对焦设置失败：${err.message}`;
+        return camera.lensLock;
+      } finally {
+        camera.lensBusy = false;
+        updateCameraLensControl(slotId);
       }
+    }
+
+    async function unlockCameraLens(slotId) {
+      const slot = cameraSlot(slotId);
+      const camera = state.cameras[slotId];
+      const track = camera.videoTrack;
+      stopLensWatchdog(slotId);
+      camera.lensLock = null;
+      if (!track) { updateCameraLensControl(slotId); return; }
+      camera.lensBusy = true;
+      updateCameraLensControl(slotId);
+      try {
+        const caps = track.getCapabilities?.() || {};
+        const restore = [
+          { modes: caps.focusMode, key: "focusMode" },
+          { modes: caps.exposureMode, key: "exposureMode" },
+          { modes: caps.whiteBalanceMode, key: "whiteBalanceMode" },
+        ];
+        for (const entry of restore) {
+          const modes = Array.isArray(entry.modes) ? entry.modes : [];
+          const auto = modes.includes("continuous") ? "continuous" : modes.includes("single-shot") ? "single-shot" : "";
+          if (auto) await applyLensConstraint(track, { [entry.key]: auto });
+        }
+        $("videoStatus").textContent = `${slot.label} 已解除镜头锁定，自动对焦/曝光/白平衡恢复。`;
+      } finally {
+        camera.lensBusy = false;
+        updateCameraLensControl(slotId);
+      }
+    }
+
+    async function toggleCameraLensLock(slotId) {
+      const camera = state.cameras[slotId];
+      if (camera.lensLock) await unlockCameraLens(slotId);
+      else await lockCameraLens(slotId);
+    }
+
+    function stopLensWatchdog(slotId) {
+      const camera = state.cameras[slotId];
+      if (camera?.lensWatchdog) clearInterval(camera.lensWatchdog);
+      if (camera) camera.lensWatchdog = null;
+    }
+
+    function startLensWatchdog(slotId) {
+      stopLensWatchdog(slotId);
+      const camera = state.cameras[slotId];
+      camera.lensWatchdog = setInterval(() => { checkLensDrift(slotId); }, LENS_LOCK.watchdogMs);
+    }
+
+    // 分辨率重协商、USB 带宽波动、相机固件自恢复都会把 UVC 控制打回自动，
+    // 录制期间必须持续巡检并重新下发。
+    async function checkLensDrift(slotId) {
+      const camera = state.cameras[slotId];
+      const track = camera.videoTrack;
+      const lock = camera.lensLock;
+      if (!track || !lock || camera.lensBusy || camera.framingBusy || track.readyState !== "live") return;
+      const settings = track.getSettings?.() || {};
+      const drifted = lock.items.filter(item =>
+        item.status === "locked" && lensMismatchKeys(settings, item.applied, lock.tolerances).length);
+      if (!drifted.length) return;
+      camera.lensBusy = true;
+      try {
+        for (const item of drifted) {
+          const actual = {};
+          Object.keys(item.applied).forEach((key) => { actual[key] = settings[key]; });
+          camera.events.push({
+            type: "lens_drift", camera: camera.label, key: item.key,
+            target: item.applied, actual, ms: Date.now(), iso: nowIso(),
+          });
+          if (track.readyState !== "live") break;
+          await applyLensConstraint(track, item.applied, lock.tolerances);
+        }
+        lock.driftCount += drifted.length;
+        lock.lastDriftMs = Date.now();
+      } finally {
+        camera.lensBusy = false;
+      }
+      updateCameraLensControl(slotId);
+    }
+
+    // ── 追踪自检 ────────────────────────────────────────────────────────────
+    // U62 Pro 的「AI 人像居中」是相机固件内的数字裁切，裁完才输出 UVC 流，
+    // MediaStreamTrack 完全观测不到。只能从画面反推：
+    // 开启时人一动，连静止的背景也跟着平移；关闭时背景纹丝不动。
+    // 所以只统计画面四周的边框带（静止背景），中心人物区仅用来确认「确实有人在动」。
+    function buildFramingMasks(width, height, ratio) {
+      const border = [];
+      const center = [];
+      const left = Math.floor(width * ratio);
+      const right = Math.ceil(width * (1 - ratio));
+      const top = Math.floor(height * ratio);
+      const bottom = Math.ceil(height * (1 - ratio));
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const index = y * width + x;
+          if (x < left || x >= right || y < top || y >= bottom) border.push(index);
+          else center.push(index);
+        }
+      }
+      return { border, center };
+    }
+
+    function samplePixels(data, mask) {
+      const out = new Float32Array(mask.length);
+      for (let i = 0; i < mask.length; i += 1) {
+        const p = mask[i] * 4;
+        out[i] = (data[p] * 299 + data[p + 1] * 587 + data[p + 2] * 114) / 1000;
+      }
+      return out;
+    }
+
+    function meanAbsDiff(a, b) {
+      let sum = 0;
+      for (let i = 0; i < a.length; i += 1) sum += Math.abs(a[i] - b[i]);
+      return a.length ? sum / a.length : 0;
+    }
+
+    function percentile(values, ratio) {
+      if (!values.length) return 0;
+      const sorted = [...values].sort((x, y) => x - y);
+      return sorted[Math.min(sorted.length - 1, Math.floor(ratio * (sorted.length - 1)))];
+    }
+
+    async function runFramingSelfCheck(slotId) {
+      const slot = cameraSlot(slotId);
+      const camera = state.cameras[slotId];
+      const video = $(slot.preview);
+      if (!camera.stream || !video?.videoWidth) {
+        $("videoStatus").textContent = `${slot.label} 追踪自检需要先启用摄像头。`;
+        return null;
+      }
+      if (camera.framingBusy) return null;
+      camera.framingBusy = true;
+      updateCameraLensControl(slotId);
+      const width = 160;
+      const height = 90;
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const masks = buildFramingMasks(width, height, LENS_LOCK.framingBorderRatio);
+      const totalFrames = Math.max(2, Math.round((LENS_LOCK.framingCheckMs / 1000) * LENS_LOCK.framingSampleHz));
+      const intervalMs = LENS_LOCK.framingCheckMs / totalFrames;
+      const borderDiffs = [];
+      const centerDiffs = [];
+      let prevBorder = null;
+      let prevCenter = null;
+      try {
+        for (let i = 0; i < totalFrames; i += 1) {
+          if (!camera.stream || video.videoWidth === 0) throw new Error("自检期间画面中断");
+          ctx.drawImage(video, 0, 0, width, height);
+          const data = ctx.getImageData(0, 0, width, height).data;
+          const border = samplePixels(data, masks.border);
+          const center = samplePixels(data, masks.center);
+          if (prevBorder) {
+            borderDiffs.push(meanAbsDiff(prevBorder, border));
+            centerDiffs.push(meanAbsDiff(prevCenter, center));
+          }
+          prevBorder = border;
+          prevCenter = center;
+          const left = ((totalFrames - i - 1) * intervalMs / 1000).toFixed(1);
+          $(slot.framingStatus).className = "lens-line";
+          $(slot.framingStatus).textContent = `追踪自检进行中…请在镜头前左右走动（剩余 ${left}s）`;
+          await lensSleep(intervalMs);
+        }
+        const borderScore = percentile(borderDiffs, 0.75);
+        const centerScore = percentile(centerDiffs, 0.75);
+        let verdict = "pass";
+        // 中心区没动 = 自检期间根本没人移动，这次结果不能采信（否则会假通过）。
+        if (centerScore < LENS_LOCK.framingSuspectMad) verdict = "inconclusive";
+        else if (borderScore >= LENS_LOCK.framingWarnMad) verdict = "fail";
+        else if (borderScore >= LENS_LOCK.framingSuspectMad) verdict = "suspect";
+        camera.framingCheck = {
+          at: Date.now(), iso: nowIso(), verdict,
+          border_mad_p75: Number(borderScore.toFixed(3)),
+          center_mad_p75: Number(centerScore.toFixed(3)),
+          samples: borderDiffs.length,
+        };
+        camera.events.push({ type: "framing_check", camera: camera.label, ...camera.framingCheck, ms: camera.framingCheck.at });
+        return camera.framingCheck;
+      } catch (err) {
+        camera.framingCheck = { at: Date.now(), iso: nowIso(), verdict: "error", error: err.message };
+        return camera.framingCheck;
+      } finally {
+        camera.framingBusy = false;
+        updateCameraLensControl(slotId);
+      }
+    }
+
+    function describeFramingCheck(check) {
+      if (!check) return { text: "追踪自检：未执行（建议启用后先做一次）", tone: "" };
+      const detail = Number.isFinite(check.border_mad_p75)
+        ? `背景变化 ${check.border_mad_p75} / 人物变化 ${check.center_mad_p75}`
+        : "";
+      switch (check.verdict) {
+        case "pass":
+          return { text: `追踪自检：通过 · 背景静止，未检测到画面跟随（${detail}）`, tone: "good" };
+        case "suspect":
+          return { text: `追踪自检：可疑 · 背景有轻微跟随，请确认 HIK IN 中 AI 人像居中已关闭（${detail}）`, tone: "warn" };
+        case "fail":
+          return { text: `追踪自检：未通过 · 检测到画面跟随人物，请在 HIK IN 中关闭 AI 人像居中后重测（${detail}）`, tone: "warn" };
+        case "inconclusive":
+          return { text: `追踪自检：无法判定 · 自检期间未检测到明显移动，请在镜头前左右走动后重试（${detail}）`, tone: "warn" };
+        default:
+          return { text: `追踪自检：失败 · ${check.error || "未知错误"}`, tone: "warn" };
+      }
+    }
+
+    function updateCameraLensControl(slotId) {
+      const slot = cameraSlot(slotId);
+      const camera = state.cameras[slotId];
+      const control = $(slot.lensControl);
+      const lensStatus = $(slot.lensStatus);
+      const framingStatus = $(slot.framingStatus);
+      const lensButton = $(slot.lensButton);
+      const framingButton = $(slot.framingButton);
+      if (!control) return;
+      control.classList.toggle("hidden", !camera.videoTrack);
+      if (!camera.videoTrack) return;
+      const busy = camera.lensBusy || camera.framingBusy;
+      lensButton.disabled = busy;
+      framingButton.disabled = busy || !camera.stream;
+      const lock = camera.lensLock;
+      if (!lock) {
+        lensButton.textContent = "锁定镜头";
+        lensStatus.className = "lens-line";
+        lensStatus.textContent = camera.lensBusy ? "正在锁定镜头…" : "镜头未锁定";
+      } else {
+        lensButton.textContent = "解除锁定";
+        const locked = lock.items.filter(item => item.status === "locked").map(item => LENS_ITEM_LABELS[item.key]);
+        const blockedKeys = [
+          ...lock.items.filter(item => item.status === "rejected").map(item => item.key),
+          ...lock.unsupported,
+        ].sort((a, b) => LENS_ITEM_ORDER.indexOf(a) - LENS_ITEM_ORDER.indexOf(b));
+        let text = `镜头已锁定：${locked.join(" / ") || "无"}`;
+        if (blockedKeys.length) text += ` · 不可控：${blockedKeys.map(key => LENS_ITEM_LABELS[key]).join(" / ")}`;
+        if (lock.driftCount) text += ` · 已自动纠正漂移 ${lock.driftCount} 次`;
+        lensStatus.className = `lens-line ${lock.driftCount || !locked.length ? "warn" : "good"}`;
+        lensStatus.textContent = text;
+      }
+      if (camera.framingBusy) return; // 自检进行中由倒计时接管这一行
+      const framing = describeFramingCheck(camera.framingCheck);
+      framingStatus.className = `lens-line ${framing.tone}`.trim();
+      framingStatus.textContent = framing.text;
     }
 
     function clearCameraPreview(slot) {
@@ -7617,7 +8035,10 @@
       if (camera.stream) camera.stream.getTracks().forEach(track => track.stop());
       camera.stream = null;
       camera.videoTrack = null;
-      camera.focusManual = false;
+      stopLensWatchdog(slotId);
+      camera.lensLock = null;
+      camera.lensBusy = false;
+      camera.framingCheck = null;
       camera.deviceId = "";
       if (!activeRecorder) {
         camera.recorder = null;
@@ -7628,7 +8049,7 @@
       $(slot.badge).classList.remove("good", "warn");
       $(slot.enable).disabled = false;
       $(slot.disable).disabled = true;
-      updateCameraFocusControl(slotId);
+      updateCameraLensControl(slotId);
       $("videoStatus").textContent = `${slot.label} ${message}`;
       updateVideoControls();
     }
@@ -7669,6 +8090,8 @@
         if (camera.recordingStream) camera.recordingStream.getTracks().forEach(track => track.stop());
         camera.recordingStream = null;
         if (camera.stream) camera.stream.getTracks().forEach(t => t.stop());
+        stopLensWatchdog(slotId);
+        camera.lensLock = null;
         const deviceId = $(slot.select).value;
         // 统一采集规格：1080p / 60fps。用 ideal（尽力而为）而非 exact，
         // 避免摄像头不支持时 getUserMedia 直接失败；实际拿到多少见下方回显。
@@ -7676,14 +8099,23 @@
         videoConstraints.width = { ideal: 1920 };
         videoConstraints.height = { ideal: 1080 };
         videoConstraints.frameRate = { ideal: 60 };
-        camera.stream = await navigator.mediaDevices.getUserMedia({
-          video: videoConstraints,
-          audio: false,
-        });
+        // 只有在取流时声明 pan/tilt/zoom，浏览器才会在 getCapabilities() 里暴露这三项；
+        // 不声明的话连变焦都锁不住。会额外弹一次 PTZ 权限提示，需选允许。
+        try {
+          camera.stream = await navigator.mediaDevices.getUserMedia({
+            video: { ...videoConstraints, pan: true, tilt: true, zoom: true },
+            audio: false,
+          });
+        } catch (ptzErr) {
+          camera.stream = await navigator.mediaDevices.getUserMedia({
+            video: videoConstraints,
+            audio: false,
+          });
+        }
         const activeStream = camera.stream;
         const videoTrack = activeStream.getVideoTracks()[0];
         camera.videoTrack = videoTrack || null;
-        camera.focusManual = false;
+        camera.framingCheck = null;
         camera.deviceId = videoTrack?.getSettings().deviceId || deviceId;
         // 尽量把轨道拉到目标规格（部分摄像头初次取流未必给最高档）
         try {
@@ -7712,10 +8144,16 @@
         $(slot.badge).classList.add("good");
         $(slot.enable).disabled = true;
         $(slot.disable).disabled = false;
-        updateCameraFocusControl(slotId);
-        $("videoStatus").textContent = `${slot.label} 已启用（实际 ${specText}）`;
+        updateCameraLensControl(slotId);
+        $("videoStatus").textContent = `${slot.label} 已启用（实际 ${specText}）· 正在锁定镜头…`;
         await refreshCameras();
         updateVideoControls();
+        // 主试很容易忘记手动点锁定，这里默认自动锁；按钮只用于临时解除。
+        const lock = await lockCameraLens(slotId, { settle: true, silent: true });
+        if (state.cameras[slotId].stream === activeStream) {
+          const locked = lock ? lock.items.filter(item => item.status === "locked").map(item => LENS_ITEM_LABELS[item.key]) : [];
+          $("videoStatus").textContent = `${slot.label} 已启用（实际 ${specText}）· 镜头锁定：${locked.join(" / ") || "无可锁定项"}`;
+        }
         return true;
       } catch (err) {
         $("videoStatus").textContent = `${slot.label} 启用失败：${err.message}`;
@@ -7824,7 +8262,23 @@
             capture_attempt: state.activeCaptureAttempt || 1,
             capture_key: state.activeCaptureKey || "",
           }];
+          // 每段录制都留一份镜头锁定快照，随 /api/event 落盘，
+          // 事后可核查这段视频录的时候镜头到底锁没锁、有没有漂移。
+          camera.events.push({
+            type: "lens_lock",
+            camera: slot.label,
+            ms: syncMs,
+            iso: syncIso,
+            locked: camera.lensLock ? camera.lensLock.items.filter(item => item.status === "locked").map(item => ({ key: item.key, applied: item.applied })) : [],
+            rejected: camera.lensLock ? camera.lensLock.items.filter(item => item.status === "rejected").map(item => item.key) : [],
+            unsupported: camera.lensLock?.unsupported || [],
+            drift_count: camera.lensLock?.driftCount || 0,
+            framing_check: camera.framingCheck || null,
+          });
           camera.recordingStream = camera.stream.clone();
+          // clone 与原轨道共享同一 source，镜头设置本应跟随；
+          // 但克隆会重新协商约束，补一次巡检确保没被打回自动。
+          checkLensDrift(slot.id);
           // 两台相机统一目标码率，避免各自按画面复杂度自动定码率导致不一致。
           // 8 Mbps 为 1080p60 稳妥值；如需改画质，只调这一处常量。
           const TARGET_VIDEO_BPS = 8_000_000;
@@ -8059,8 +8513,10 @@
     $("disableCamera2Btn").addEventListener("click", () => disableCamera("cam2"));
     $("cameraSelect1").addEventListener("change", () => changeCameraInput("cam1"));
     $("cameraSelect2").addEventListener("change", () => changeCameraInput("cam2"));
-    $("cam1FocusBtn").addEventListener("click", () => toggleCameraAutofocus("cam1"));
-    $("cam2FocusBtn").addEventListener("click", () => toggleCameraAutofocus("cam2"));
+    $("cam1LensBtn").addEventListener("click", () => toggleCameraLensLock("cam1"));
+    $("cam2LensBtn").addEventListener("click", () => toggleCameraLensLock("cam2"));
+    $("cam1FramingBtn").addEventListener("click", () => runFramingSelfCheck("cam1"));
+    $("cam2FramingBtn").addEventListener("click", () => runFramingSelfCheck("cam2"));
     cameraSlots.forEach((slot) => {
       $(slot.preview).addEventListener("loadedmetadata", () => updateCameraPreviewGeometry(slot));
       $(slot.preview).addEventListener("resize", () => updateCameraPreviewGeometry(slot));
