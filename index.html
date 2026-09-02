@@ -3318,11 +3318,15 @@
       display: grid;
       place-items: center;
       padding: 32px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       background: #f7f9fb;
     }
     .calibration-panel.hidden { display: none; }
     .calibration-card {
       width: min(720px, 100%);
+      max-height: 100%;
+      overflow-y: auto;
       padding: 28px;
       border: 1px solid #e1e7ed;
       border-radius: 20px;
@@ -3395,13 +3399,18 @@
     }
     .calibration-flash-option input { width: 18px; height: 18px; margin: 0; }
     .calibration-footer {
+      position: sticky;
+      bottom: -28px;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       margin-top: 18px;
-      padding-top: 18px;
+      padding: 18px 0 28px;
       border-top: 1px solid #e5e9ee;
+      background: #fff;
+      box-shadow: 0 -10px 18px rgba(255, 255, 255, .96);
     }
     .calibration-status { color: #667085; font-size: 12px; }
     #enterCalibratedTaskBtn { min-width: 180px; }
@@ -3420,6 +3429,19 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+    @media (max-height: 760px) {
+      .calibration-panel { place-items: start center; padding: 14px; }
+      .calibration-card { padding: 18px; }
+      .calibration-card h2 { margin: 6px 0 3px; font-size: 22px; }
+      .calibration-card > p { margin-bottom: 10px; }
+      .calibration-step { padding: 9px 12px; }
+      .calibration-flash-option { margin-top: 6px; }
+      .calibration-footer {
+        bottom: -18px;
+        margin-top: 10px;
+        padding: 10px 0 18px;
+      }
     }
     .end-stage {
       display: grid;
@@ -5857,6 +5879,14 @@
       return state.deckId === "baseline" ? "动作" : "手势";
     }
 
+    function gesturePageState(page) {
+      if (!page) return "idle";
+      const marks = state.gestureMarks.filter(item =>
+        item.deck_id === state.deckId && Number(item.page_index) === Number(page.index)
+      );
+      return marks[marks.length - 1]?.status === "end" ? "completed" : "idle";
+    }
+
     function stopGestureProgress() {
       if (state.gestureProgressTimer) clearTimeout(state.gestureProgressTimer);
       state.gestureProgressTimer = null;
@@ -5984,15 +6014,16 @@
       const repeatTotal = gestureRepeatTotal(page);
       if (key !== state.lastGesturePageKey && !state.activeGestureMark) {
         const label = gestureLabel(page);
+        const completed = gesturePageState(page) === "completed";
         $("gestureMarkTitle").textContent = `${label}打标`;
         block.classList.remove("active");
-        $("gestureMarkBadge").textContent = "待开始";
+        $("gestureMarkBadge").textContent = completed ? "已完成" : "待开始";
         $("gestureStartMarkBtn").classList.remove("is-active");
         $("gestureEndMarkBtn").classList.remove("ready");
-        $("gestureStartMarkBtn").textContent = `${label}开始`;
-        $("gestureEndMarkBtn").textContent = `${label}结束`;
+        $("gestureStartMarkBtn").textContent = completed ? "重新记录" : `${label}开始`;
+        $("gestureEndMarkBtn").textContent = completed ? "已完成" : `${label}结束`;
         $("gestureResetMarkBtn").disabled = false;
-        broadcastSubject({ type: "gesture_mark_state", state: "idle" });
+        broadcastSubject({ type: "gesture_mark_state", state: completed ? "ended" : "idle", repeat_index: completed ? repeatTotal : 0, repeat_total: repeatTotal });
         state.lastGesturePageKey = key;
       }
     }
@@ -6720,8 +6751,8 @@
         $("gestureMarkBadge").textContent = repeatTotal > 1 ? `${repeatTotal} / ${repeatTotal} 已记录` : "已记录";
         $("gestureStartMarkBtn").classList.remove("is-active");
         $("gestureEndMarkBtn").classList.remove("ready");
-        $("gestureStartMarkBtn").textContent = `${actionLabel}开始`;
-        $("gestureEndMarkBtn").textContent = "已结束";
+        $("gestureStartMarkBtn").textContent = "重新记录";
+        $("gestureEndMarkBtn").textContent = "已完成";
         $("gestureResetMarkBtn").disabled = false;
         state.gestureMarks.push({ ...notes, status: "end" });
         broadcastSubject({ type: "gesture_mark_state", state: "ended", repeat_index: repeatTotal, repeat_total: repeatTotal });
