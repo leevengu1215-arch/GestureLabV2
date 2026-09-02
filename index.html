@@ -5886,8 +5886,13 @@
 
     function gesturePageState(page) {
       if (!page) return "idle";
+      const sceneId = state.scene?.id || "";
+      const roundStartedAt = state.roundStartedAt || "";
       const marks = state.gestureMarks.filter(item =>
-        item.deck_id === state.deckId && Number(item.page_index) === Number(page.index)
+        item.deck_id === state.deckId &&
+        Number(item.page_index) === Number(page.index) &&
+        (item.scene_id || "") === sceneId &&
+        (item.round_started_at || "") === roundStartedAt
       );
       return marks[marks.length - 1]?.status === "end" ? "completed" : "idle";
     }
@@ -6017,7 +6022,7 @@
       }
       const key = pageOverlayKey(page);
       const repeatTotal = gestureRepeatTotal(page);
-      if (key !== state.lastGesturePageKey && !state.activeGestureMark) {
+      if (!state.activeGestureMark) {
         const label = gestureLabel(page);
         const completed = gesturePageState(page) === "completed";
         $("gestureMarkTitle").textContent = `${label}打标`;
@@ -6697,6 +6702,7 @@
         scene_id: state.scene?.id || "",
         scene_name: state.scene?.name || "",
         scene_step: sceneSteps[state.sceneStepIndex]?.name || "",
+        round_started_at: state.roundStartedAt || "",
       };
     }
 
