@@ -1,61 +1,61 @@
 {
-  "generated_at": "2026-08-31 18:44:31",
+  "generated_at": "2026-09-02 11:08:50",
   "decks": [
     {
       "id": "scene3_2_1",
       "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2-1.pptx",
-      "pages": 23,
-      "gifs": 14,
+      "pages": 37,
+      "gifs": 28,
       "questionnaires": 5,
       "segments": [
         {
           "id": "3-2-1",
-          "name": "场景3-2-1 客厅家居灯光控制",
+          "name": "子场景 3-2-1",
           "scene_id": "S03-2-1",
           "start_page": 1,
-          "end_page": 23
+          "end_page": 37
         }
       ],
       "warnings": []
     },
     {
-      "id": "scene3_2_2",
-      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2-2.pptx",
+      "id": "scene3_2_2_no_curtain",
+      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2-2（无窗帘）.pptx",
+      "pages": 17,
+      "gifs": 20,
+      "questionnaires": 4,
+      "segments": [
+        {
+          "id": "3-2-2-NC",
+          "name": "子场景 3-2-2-NC",
+          "scene_id": "S03-2-2-NC",
+          "start_page": 1,
+          "end_page": 17
+        }
+      ],
+      "warnings": [
+        "缺少预期问卷：3-2-2-NC:scheme:C"
+      ]
+    },
+    {
+      "id": "scene3_2_2_with_curtain",
+      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景3-2-2（有窗帘）.pptx",
       "pages": 21,
       "gifs": 28,
       "questionnaires": 4,
       "segments": [
         {
-          "id": "3-2-2",
-          "name": "场景3-2-2 客厅家居温度控制",
-          "scene_id": "S03-2-2",
+          "id": "3-2-2-WC",
+          "name": "子场景 3-2-2-WC",
+          "scene_id": "S03-2-2-WC",
           "start_page": 1,
           "end_page": 21
         }
       ],
       "warnings": [
-        "缺少预期问卷：3-2-2:scheme:C"
-      ]
-    },
-    {
-      "id": "scene3_2_3",
-      "source": "/Users/leevengu/Desktop/小米手势交互/场景库/场景库3-2-3.pptx",
-      "pages": 18,
-      "gifs": 20,
-      "questionnaires": 4,
-      "segments": [
-        {
-          "id": "3-2-3",
-          "name": "场景3-2-3 客厅家居电视控制",
-          "scene_id": "S03-2-3",
-          "start_page": 1,
-          "end_page": 18
-        }
-      ],
-      "warnings": [
-        "缺少预期问卷：3-2-3:scheme:C"
+        "缺少预期问卷：3-2-2-WC:scheme:C"
       ]
     }
   ],
-  "backup": "/Users/leevengu/Documents/Gesture Lab/github/GestureLabV2/work/ppt_import/backups/20260831-184430"
+  "backup": "/Users/leevengu/Documents/Gesture Lab/github/GestureLabV2/work/ppt_import/backups/20260902-110850"
 }

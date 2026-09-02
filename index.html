@@ -3798,7 +3798,8 @@
                 <option value="scene2_sequence">场景2：Bridge + 2-1 + 2-2</option>
                 <option value="scene3_1">场景3-1：厨房家居</option>
                 <option value="scene3_2_1">场景3-2-1：客厅家居灯光控制</option>
-                <option value="scene3_2_2">场景3-2-2：客厅家居温度控制</option>
+                <option value="scene3_2_2_no_curtain">场景3-2-2：温度控制（无窗帘）</option>
+                <option value="scene3_2_2_with_curtain">场景3-2-2：温度控制（有窗帘）</option>
                 <option value="scene3_2_3">场景3-2-3：客厅家居电视控制</option>
                 <option value="scene4">场景4：车场景</option>
                 <option value="scene1_1">仅场景1-1</option>
@@ -4211,7 +4212,8 @@
       { id: "S02", parent_id: "S02", segment_id: "2", deck_id: "scene2_sequence", name: "场景2 桌面计算与AI眼镜场景", selected: false, material_path: "" },
       { id: "S03-1", parent_id: "S03", segment_id: "3-1", deck_id: "scene3_1", name: "场景3-1 厨房家居场景", selected: false, material_path: "" },
       { id: "S03-2-1", parent_id: "S03", segment_id: "3-2-1", deck_id: "scene3_2_1", name: "场景3-2-1 客厅家居灯光控制", selected: false, material_path: "" },
-      { id: "S03-2-2", parent_id: "S03", segment_id: "3-2-2", deck_id: "scene3_2_2", name: "场景3-2-2 客厅家居温度控制", selected: false, material_path: "" },
+      { id: "S03-2-2-NC", parent_id: "S03", segment_id: "3-2-2-NC", deck_id: "scene3_2_2_no_curtain", name: "场景3-2-2 温度控制（无窗帘）", selected: false, material_path: "" },
+      { id: "S03-2-2-WC", parent_id: "S03", segment_id: "3-2-2-WC", deck_id: "scene3_2_2_with_curtain", name: "场景3-2-2 温度控制（有窗帘）", selected: false, material_path: "" },
       { id: "S03-2-3", parent_id: "S03", segment_id: "3-2-3", deck_id: "scene3_2_3", name: "场景3-2-3 客厅家居电视控制", selected: false, material_path: "" },
       { id: "S04-1", parent_id: "S04", segment_id: "4-1", deck_id: "scene4", name: "场景4-1 车外场景", selected: false, material_path: "" },
       { id: "S04-2", parent_id: "S04", segment_id: "4-2", deck_id: "scene4", name: "场景4-2 车内场景", selected: false, material_path: "" },
@@ -4263,7 +4265,8 @@
       scene2_1: "/materials/scene2_1_pages.json",
       scene3_1: "/materials/scene3_1_pages.json",
       scene3_2_1: "/materials/scene3_2_1_pages.json",
-      scene3_2_2: "/materials/scene3_2_2_pages.json",
+      scene3_2_2_no_curtain: "/materials/scene3_2_2_no_curtain_pages.json",
+      scene3_2_2_with_curtain: "/materials/scene3_2_2_with_curtain_pages.json",
       scene3_2_3: "/materials/scene3_2_3_pages.json",
       scene4: "/materials/scene4_pages.json",
       scene5_1: "/materials/scene5_1_pages.json",
@@ -4469,7 +4472,8 @@
       if (scene.id === "S02") return "scene2_sequence";
       if (scene.id === "S03-1") return "scene3_1";
       if (scene.id === "S03-2-1") return "scene3_2_1";
-      if (scene.id === "S03-2-2") return "scene3_2_2";
+      if (scene.id === "S03-2-2-NC") return "scene3_2_2_no_curtain";
+      if (scene.id === "S03-2-2-WC") return "scene3_2_2_with_curtain";
       if (scene.id === "S03-2-3") return "scene3_2_3";
       if (scene.id === "S04") return "scene4";
       return null;
@@ -5173,7 +5177,8 @@
         : deckId.startsWith("scene2") ? "S02"
         : deckId === "scene3_1" ? "S03-1"
         : deckId === "scene3_2_1" ? "S03-2-1"
-        : deckId === "scene3_2_2" ? "S03-2-2"
+        : deckId === "scene3_2_2_no_curtain" ? "S03-2-2-NC"
+        : deckId === "scene3_2_2_with_curtain" ? "S03-2-2-WC"
         : deckId === "scene3_2_3" ? "S03-2-3"
         : deckId === "scene4" ? "S04"
         : state.scene?.id || "";
@@ -6059,6 +6064,10 @@
       layer.style.width = `${width}px`;
       layer.style.height = `${height}px`;
     }
+
+    const overlayResizeObserver = new ResizeObserver(() => {
+      if (state.view === "scene") updateOverlayLayerBounds();
+    });
 
     function renderOverlays() {
       const layer = $("overlayLayer");
@@ -7530,7 +7539,16 @@
         ? (modes.includes("continuous") ? "continuous" : "single-shot")
         : "manual";
       try {
-        await track.applyConstraints({ advanced: [{ focusMode: nextMode }] });
+        const capabilities = track.getCapabilities?.() || {};
+        const settings = track.getSettings?.() || {};
+        const constraint = { focusMode: nextMode };
+        if (nextMode === "manual" && capabilities.focusDistance && Number.isFinite(settings.focusDistance)) {
+          constraint.focusDistance = settings.focusDistance;
+        }
+        if (nextMode === "manual" && capabilities.zoom && Number.isFinite(settings.zoom)) {
+          constraint.zoom = settings.zoom;
+        }
+        await track.applyConstraints({ advanced: [constraint] });
         camera.focusManual = nextMode === "manual";
         updateCameraFocusControl(slotId);
         $("videoStatus").textContent = `${camera.label}：${camera.focusManual ? "已关闭自动对焦" : "已恢复自动对焦"}`;
@@ -8007,6 +8025,7 @@
     $("resetLayoutBtn").addEventListener("click", resetWorkspaceLayout);
     $("slideImage").addEventListener("load", handleSlideImageLoad);
     $("slideImage").addEventListener("error", handleSlideImageError);
+    overlayResizeObserver.observe(document.querySelector(".slide-stage"));
     $("addOverlayBtn").addEventListener("click", addCurrentOverlay);
     $("clearOverlayBtn").addEventListener("click", clearCurrentOverlay);
     $("loadPptBtn").addEventListener("click", () => loadDeck(state.deckId || defaultDeckForScene(state.scene) || "no_material"));
