@@ -5624,6 +5624,15 @@
     }
 
     async function loadDeck(deckId = $("deckSelect").value) {
+      if (state.activeGestureMark) {
+        state.scene = scenes.find(item => item.id === state.activeGestureMark.scene_id) || state.scene;
+        state.taskMode = state.activeGestureMark.deck_id === "baseline" ? "baseline"
+          : state.activeGestureMark.deck_id === "pretask" ? "pretask" : "scene";
+        $("deckSelect").value = state.deckId;
+        renderSceneNav();
+        $("saveStatus").textContent = "手势正在记录中，请先完成或重置当前手势再切换任务。";
+        return;
+      }
       if (!deckId || deckId === "no_material") {
         showMissingSceneDeck(state.scene);
         return;
@@ -6088,22 +6097,22 @@
       const stage = document.querySelector(".slide-stage");
       const image = $("slideImage");
       const layer = $("overlayLayer");
+      if (!stage || !image || !layer || !image.naturalWidth || !image.naturalHeight) return;
       const stageRect = stage.getBoundingClientRect();
-      const naturalW = image.naturalWidth || 16;
-      const naturalH = image.naturalHeight || 9;
-      const stageRatio = stageRect.width / Math.max(stageRect.height, 1);
-      const imageRatio = naturalW / Math.max(naturalH, 1);
-      let width = stageRect.width;
-      let height = stageRect.height;
-      let left = 0;
-      let top = 0;
-      if (stageRatio > imageRatio) {
-        width = height * imageRatio;
-        left = (stageRect.width - width) / 2;
+      const imageRect = image.getBoundingClientRect();
+      const naturalW = image.naturalWidth;
+      const naturalH = image.naturalHeight;
+      const elementRatio = imageRect.width / Math.max(imageRect.height, 1);
+      const naturalRatio = naturalW / Math.max(naturalH, 1);
+      let width = imageRect.width;
+      let height = imageRect.height;
+      if (elementRatio > naturalRatio) {
+        width = height * naturalRatio;
       } else {
-        height = width / imageRatio;
-        top = (stageRect.height - height) / 2;
+        height = width / naturalRatio;
       }
+      const left = imageRect.left - stageRect.left - stage.clientLeft + (imageRect.width - width) / 2;
+      const top = imageRect.top - stageRect.top - stage.clientTop + (imageRect.height - height) / 2;
       layer.style.left = `${left}px`;
       layer.style.top = `${top}px`;
       layer.style.width = `${width}px`;
@@ -6286,6 +6295,10 @@
 
     function moveSlide(delta) {
       if (!state.deck || activeCalibration()) return;
+      if (state.activeGestureMark) {
+        $("slideStatus").textContent = "手势正在记录中，请先点击“结束”或“重置”再翻页。";
+        return;
+      }
       state.testBrowsing = false;
       const page = state.deck.pages[state.slideIndex];
       const pageCue = activeCueForPage(page);
@@ -6326,6 +6339,10 @@
 
     function jumpToSlideForTest(requestedPage = Number($("slideJumpInput").value)) {
       if (!state.deck?.pages?.length) return;
+      if (state.activeGestureMark) {
+        $("slideStatus").textContent = "手势正在记录中，请先点击“结束”或“重置”再跳页。";
+        return;
+      }
       const requested = Number(requestedPage);
       if (!Number.isInteger(requested) || requested < 1 || requested > state.deck.pages.length) {
         $("slideStatus").textContent = `请输入 1-${state.deck.pages.length} 之间的页码。`;
@@ -6766,7 +6783,22 @@
         $("gestureMarkStatus").textContent = `自然站立计时尚未完成：${state.gestureProgressStep} / ${state.activeGestureMark.timed_total} 秒。`;
         return;
       }
-      const context = currentGestureContext();
+      const context = boundary === "end" && state.activeGestureMark
+        ? {
+            deck_id: state.activeGestureMark.deck_id,
+            deck_name: state.activeGestureMark.deck_name,
+            page_index: state.activeGestureMark.page_index,
+            page_title: state.activeGestureMark.page_title,
+            page_text: state.activeGestureMark.page_text,
+            repeat_index: state.activeGestureMark.repeat_index,
+            repeat_total: state.activeGestureMark.repeat_total,
+            scene_id: state.activeGestureMark.scene_id,
+            scene_name: state.activeGestureMark.scene_name,
+            scene_step: state.activeGestureMark.scene_step,
+            round_started_at: state.activeGestureMark.round_started_at,
+          }
+        : currentGestureContext();
+      const gesturePageKey = `${context.round_started_at}|${context.scene_id}|${context.deck_id}|${context.page_index}`;
       const status = boundary === "start" ? "gesture_start" : "gesture_end";
       const notes = {
         ...context,
@@ -6827,7 +6859,9 @@
         $("saveStatus").textContent = markMessage;
         if (boundary === "end") {
           setTimeout(() => {
-            if (!state.activeGestureMark) {
+            const page = state.deck?.pages?.[state.slideIndex];
+            const currentPageKey = `${state.roundStartedAt || ""}|${state.scene?.id || ""}|${state.deckId}|${page?.index ?? ""}`;
+            if (!state.activeGestureMark && currentPageKey === gesturePageKey) {
               const total = gestureRepeatTotal(state.deck?.pages?.[state.slideIndex]);
               $("gestureMarkBadge").textContent = total > 1 ? `${total} / ${total} 已记录` : "已结束";
             }
