@@ -2939,6 +2939,7 @@
     }
     .preview-nav-controls .icon-button.subtle,
     body.scene-active .preview-nav-controls .icon-button.subtle {
+      margin-left: 8px;
       width: 32px;
       min-width: 32px;
       height: 32px;
@@ -3654,6 +3655,49 @@
       .preview-nav-label { font-size: 9px; }
       .preview-summary,
       body.scene-active .preview-summary { gap: 6px; }
+
+      /* This must stay after the desktop compact pass above. */
+      .app,
+      body.scene-active .app {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        gap: 16px;
+        padding: 18px;
+      }
+      nav,
+      main,
+      aside {
+        grid-column: 1;
+        width: 100%;
+        min-width: 0;
+      }
+      nav,
+      aside,
+      main {
+        overflow: visible;
+      }
+      header {
+        left: 34px;
+        max-width: calc(100% - 68px);
+      }
+      body.scene-active .app {
+        height: 100vh;
+        min-height: 0;
+        padding: 8px;
+      }
+      body.scene-active main {
+        grid-column: 1;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body.scene-active nav,
+      body.scene-active aside {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -8499,6 +8543,18 @@
     });
     $("prevSlideBtn").addEventListener("click", () => moveSlide(-1));
     $("nextSlideBtn").addEventListener("click", () => moveSlide(1));
+    document.addEventListener("keydown", (event) => {
+      const target = event.target;
+      const isTyping = target instanceof HTMLElement && (
+        target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(target.tagName)
+      );
+      if (event.code !== "Space" || event.repeat || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey ||
+          state.view !== "scene" || isTyping || document.querySelector("dialog[open]")) return;
+      const nextButton = $("nextSlideBtn");
+      if (nextButton.disabled) return;
+      event.preventDefault();
+      nextButton.click();
+    });
     $("jumpSlidePrevBtn").addEventListener("click", () => stepTestSlide(-1));
     $("jumpSlideNextBtn").addEventListener("click", () => stepTestSlide(1));
     $("slideJumpInput").addEventListener("change", () => jumpToSlideForTest());
