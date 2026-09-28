@@ -44,7 +44,7 @@
     {
       "index": 5,
       "title": "场景任务-场景3-1-1-01-A",
-      "text": "场景任务-场景3-1-1-01-A\n在厨房中进行计时操作\n任务目标：\n确认开始计时\n手势方案A：\n捏两下\n请连做3下",
+      "text": "场景任务-场景3-1-1-01-A\n在厨房中进行计时操作\n任务目标\n：\n确认开始\n倒\n计时\n手势方案A：\n捏两下\n请连做3下",
       "image": "/materials/scene3_1_pages/page-05.png",
       "segment_id": "3-1-1",
       "has_gesture": true,
@@ -90,7 +90,7 @@
     {
       "index": 10,
       "title": "场景任务-场景3-1-1-01-B",
-      "text": "场景任务-场景3-1-1-01-B\n在厨房中进行计时操作\n任务目标：\n确认开始计时\n手势方案B：\n招两下\n请连做3下",
+      "text": "场景任务-场景3-1-1-01-B\n在厨房中进行计时操作\n任务目标\n：\n确认开始\n倒\n计时\n手势方案B：\n招两下\n请连做3下",
       "image": "/materials/scene3_1_pages/page-10.png",
       "segment_id": "3-1-1",
       "has_gesture": true,
@@ -136,7 +136,7 @@
     {
       "index": 15,
       "title": "场景任务-场景3-1-1-01-C",
-      "text": "场景任务-场景3-1-1-01-C\n在厨房中进行计时操作\n任务目标：\n确认开始计时\n手势方案C：\n握拳两下\n请连做3下",
+      "text": "场景任务-场景3-1-1-01-C\n在厨房中进行计时操作\n任务目标\n：\n确认开始\n倒\n计时\n手势方案C：\n握拳两下\n请连做3下",
       "image": "/materials/scene3_1_pages/page-15.png",
       "segment_id": "3-1-1",
       "has_gesture": true,
@@ -236,7 +236,7 @@
     {
       "index": 26,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-A\n在\n厨房\n中\n控制烤箱门\n任务目标：\n打开烤箱门\n请连做3下\n手势方案A：\n敲两下",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-A\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开中位烤箱门\n请连做3下\n手势方案A\n：\n中位敲两下",
       "image": "/materials/scene3_1_pages/page-26.png",
       "segment_id": "3-1-2",
       "has_gesture": true,
@@ -246,15 +246,17 @@
     {
       "index": 27,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-A\n在客厅中控环境温度\n手势方案 A\n手势评价\n3-\n1\n-2-A",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-A\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开下方烤箱门\n请连做3下\n手势方案A\n：\n低位敲两下",
       "image": "/materials/scene3_1_pages/page-27.png",
       "segment_id": "3-1-2",
-      "has_gesture": false
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
     },
     {
       "index": 28,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-\nB\n在\n厨房\n中\n控制烤箱门\n手势方案\nB\n3-\n1\n-2-\nB",
+      "text": "场景任务-场景3-\n1\n-2-A\n在客厅中控环境温度\n手势方案 A\n手势评价\n3-\n1\n-2-A",
       "image": "/materials/scene3_1_pages/page-28.png",
       "segment_id": "3-1-2",
       "has_gesture": false
@@ -262,25 +264,25 @@
     {
       "index": 29,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标：\n打开烤箱门\n请连做3下\n手势方案A\n：\n手腕向内招两下",
+      "text": "场景任务-场景3-\n1\n-2-\nB\n在\n厨房\n中\n控制烤箱门\n手势方案\nB\n3-\n1\n-2-\nB",
       "image": "/materials/scene3_1_pages/page-29.png",
+      "segment_id": "3-1-2",
+      "has_gesture": false
+    },
+    {
+      "index": 30,
+      "title": "场景任务-场景3-",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开中位烤箱门\n请连做3下\n手势方案A\n：\n中位手腕向内招两下",
+      "image": "/materials/scene3_1_pages/page-30.png",
       "segment_id": "3-1-2",
       "has_gesture": true,
       "repeat_index": 1,
       "repeat_total": 3
     },
     {
-      "index": 30,
-      "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-\nC\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n3-\n1\n-2-\nC",
-      "image": "/materials/scene3_1_pages/page-30.png",
-      "segment_id": "3-1-2",
-      "has_gesture": false
-    },
-    {
       "index": 31,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n任务目标：\n打开烤箱门\n请连做3下\n手势方案A\n：\n手臂带手腕向内招两下",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开下方烤箱门\n请连做3下\n手势方案A\n：\n低位手腕向内招两下",
       "image": "/materials/scene3_1_pages/page-31.png",
       "segment_id": "3-1-2",
       "has_gesture": true,
@@ -290,16 +292,44 @@
     {
       "index": 32,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-B\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n手势评价\n3-\n1\n-2-\nC",
+      "text": "场景任务-场景3-\n1\n-2-\nC\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n3-\n1\n-2-\nC",
       "image": "/materials/scene3_1_pages/page-32.png",
       "segment_id": "3-1-2",
       "has_gesture": false
     },
     {
       "index": 33,
+      "title": "场景任务-场景3-",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n请连做3下\n手势方案\nC\n：\n中位手臂带手腕向内招两下\n任务目标\n：\n打开中位烤箱门",
+      "image": "/materials/scene3_1_pages/page-33.png",
+      "segment_id": "3-1-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 34,
+      "title": "场景任务-场景3-",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n请连做3下\n手势方案\nC\n：\n低位手臂带手腕向内招两下\n任务目标\n：\n打开下方烤箱门",
+      "image": "/materials/scene3_1_pages/page-34.png",
+      "segment_id": "3-1-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 35,
+      "title": "场景任务-场景3-",
+      "text": "场景任务-场景3-\n1\n-2-B\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n手势评价\n3-\n1\n-2-\nC",
+      "image": "/materials/scene3_1_pages/page-35.png",
+      "segment_id": "3-1-2",
+      "has_gesture": false
+    },
+    {
+      "index": 36,
       "title": "ABC 方案评价",
       "text": "ABC 方案评价\n3\n-\n1-2\n只能测小于五分钟的数据\n同步时长，要看同步是否完成\n每个手势3遍\n手势方案A\n：\n敲两下\n（\n打开烤箱门\n）\n手势方案\nB：\n手腕向内招两下\n（打开烤箱门）\n手势方案\nC：\n手臂带手腕向内招两下\n（打开烤箱门）\n场景任务-场景3-\n1\n-\n2",
-      "image": "/materials/scene3_1_pages/page-33.png",
+      "image": "/materials/scene3_1_pages/page-36.png",
       "segment_id": "3-1-2",
       "has_gesture": false
     }
@@ -317,7 +347,7 @@
       "name": "子场景 3-1-2",
       "scene_id": "S03-1",
       "start_page": 19,
-      "end_page": 33
+      "end_page": 36
     }
   ],
   "overlays": [
@@ -476,18 +506,51 @@
       "order": 1
     },
     {
-      "page": 29,
-      "path": "/materials/generated/scene3_1/image16-10.gif",
-      "x": 51.4688,
-      "y": 51.0463,
-      "w": 36.0729,
-      "h": 36.0741,
+      "page": 27,
+      "path": "/materials/generated/scene3_1/ppt-image18.gif",
+      "x": 58.5643,
+      "y": 50.8941,
+      "w": 21.8817,
+      "h": 36.5236,
+      "kind": "embedded_gif",
+      "segment_id": "3-1-2",
+      "order": 1
+    },
+    {
+      "page": 30,
+      "path": "/materials/generated/scene3_1/ppt-image19.gif",
+      "x": 55.5092,
+      "y": 53.1905,
+      "w": 28.1019,
+      "h": 37.4691,
       "kind": "embedded_gif",
       "segment_id": "3-1-2",
       "order": 1
     },
     {
       "page": 31,
+      "path": "/materials/generated/scene3_1/ppt-image20.gif",
+      "x": 56.3062,
+      "y": 51.4301,
+      "w": 26.6797,
+      "h": 35.573,
+      "kind": "embedded_gif",
+      "segment_id": "3-1-2",
+      "order": 1
+    },
+    {
+      "page": 33,
+      "path": "/materials/generated/scene3_1/image17-11.gif",
+      "x": 51.5208,
+      "y": 50.9722,
+      "w": 36.2552,
+      "h": 36.2593,
+      "kind": "embedded_gif",
+      "segment_id": "3-1-2",
+      "order": 1
+    },
+    {
+      "page": 34,
       "path": "/materials/generated/scene3_1/image17-11.gif",
       "x": 51.5208,
       "y": 50.9722,
@@ -563,7 +626,7 @@
       "scheme": "A",
       "title": "方案A后任务评价问卷",
       "type": "questionnaire",
-      "page": 27,
+      "page": 28,
       "segment_id": "3-1-2"
     },
     {
@@ -573,7 +636,7 @@
       "scheme": "C",
       "title": "方案C后任务评价问卷",
       "type": "questionnaire",
-      "page": 32,
+      "page": 35,
       "segment_id": "3-1-2"
     },
     {
@@ -582,7 +645,7 @@
       "url_key": "qFinalUrl",
       "title": "场景总体评价问卷",
       "type": "questionnaire",
-      "page": 33,
+      "page": 36,
       "segment_id": "3-1-2"
     }
   ],
