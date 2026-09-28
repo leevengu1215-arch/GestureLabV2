@@ -256,7 +256,7 @@
     {
       "index": 28,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-A\n在客厅中控环境温度\n手势方案 A\n手势评价\n3-\n1\n-2-A",
+      "text": "场景任务-场景3-\n1\n-2-A\n在厨房中控制烤箱门\n手势方案 A\n手势评价\n3-\n1\n-2-A",
       "image": "/materials/scene3_1_pages/page-28.png",
       "segment_id": "3-1-2",
       "has_gesture": false
@@ -272,7 +272,7 @@
     {
       "index": 30,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开中位烤箱门\n请连做3下\n手势方案A\n：\n中位手腕向内招两下",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开中位烤箱门\n请连做3下\n手势方案\nB\n：\n中位手腕向内招两下",
       "image": "/materials/scene3_1_pages/page-30.png",
       "segment_id": "3-1-2",
       "has_gesture": true,
@@ -282,7 +282,7 @@
     {
       "index": 31,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开下方烤箱门\n请连做3下\n手势方案A\n：\n低位手腕向内招两下",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nB\n在\n厨房\n中\n控制烤箱门\n任务目标\n：\n打开下方烤箱门\n请连做3下\n手势方案\nB\n：\n低位手腕向内招两下",
       "image": "/materials/scene3_1_pages/page-31.png",
       "segment_id": "3-1-2",
       "has_gesture": true,
@@ -292,7 +292,7 @@
     {
       "index": 32,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-\nC\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n3-\n1\n-2-\nC",
+      "text": "场景任务-场景3-\n1\n-2-\nB\n手势方案\nB\n手势评价\n3-\n1\n-2-\nB\n在\n厨房\n中\n控制烤箱门",
       "image": "/materials/scene3_1_pages/page-32.png",
       "segment_id": "3-1-2",
       "has_gesture": false
@@ -300,17 +300,15 @@
     {
       "index": 33,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n请连做3下\n手势方案\nC\n：\n中位手臂带手腕向内招两下\n任务目标\n：\n打开中位烤箱门",
+      "text": "场景任务-场景3-\n1\n-2-\nC\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n3-\n1\n-2-\nC",
       "image": "/materials/scene3_1_pages/page-33.png",
       "segment_id": "3-1-2",
-      "has_gesture": true,
-      "repeat_index": 1,
-      "repeat_total": 3
+      "has_gesture": false
     },
     {
       "index": 34,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n请连做3下\n手势方案\nC\n：\n低位手臂带手腕向内招两下\n任务目标\n：\n打开下方烤箱门",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n请连做3下\n手势方案\nC\n：\n中位手臂带手腕向内招两下\n任务目标\n：\n打开中位烤箱门",
       "image": "/materials/scene3_1_pages/page-34.png",
       "segment_id": "3-1-2",
       "has_gesture": true,
@@ -320,16 +318,26 @@
     {
       "index": 35,
       "title": "场景任务-场景3-",
-      "text": "场景任务-场景3-\n1\n-2-B\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n手势评价\n3-\n1\n-2-\nC",
+      "text": "场景任务-场景3-\n1\n-2-0\n2\n-\nC\n在\n厨房\n中\n控制烤箱门\n请连做3下\n手势方案\nC\n：\n低位手臂带手腕向内招两下\n任务目标\n：\n打开下方烤箱门",
       "image": "/materials/scene3_1_pages/page-35.png",
+      "segment_id": "3-1-2",
+      "has_gesture": true,
+      "repeat_index": 1,
+      "repeat_total": 3
+    },
+    {
+      "index": 36,
+      "title": "场景任务-场景3-",
+      "text": "场景任务-场景3-\n1\n-2-B\n在\n厨房\n中\n控制烤箱门\n手势方案\nC\n手势评价\n3-\n1\n-2-\nC",
+      "image": "/materials/scene3_1_pages/page-36.png",
       "segment_id": "3-1-2",
       "has_gesture": false
     },
     {
-      "index": 36,
+      "index": 37,
       "title": "ABC 方案评价",
       "text": "ABC 方案评价\n3\n-\n1-2\n只能测小于五分钟的数据\n同步时长，要看同步是否完成\n每个手势3遍\n手势方案A\n：\n敲两下\n（\n打开烤箱门\n）\n手势方案\nB：\n手腕向内招两下\n（打开烤箱门）\n手势方案\nC：\n手臂带手腕向内招两下\n（打开烤箱门）\n场景任务-场景3-\n1\n-\n2",
-      "image": "/materials/scene3_1_pages/page-36.png",
+      "image": "/materials/scene3_1_pages/page-37.png",
       "segment_id": "3-1-2",
       "has_gesture": false
     }
@@ -347,7 +355,7 @@
       "name": "子场景 3-1-2",
       "scene_id": "S03-1",
       "start_page": 19,
-      "end_page": 36
+      "end_page": 37
     }
   ],
   "overlays": [
@@ -539,7 +547,7 @@
       "order": 1
     },
     {
-      "page": 33,
+      "page": 34,
       "path": "/materials/generated/scene3_1/image17-11.gif",
       "x": 51.5208,
       "y": 50.9722,
@@ -550,7 +558,7 @@
       "order": 1
     },
     {
-      "page": 34,
+      "page": 35,
       "path": "/materials/generated/scene3_1/image17-11.gif",
       "x": 51.5208,
       "y": 50.9722,
@@ -575,31 +583,31 @@
       "id": "3-1-1:scheme:A",
       "questionnaire": "task_evaluation",
       "url_key": "qSchemeUrl",
-      "scheme": "A",
       "title": "方案A后任务评价问卷",
       "type": "questionnaire",
       "page": 7,
-      "segment_id": "3-1-1"
+      "segment_id": "3-1-1",
+      "scheme": "A"
     },
     {
       "id": "3-1-1:scheme:B",
       "questionnaire": "task_evaluation",
       "url_key": "qSchemeUrl",
-      "scheme": "B",
       "title": "方案B后任务评价问卷",
       "type": "questionnaire",
       "page": 12,
-      "segment_id": "3-1-1"
+      "segment_id": "3-1-1",
+      "scheme": "B"
     },
     {
       "id": "3-1-1:scheme:C",
       "questionnaire": "task_evaluation",
       "url_key": "qSchemeUrl",
-      "scheme": "C",
       "title": "方案C后任务评价问卷",
       "type": "questionnaire",
       "page": 17,
-      "segment_id": "3-1-1"
+      "segment_id": "3-1-1",
+      "scheme": "C"
     },
     {
       "id": "3-1-1:overall",
@@ -623,21 +631,31 @@
       "id": "3-1-2:scheme:A",
       "questionnaire": "task_evaluation",
       "url_key": "qSchemeUrl",
-      "scheme": "A",
       "title": "方案A后任务评价问卷",
       "type": "questionnaire",
       "page": 28,
-      "segment_id": "3-1-2"
+      "segment_id": "3-1-2",
+      "scheme": "A"
+    },
+    {
+      "id": "3-1-2:scheme:B",
+      "questionnaire": "task_evaluation",
+      "url_key": "qSchemeUrl",
+      "title": "方案B后任务评价问卷",
+      "type": "questionnaire",
+      "page": 32,
+      "segment_id": "3-1-2",
+      "scheme": "B"
     },
     {
       "id": "3-1-2:scheme:C",
       "questionnaire": "task_evaluation",
       "url_key": "qSchemeUrl",
-      "scheme": "C",
       "title": "方案C后任务评价问卷",
       "type": "questionnaire",
-      "page": 35,
-      "segment_id": "3-1-2"
+      "page": 36,
+      "segment_id": "3-1-2",
+      "scheme": "C"
     },
     {
       "id": "3-1-2:overall",
@@ -645,11 +663,9 @@
       "url_key": "qFinalUrl",
       "title": "场景总体评价问卷",
       "type": "questionnaire",
-      "page": 36,
+      "page": 37,
       "segment_id": "3-1-2"
     }
   ],
-  "generation_warnings": [
-    "缺少预期问卷：3-1-2:scheme:B"
-  ]
+  "generation_warnings": []
 }
